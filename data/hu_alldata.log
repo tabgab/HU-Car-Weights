@@ -21,3 +21,13 @@
 • HU hyundai (as hyundai): 348 relevant variants
   = HU hyundai: {'variants': 348, 'with_weight': 338, 'errors': 0, 'brand_used': 'hyundai'}
 • HU ford (as ford): 547 relevant variants
+  = HU ford: {'variants': 547, 'with_weight': 547, 'errors': 0, 'brand_used': 'ford'}
+• HU bmw (as bmw): 17 relevant variants
+  = HU bmw: {'variants': 17, 'with_weight': 17, 'errors': 0, 'brand_used': 'bmw'}
+• HU mercedes-benz (as mercedes-benz): 74 relevant variants
+  = HU mercedes-benz: {'variants': 74, 'with_weight': 74, 'errors': 0, 'brand_used': 'mercedes-benz'}
+• HU nissan (as nissan): 199 relevant variants
+  = HU nissan: {'variants': 199, 'with_weight': 199, 'errors': 0, 'brand_used': 'nissan'}
+• HU renault (as renault): 305 relevant variants
+  = HU renault: {'variants': 305, 'with_weight': 305, 'errors': 0, 'brand_used': 'renault'}
+• HU peugeot (as peugeot): 879 relevant variants

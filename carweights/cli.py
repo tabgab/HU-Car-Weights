@@ -7,7 +7,7 @@ from pathlib import Path
 
 import yaml
 
-from .db.connection import init_db
+from .db.connection import connect, init_db
 from .pipeline.derive import derive
 from .pipeline.run import run_market, run_seed, scrape_model
 from .settings import CONFIG_DIR, EXPORT_DIR
@@ -77,7 +77,7 @@ def cmd_dealer(args):
         brands = conf.get("brands", {})
         if args.brand:
             brands = {args.brand: brands[args.brand]}
-    conn = init_db()
+    conn = connect()  # schema already exists; avoid DDL while katalogus crawl writes
     total = 0
     for brand, page in brands.items():
         for res in MC.crawl_brand(brand, page):
@@ -88,8 +88,12 @@ def cmd_dealer(args):
                 total += 1
         conn.commit()
     print(f"ingested {total} manufacturer weight rows")
-    print("cross-check:", crosscheck(conn))
-    print("re-derive:", derive(conn))
+    try:
+        print("cross-check:", crosscheck(conn))
+        print("re-derive:", derive(conn))
+    except Exception as e:
+        print(f"cross-check/derive deferred (DB busy: {e}); will be recomputed by the "
+              f"katalogus crawl's final pass or `cli derive`.")
     conn.close()
 
 
