@@ -38,6 +38,24 @@ function weightText(r) {
 }
 const PT_LABEL = { electric: "Electric", PHEV: "PHEV", ICE: "ICE" };
 
+function confLabel(c) { return c == null ? "n/a" : c >= 0.8 ? "high" : c >= 0.6 ? "medium" : "low"; }
+
+function sourceTooltip(r) {
+  // r.sources is a list of {name,url,value,confidence} when available; fall back to single.
+  const lines = [`${r.make} ${r.model}${r.trim ? " " + r.trim : ""}`];
+  if (Array.isArray(r.sources) && r.sources.length) {
+    lines.push(`Curb weight from ${r.sources.length} source(s):`);
+    for (const s of r.sources)
+      lines.push(`  • ${s.name}: ${s.value ?? "?"} kg (${confLabel(s.confidence)})${s.url ? " — " + s.url : ""}`);
+    if (r.sources_agree === true) lines.push("✓ sources agree");
+    else if (r.sources_agree === false) lines.push("⚠ sources disagree");
+  } else {
+    lines.push(`Curb weight source: ${r.weight_source ?? "unknown"} (${confLabel(r.weight_confidence)})`);
+    if (r.weight_source_url) lines.push(r.weight_source_url);
+  }
+  return lines.join("\n");
+}
+
 async function refresh() {
   const [list, facets] = await Promise.all([
     fetch("/api/cars?" + buildParams()).then((r) => r.json()),
@@ -57,6 +75,7 @@ function renderRows(list) {
   emptyEl.hidden = list.total > 0;
   for (const r of list.items) {
     const tr = document.createElement("tr");
+    tr.title = sourceTooltip(r);
     tr.innerHTML = `
       <td>${r.make}</td><td>${r.model}</td><td>${r.trim ?? '<span class="muted">—</span>'}</td>
       <td>${r.drivetrain ?? "—"}</td><td class="nowrap">${r.power_kw != null ? r.power_kw + " kW" : "—"}</td>
