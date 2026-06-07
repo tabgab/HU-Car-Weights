@@ -1,0 +1,22 @@
+[2026-06-07 11:53:16] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:53:18] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:53:30] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:53:30] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:53:30] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:53:32] INFO: Cloudflare captcha is solved
+[2026-06-07 11:53:34] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota> (referer: https://www.google.com/)
+[2026-06-07 11:53:34] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota> (referer: https://www.google.com/)
+• HU toyota (as toyota): 1890 relevant variants
+[2026-06-07 11:53:35] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:53:37] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:53:49] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:53:49] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:53:49] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:53:50] INFO: Cloudflare captcha is solved
+[2026-06-07 11:53:51] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/yaris_cross_1.5_hybrid_active_e-cvt/146430> (referer: https://www.google.com/)
+[2026-06-07 11:53:51] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/yaris_cross_1.5_hybrid_active_e-cvt/146430> (referer: https://www.google.com/)
+[2026-06-07 11:53:51] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:53:53] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:54:06] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:54:06] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:54:06] INFO: The turnstile version discovered is "managed"

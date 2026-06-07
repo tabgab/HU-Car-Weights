@@ -42,8 +42,17 @@ def _db_models_for(conn, brand_slug: str) -> set[str]:
     return out
 
 
+def _slug_powertrain(vslug: str) -> str:
+    s = vslug.lower()
+    if any(k in s for k in ("phev", "plug", "4xe", "recharge", "e_hybrid")):
+        return "PHEV"
+    if "kwh" in s and not any(k in s for k in ("tsi", "tdi", "tce", "gdi", "benzin", "dizel", "hdi")):
+        return "BEV"
+    return "ICE"
+
+
 def scrape_make_hu(conn: sqlite3.Connection, brand_slug: str, *, max_variants=None,
-                   model_filter=True, log=print) -> dict:
+                   per_model=3, model_filter=True, log=print) -> dict:
     st = {"variants": 0, "with_weight": 0, "errors": 0, "brand_used": None}
     cands = [brand_slug]
     if "-" in brand_slug:
@@ -65,8 +74,21 @@ def scrape_make_hu(conn: sqlite3.Connection, brand_slug: str, *, max_variants=No
     if model_filter:
         want = _db_models_for(conn, brand_slug)
         if want:
-            urls = [u for u in urls
-                    if any(_ascii(_variant_slug(u)).startswith(m) for m in want)]
+            # keep the longest matching model slug per url (most specific)
+            kept = []
+            for u in urls:
+                vs = _ascii(_variant_slug(u))
+                m = max((m for m in want if vs.startswith(m)), key=len, default=None)
+                if m:
+                    kept.append((m, u))
+            # cap per (model, powertrain-from-slug) so we sample breadth, not every trim
+            seen: dict[tuple, int] = {}
+            urls = []
+            for m, u in kept:
+                key = (m, _slug_powertrain(_variant_slug(u)))
+                if seen.get(key, 0) < per_model:
+                    seen[key] = seen.get(key, 0) + 1
+                    urls.append(u)
     if max_variants:
         urls = urls[:max_variants]
     log(f"• HU {brand_slug} (as {st['brand_used']}): {len(urls)} relevant variants")
