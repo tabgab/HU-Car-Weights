@@ -1,0 +1,21 @@
+• kia: 18 spec PDFs
+  · picanto                        -> [947, 1056]
+  · stonic                         -> [1130, 1258]
+  · ceed kombi                     -> [1260, 1449]
+  · xceed                          -> [1276, 1466]
+  · k4                             -> [1340, 1516]
+  · k4 sw                          -> [1380, 1550]
+  · niro hev phev my25             -> [1399, 1610]
+  · ev3                            -> [1725, 2050]
+  · ev4                            -> [1736, 1835, 1910]
+  · ev4 fastback                   -> [1740, 1839, 1912]
+  · sportage                       -> [1477, 1935]
+  · ev5                            -> [1994, 2100, 2130, 2174, 2177, 2189]
+  · ev6                            -> [1880, 2165]
+  · ev9                            -> [2674]
+  · pv5 passenger                  -> [1990, 2140]
+  · pv5 cargo                      -> [1785, 1955]
+  · pv5 chassis cab                -> [1570, 1615]
+ingested 39 manufacturer weight rows
+cross-check: {'matched': 360, 'confirmed': 164, 'conflict': 187}
+re-derive: {'under': 549, 'over': 372, 'straddling': 0, 'unknown': 18, 'total': 939}

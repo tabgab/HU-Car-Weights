@@ -66,3 +66,12 @@ INFO:     127.0.0.1:39558 - "GET /api/cars?powertrain=PHEV&sort=make&page=1&page
 INFO:     127.0.0.1:39562 - "GET /api/facets?powertrain=PHEV&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
 INFO:     127.0.0.1:39558 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
 INFO:     127.0.0.1:39562 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42672 - "GET /?v=5 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:42672 - "GET /app.js?v=5 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:42672 - "GET /styles.css?v=5 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:42672 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42688 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42672 - "GET /?v=5 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:42688 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42672 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52806 - "GET /api/cars/731 HTTP/1.1" 200 OK
