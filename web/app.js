@@ -38,22 +38,28 @@ function weightText(r) {
 }
 const PT_LABEL = { electric: "Electric", PHEV: "PHEV", ICE: "ICE" };
 
-function confLabel(c) { return c == null ? "n/a" : c >= 0.8 ? "high" : c >= 0.6 ? "medium" : "low"; }
-
 function sourceTooltip(r) {
-  // r.sources is a list of {name,url,value,confidence} when available; fall back to single.
-  const lines = [`${r.make} ${r.model}${r.trim ? " " + r.trim : ""}`];
-  if (Array.isArray(r.sources) && r.sources.length) {
-    lines.push(`Curb weight from ${r.sources.length} source(s):`);
-    for (const s of r.sources)
-      lines.push(`  • ${s.name}: ${s.value ?? "?"} kg (${confLabel(s.confidence)})${s.url ? " — " + s.url : ""}`);
-    if (r.sources_agree === true) lines.push("✓ sources agree");
-    else if (r.sources_agree === false) lines.push("⚠ sources disagree");
+  const lines = [`${r.make} ${r.model}${r.trim ? " " + r.trim : ""}`, "Curb weight sources:"];
+  lines.push(`  • cars-data (intl): ${r.weight ?? "?"} kg`);
+  if (r.hu_weight_kg != null) {
+    lines.push(`  • katalogus.hu (HU): ${r.hu_weight_kg} kg`);
+    lines.push(r.sources_agree === 1 ? "✓ sources agree"
+      : r.sources_agree === 0 ? "⚠ sources disagree — HU is authoritative" : "");
   } else {
-    lines.push(`Curb weight source: ${r.weight_source ?? "unknown"} (${confLabel(r.weight_confidence)})`);
-    if (r.weight_source_url) lines.push(r.weight_source_url);
+    lines.push("  • (no Hungarian-catalog match yet)");
   }
-  return lines.join("\n");
+  return lines.filter(Boolean).join("\n");
+}
+
+function sourcesCell(r) {
+  if (r.hu_weight_kg != null) {
+    if (r.sources_agree === 1)
+      return `<span class="badge badge--ok" title="confirmed by 2 sources">✓ 2 src</span>`;
+    if (r.sources_agree === 0)
+      return `<span class="badge badge--borderline" title="HU=${r.hu_weight_kg}kg vs intl=${r.weight}kg">⚠ HU ${r.hu_weight_kg}</span>`;
+    return `<span class="badge badge--unknown">HU</span>`;
+  }
+  return `<span class="muted">cars-data</span>`;
 }
 
 async function refresh() {
@@ -82,7 +88,7 @@ function renderRows(list) {
       <td>${r.model_year ?? "—"}</td>
       <td class="nowrap">${weightText(r)}</td>
       <td>${feeBadge(r.fee_status)}</td>
-      <td class="nowrap">${confDot(r.weight_confidence)}</td>`;
+      <td class="nowrap">${sourcesCell(r)}</td>`;
     tr.onclick = () => openDetail(r.id);
     rowsEl.appendChild(tr);
   }
@@ -128,10 +134,10 @@ async function openDetail(id) {
     ${row("Power", r.power_kw != null ? r.power_kw + " kW" : "—")}
     ${row("Battery", r.battery_kwh != null ? r.battery_kwh + " kWh" : "—")}
     ${row("Model year", r.model_year ?? "—")}
-    ${row("Curb weight", weightText(r))}
+    ${row("Curb weight (cars-data)", (r.weight != null ? r.weight + " kg" : "—"))}
+    ${row("Curb weight (HU katalógus)", (r.hu_weight_kg != null ? r.hu_weight_kg + " kg" : "—"))}
+    ${row("Sources", sourcesCell(r) + (r.sources_agree === 0 ? " — HU authoritative" : ""))}
     ${row("Threshold", (r.fee?.threshold ?? "—") + " kg")}
-    ${row("Confidence", confDot(r.weight_confidence))}
-    ${row("Source", r.weight_source_url ? `<a href="${r.weight_source_url}" target="_blank">${r.weight_source ?? "link"}</a>` : (r.weight_source ?? "—"))}
     <div class="rule">${r.fee?.rule ?? ""}</div>`;
   $("#detail").hidden = false;
 }

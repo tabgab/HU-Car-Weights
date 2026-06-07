@@ -62,10 +62,30 @@ CREATE TABLE IF NOT EXISTS weights (
     weight_basis       TEXT CHECK (weight_basis IN
                           ('curb','mass_in_running_order','dry','unknown')),
     is_missing         INTEGER NOT NULL DEFAULT 0,
+    -- cross-source fields (populated by pipeline/crosscheck.py)
+    hu_weight_kg       INTEGER,        -- authoritative HU-catalog curb weight (saját tömeg)
+    hu_weight_url      TEXT,
+    n_sources          INTEGER NOT NULL DEFAULT 1,
+    sources_agree      INTEGER,        -- 1 agree, 0 conflict, NULL single-source/unknown
+    primary_source     TEXT,           -- the source whose value is canonical
     created_at         TEXT NOT NULL DEFAULT (datetime('now')),
     updated_at         TEXT NOT NULL DEFAULT (datetime('now')),
     UNIQUE (variant_id)
 );
+
+-- Hungarian-market catalog (katalogus.hasznaltauto.hu). Authoritative HU source.
+CREATE TABLE IF NOT EXISTS hu_catalog (
+    hu_id           INTEGER PRIMARY KEY,
+    make_slug       TEXT NOT NULL,
+    model_slug      TEXT NOT NULL,
+    variant_slug    TEXT NOT NULL,
+    powertrain_type TEXT,
+    drivetrain      TEXT,
+    weight_kg       INTEGER,
+    source_url      TEXT NOT NULL UNIQUE,
+    scraped_at      TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS ix_hu_make_model ON hu_catalog(make_slug, model_slug);
 
 CREATE TABLE IF NOT EXISTS provenance (
     provenance_id  INTEGER PRIMARY KEY,
@@ -117,7 +137,8 @@ LEFT JOIN weights w ON w.variant_id = v.variant_id
 GROUP BY v.model_id;
 
 -- flat row the FastAPI app reads
-CREATE VIEW IF NOT EXISTS v_parking_summary AS
+DROP VIEW IF EXISTS v_parking_summary;
+CREATE VIEW v_parking_summary AS
 SELECT v.variant_id                                AS id,
        mk.canonical_name                           AS make,
        md.canonical_name                           AS model,
@@ -133,18 +154,20 @@ SELECT v.variant_id                                AS id,
        w.curb_weight_max_kg                        AS weight_max,
        w.unit                                      AS weight_unit,
        w.is_missing,
+       w.hu_weight_kg,
+       w.hu_weight_url,
+       w.n_sources,
+       w.sources_agree,
+       w.primary_source,
        pc.fee_class,
        pc.threshold_kg,
        pc.decision_kg,
        pc.fee_status   AS db_fee_status,
        pc.pays_double  AS db_pays_double,
-       wp.source_name                              AS weight_source,
-       wp.source_url                               AS weight_source_url,
-       wp.confidence                               AS weight_confidence
+       w.primary_source                            AS weight_source,
+       w.hu_weight_url                             AS weight_source_url
 FROM variants v
 JOIN models md ON md.model_id = v.model_id
 JOIN makes  mk ON mk.make_id = md.make_id
 LEFT JOIN weights w  ON w.variant_id = v.variant_id
-LEFT JOIN parking_classification pc ON pc.variant_id = v.variant_id
-LEFT JOIN provenance wp ON wp.entity_type = 'weight' AND wp.entity_id = v.variant_id
-                       AND wp.field = 'curb_weight_kg';
+LEFT JOIN parking_classification pc ON pc.variant_id = v.variant_id;

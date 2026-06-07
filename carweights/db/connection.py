@@ -19,10 +19,27 @@ def connect(db_path: Path | str | None = None) -> sqlite3.Connection:
     return conn
 
 
+def _migrate(conn: sqlite3.Connection) -> None:
+    """Add cross-source columns to an existing weights table (idempotent)."""
+    cols = {r["name"] for r in conn.execute("PRAGMA table_info(weights)")}
+    add = {
+        "hu_weight_kg": "INTEGER",
+        "hu_weight_url": "TEXT",
+        "n_sources": "INTEGER NOT NULL DEFAULT 1",
+        "sources_agree": "INTEGER",
+        "primary_source": "TEXT",
+    }
+    for name, decl in add.items():
+        if name not in cols:
+            conn.execute(f"ALTER TABLE weights ADD COLUMN {name} {decl}")
+    conn.commit()
+
+
 def init_db(db_path: Path | str | None = None) -> sqlite3.Connection:
     """Create the schema if needed (idempotent) and record the version."""
     conn = connect(db_path)
     conn.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
+    _migrate(conn)
     row = conn.execute("SELECT MAX(version) AS v FROM schema_version").fetchone()
     if row is None or row["v"] is None:
         conn.execute("INSERT INTO schema_version(version) VALUES (?)", (SCHEMA_VERSION,))
