@@ -21,3 +21,12 @@ makes:
   - tesla
   - byd
   - mg
+  # Chinese brands entering the HU market (cars-data slugs that exist)
+  - omoda
+  - jaecoo
+  - xpeng
+  - zeekr
+  - leapmotor
+  - geely
+  - changan
+  - dongfeng

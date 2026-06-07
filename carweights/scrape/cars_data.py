@@ -174,7 +174,8 @@ def parse_variant(make: str, model: str, variant_url: str) -> VariantRecord:
     has_fuel = "l/100km" in low
     plug = any(k in trim_low for k in
                ("plug-in", "plug in", "phev", "4xe", "recharge", "e-hybrid", "ehybrid",
-                "e tense", "e-tense")) or re.search(r"(?<![a-z])iv(?![a-z])", trim_low) is not None
+                "e tense", "e-tense", "e performance", "e-performance")) \
+        or re.search(r"(?<![a-z])iv(?![a-z])", trim_low) is not None
     bev_signal = (has_ev or (rec.battery_kwh and rec.battery_kwh > 5)) and not has_fuel and not plug
 
     if bev_signal:
