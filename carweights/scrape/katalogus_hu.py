@@ -55,15 +55,15 @@ def _powertrain_from_fuel(fuel: str) -> Optional[str]:
 
 
 def _powertrain_from(slug: str, page_low: str) -> str:
+    """Fallback when the fuel field is missing. SLUG-ONLY — never scan the page for
+    'elektromos' (it matches 'elektromos ablak' = electric windows -> false BEV)."""
     s = slug.lower()
     if any(k in s for k in ("phev", "plug", "e_hybrid", "4xe", "recharge")):
         return "PHEV"
-    if "kwh" in s and not any(k in s for k in ("tsi", "tdi", "tce", "benzin", "dizel")):
-        # battery in slug and no combustion token -> likely BEV (but PHEV also has kwh; checked above)
-        if "elektromos" in page_low or "100% elektromos" in page_low or "kwh/100" in page_low:
-            return "BEV"
-        return "BEV"
-    if "elektromos" in page_low and "benzin" not in page_low and "dízel" not in page_low:
+    combustion = any(k in s for k in ("tsi", "tdi", "tce", "gdi", "hdi", "benzin", "dizel",
+                                      "dízel", "hybrid", "hibrid", "mhev"))
+    if not combustion and ("kwh" in s or "elektromos" in s
+                           or re.search(r"(?<![a-z])ev(?![a-z])", s)):
         return "BEV"
     return "ICE"
 
