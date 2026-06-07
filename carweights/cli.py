@@ -64,6 +64,29 @@ def cmd_hu(args):
     conn.close()
 
 
+def cmd_hu_pdf(args):
+    """Ingest a manufacturer HU brochure PDF to fill a katalogus gap."""
+    from .scrape import manufacturer_pdf as M
+    from .pipeline.hu import crosscheck, _ascii
+    from .db import repository as R
+    res = M.ingest(args.make, args.model, args.pdf_url)
+    print(f"extracted {len(res['weights'])} weight figures from {args.pdf_url}")
+    for ctx, kg, pg in res["rows"][:15]:
+        print(f"  p{pg}: {kg} kg  | {ctx}")
+    if not res["weights"]:
+        print("no 'Saját tömeg' rows found — check the PDF.")
+        return
+    conn = init_db()
+    mk, md = _ascii(args.make), _ascii(args.model)
+    for i, kg in enumerate(sorted(set(res["weights"]))):
+        url = f"{args.pdf_url}#{md}-{i}"
+        R.upsert_hu_catalog(conn, mk, f"{md}_pdf{i}", f"{md}_pdf{i}", None, None, kg, url)
+    conn.commit()
+    print("cross-check:", crosscheck(conn))
+    print("re-derive:", derive(conn))
+    conn.close()
+
+
 def cmd_derive(args):
     conn = init_db()
     print(derive(conn))
@@ -122,6 +145,10 @@ def main(argv=None):
     s.add_argument("--max-variants", type=int, default=None, help="cap HU variants per make")
     s.add_argument("--per-model", type=int, default=3, help="cap variants per model+powertrain")
     s.set_defaults(func=cmd_hu)
+
+    s = sub.add_parser("hu-pdf", help="ingest a manufacturer HU brochure PDF (gap-filler)")
+    s.add_argument("make"); s.add_argument("model"); s.add_argument("pdf_url")
+    s.set_defaults(func=cmd_hu_pdf)
 
     sub.add_parser("derive", help="recompute parking classification").set_defaults(func=cmd_derive)
     sub.add_parser("stats", help="coverage stats").set_defaults(func=cmd_stats)

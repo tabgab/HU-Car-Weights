@@ -1,22 +1,96 @@
-[2026-06-07 11:53:16] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
-[2026-06-07 11:53:18] INFO: The turnstile version discovered is "managed"
-[2026-06-07 11:53:30] INFO: Cloudflare page didn't disappear after 10s, continuing...
-[2026-06-07 11:53:30] INFO: Looks like Cloudflare captcha is still present, solving again
-[2026-06-07 11:53:30] INFO: The turnstile version discovered is "managed"
-[2026-06-07 11:53:32] INFO: Cloudflare captcha is solved
-[2026-06-07 11:53:34] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota> (referer: https://www.google.com/)
-[2026-06-07 11:53:34] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota> (referer: https://www.google.com/)
-• HU toyota (as toyota): 1890 relevant variants
-[2026-06-07 11:53:35] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
-[2026-06-07 11:53:37] INFO: The turnstile version discovered is "managed"
-[2026-06-07 11:53:49] INFO: Cloudflare page didn't disappear after 10s, continuing...
-[2026-06-07 11:53:49] INFO: Looks like Cloudflare captcha is still present, solving again
-[2026-06-07 11:53:49] INFO: The turnstile version discovered is "managed"
-[2026-06-07 11:53:50] INFO: Cloudflare captcha is solved
-[2026-06-07 11:53:51] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/yaris_cross_1.5_hybrid_active_e-cvt/146430> (referer: https://www.google.com/)
-[2026-06-07 11:53:51] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/yaris_cross_1.5_hybrid_active_e-cvt/146430> (referer: https://www.google.com/)
-[2026-06-07 11:53:51] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
-[2026-06-07 11:53:53] INFO: The turnstile version discovered is "managed"
-[2026-06-07 11:54:06] INFO: Cloudflare page didn't disappear after 10s, continuing...
-[2026-06-07 11:54:06] INFO: Looks like Cloudflare captcha is still present, solving again
-[2026-06-07 11:54:06] INFO: The turnstile version discovered is "managed"
+• HU toyota (as toyota): 24 relevant variants
+[2026-06-07 11:55:43] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:55:47] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:55:49] INFO: Cloudflare captcha is solved
+[2026-06-07 11:55:49] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/yaris_cross_1.5_hybrid_comfort_e-cvt/146431> (referer: https://www.google.com/)
+[2026-06-07 11:55:49] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/yaris_cross_1.5_hybrid_comfort_e-cvt/146431> (referer: https://www.google.com/)
+[2026-06-07 11:55:50] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:55:53] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:56:05] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:56:05] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:56:05] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:56:06] INFO: Cloudflare captcha is solved
+[2026-06-07 11:56:07] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/gr86_2.4_dynamic/140722> (referer: https://www.google.com/)
+[2026-06-07 11:56:07] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/gr86_2.4_dynamic/140722> (referer: https://www.google.com/)
+[2026-06-07 11:56:07] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:56:10] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:56:22] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:56:22] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:56:22] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:56:23] INFO: Cloudflare captcha is solved
+[2026-06-07 11:56:24] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/gr86_2.4_dynamic_automata/140723> (referer: https://www.google.com/)
+[2026-06-07 11:56:24] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/gr86_2.4_dynamic_automata/140723> (referer: https://www.google.com/)
+[2026-06-07 11:56:24] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:56:26] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:56:38] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:56:38] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:56:38] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:56:40] INFO: Cloudflare captcha is solved
+[2026-06-07 11:56:41] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/bz4x_comfort/140060> (referer: https://www.google.com/)
+[2026-06-07 11:56:41] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/bz4x_comfort/140060> (referer: https://www.google.com/)
+[2026-06-07 11:56:41] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:56:43] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:56:55] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:56:55] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:56:55] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:56:57] INFO: Cloudflare captcha is solved
+[2026-06-07 11:56:58] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/bz4x_prestige/140061> (referer: https://www.google.com/)
+[2026-06-07 11:56:58] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/bz4x_prestige/140061> (referer: https://www.google.com/)
+[2026-06-07 11:56:58] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:57:00] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:57:12] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:57:12] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:57:12] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:57:14] INFO: Cloudflare captcha is solved
+[2026-06-07 11:57:15] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/corolla_cross_2.0_hybrid_comfort_e-cvt/141824> (referer: https://www.google.com/)
+[2026-06-07 11:57:15] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/corolla_cross_2.0_hybrid_comfort_e-cvt/141824> (referer: https://www.google.com/)
+[2026-06-07 11:57:15] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:57:17] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:57:29] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:57:29] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:57:29] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:57:31] INFO: Cloudflare captcha is solved
+[2026-06-07 11:57:32] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/corolla_cross_2.0_hybrid_comfort_business_e-cvt/141825> (referer: https://www.google.com/)
+[2026-06-07 11:57:32] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/corolla_cross_2.0_hybrid_comfort_business_e-cvt/141825> (referer: https://www.google.com/)
+[2026-06-07 11:57:32] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:57:37] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:57:38] INFO: Cloudflare captcha is solved
+[2026-06-07 11:57:39] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/mirai_comfort_cvt/137259> (referer: https://www.google.com/)
+[2026-06-07 11:57:39] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/mirai_comfort_cvt/137259> (referer: https://www.google.com/)
+[2026-06-07 11:57:39] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:57:41] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:57:54] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:57:54] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:57:54] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:57:56] INFO: Cloudflare captcha is solved
+[2026-06-07 11:57:56] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/mirai_executive_cvt/137260> (referer: https://www.google.com/)
+[2026-06-07 11:57:56] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/mirai_executive_cvt/137260> (referer: https://www.google.com/)
+[2026-06-07 11:57:56] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:57:58] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:58:10] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:58:10] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:58:10] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:58:12] INFO: Cloudflare captcha is solved
+[2026-06-07 11:58:13] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/prius_1.8_phv_executive_e-cvt/108788> (referer: https://www.google.com/)
+[2026-06-07 11:58:13] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/prius_1.8_phv_executive_e-cvt/108788> (referer: https://www.google.com/)
+[2026-06-07 11:58:13] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:58:15] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:58:27] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:58:27] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:58:27] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:58:28] INFO: Cloudflare captcha is solved
+[2026-06-07 11:58:29] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/prius_1.8_phv_executive__tech_e-cvt/108789> (referer: https://www.google.com/)
+[2026-06-07 11:58:29] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/prius_1.8_phv_executive__tech_e-cvt/108789> (referer: https://www.google.com/)
+[2026-06-07 11:58:29] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:58:31] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:58:43] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:58:43] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:58:43] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:58:45] INFO: Cloudflare captcha is solved
+[2026-06-07 11:58:45] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/toyota/c-hr_1.2t_live/104571> (referer: https://www.google.com/)
+[2026-06-07 11:58:45] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/toyota/c-hr_1.2t_live/104571> (referer: https://www.google.com/)
+[2026-06-07 11:58:45] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 11:58:47] INFO: The turnstile version discovered is "managed"
+[2026-06-07 11:59:00] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 11:59:00] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 11:59:00] INFO: The turnstile version discovered is "managed"
