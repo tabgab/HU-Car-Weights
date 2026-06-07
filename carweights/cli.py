@@ -68,28 +68,24 @@ def cmd_hu(args):
 def cmd_omodajaecoo(args):
     """Scrape Omoda/Jaecoo HU importer catalog PDFs (gap-fill) -> first-class HU variants."""
     from .scrape import omodajaecoo as OJ
-    from .db import repository as R
-    from .normalize.names import canonical_make
+    from .pipeline.hu import ingest_manual
     conn = init_db()
-    total = 0
+    conn.execute("DELETE FROM variants WHERE source='omodajaecoo.hu'")  # refresh cleanly
+    conn.execute("DELETE FROM models WHERE model_id NOT IN (SELECT model_id FROM variants)")
+    conn.commit()
+    recs = []
     for brand in (["omoda", "jaecoo"] if not args.brand else [args.brand]):
-        recs = OJ.crawl(brand)
-        make = canonical_make(brand)
-        mk = R.upsert_make(conn, make)
-        for rec in recs:
-            md = R.upsert_model(conn, mk, rec["model"])
-            fp = f"omodajaecoo|{rec['model']}|{rec['powertrain']}|{rec['weight']}"
-            vid = R.upsert_variant(conn, md, fp, rec["powertrain"], None, None, None, None,
-                                   None, source="omodajaecoo.hu")
-            R.upsert_weight(conn, vid, rec["weight"])
-            conn.execute("UPDATE weights SET primary_source='omodajaecoo.hu', n_sources=1, "
-                         "hu_weight_kg=?, hu_weight_url=? WHERE variant_id=?",
-                         (rec["weight"], rec["source_url"], vid))
-            R.add_provenance(conn, "weight", vid, "curb_weight_kg", "omodajaecoo.hu",
-                             value_text=f"{rec['weight']} kg", source_url=rec["source_url"], confidence=0.97)
-            total += 1
-        conn.commit()
-    print(f"ingested {total} Omoda/Jaecoo variants")
+        recs += OJ.crawl(brand)
+    # dedup (make,model,powertrain,weight); prefer the record that has a trim label
+    dedup: dict = {}
+    for r in recs:
+        key = (r["make"], r["model"], r["powertrain"], r["weight"])
+        if key not in dedup:
+            dedup[key] = r
+        elif r.get("trim") and not dedup[key].get("trim"):
+            dedup[key]["trim"] = r["trim"]
+    n = ingest_manual(conn, list(dedup.values()))
+    print(f"ingested {n} Omoda/Jaecoo variants")
     print("re-derive:", derive(conn))
     conn.close()
 

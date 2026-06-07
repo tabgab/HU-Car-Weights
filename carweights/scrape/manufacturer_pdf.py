@@ -29,6 +29,19 @@ class PdfWeight:
     context: str
     weight_kg: int
     page: int
+    header: str = ""        # page title, e.g. 'OMODA 5 SHS-H MŰSZAKI ADATOK'
+    powertrain: str = ""    # guessed from the header: BEV/PHEV/ICE
+
+
+def powertrain_from_text(text: str) -> str:
+    low = text.lower()
+    if "shs-p" in low or "plug-in" in low or "plug in" in low or "konnektor" in low or "phev" in low:
+        return "PHEV"
+    if "shs-h" in low or "hibrid" in low or "hybrid" in low or re.search(r"\bhev\b", low):
+        return "ICE"  # full/super hybrid -> combustion bucket
+    if re.search(r"\bev\b", low) or "elektromos" in low or "electric" in low or "elektro" in low:
+        return "BEV"
+    return "ICE"
 
 
 def fetch_pdf(url: str) -> bytes:
@@ -49,15 +62,18 @@ def extract_weights(pdf_bytes: bytes) -> List[PdfWeight]:
     with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
         for pno, page in enumerate(pdf.pages, 1):
             text = page.extract_text() or ""
-            for line in text.splitlines():
+            lines = [l for l in text.splitlines() if l.strip()]
+            # page header: the 'MŰSZAKI ADATOK' title line, else the first non-empty line
+            header = next((l.strip() for l in lines if "adatok" in l.lower()), lines[0].strip() if lines else "")
+            pt = powertrain_from_text(header) if header else powertrain_from_text(text[:400])
+            for line in lines:
                 if _LABEL.search(line):
-                    # join space-separated thousands ('2 535' -> '2535') before matching
-                    line = re.sub(r"(\d)\s+(\d{3})(?!\d)", r"\1\2", line)
+                    line = re.sub(r"(\d)\s+(\d{3})(?!\d)", r"\1\2", line)  # join '2 535' thousands
                     for m in _NUM.finditer(line):
                         digits = re.sub(r"\D", "", m.group(1))
                         if digits and 600 <= int(digits) <= 4000:
-                            out.append(PdfWeight(context=line.strip()[:90],
-                                                 weight_kg=int(digits), page=pno))
+                            out.append(PdfWeight(context=line.strip()[:90], weight_kg=int(digits),
+                                                 page=pno, header=header[:80], powertrain=pt))
     return out
 
 
@@ -69,4 +85,6 @@ def ingest(make: str, model: str, pdf_url: str) -> dict:
         "source_name": SOURCE_TMPL.format(make=make),
         "weights": [w.weight_kg for w in weights],
         "rows": [(w.context, w.weight_kg, w.page) for w in weights[:40]],
+        "items": [{"weight": w.weight_kg, "page": w.page, "header": w.header,
+                   "powertrain": w.powertrain} for w in weights],
     }
