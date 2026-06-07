@@ -31,10 +31,11 @@ legend{color:var(--muted);font-size:12px;padding:0 4px}
   border-radius:7px;cursor:pointer;font-size:13px}
 .btn-ghost{background:transparent;color:var(--text)}
 .btn:hover{filter:brightness(1.08)}
-.results{padding:14px 18px;min-width:0;overflow-x:auto}
+.results{padding:14px 18px;min-width:0;height:calc(100vh - 57px);overflow:auto}
 table{width:100%;border-collapse:collapse}
 th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);font-size:13px}
-th{color:var(--muted);font-weight:600;position:sticky;top:57px;background:var(--bg)}
+th{color:var(--muted);font-weight:600;position:sticky;top:0;z-index:4;background:var(--bg);
+   box-shadow:0 1px 0 var(--line)}
 tbody tr{cursor:pointer}
 tbody tr:hover{background:var(--panel2)}
 .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700;color:#fff}
