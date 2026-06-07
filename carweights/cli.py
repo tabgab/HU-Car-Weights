@@ -9,7 +9,7 @@ import yaml
 
 from .db.connection import init_db
 from .pipeline.derive import derive
-from .pipeline.run import run_seed, scrape_model
+from .pipeline.run import run_market, run_seed, scrape_model
 from .settings import CONFIG_DIR, EXPORT_DIR
 
 
@@ -17,6 +17,21 @@ def _load_seeds() -> list[dict]:
     path = CONFIG_DIR / "seed_models.yaml"
     data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     return data.get("models", [])
+
+
+def _load_makes() -> list[str]:
+    path = CONFIG_DIR / "makes_hu.yaml"
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    return data.get("makes", [])
+
+
+def cmd_market(args):
+    conn = init_db()
+    total = run_market(conn, _load_makes(), max_models=args.max_models,
+                       max_variants=args.max_variants, min_year=args.min_year)
+    print("\n=== market scrape complete ===")
+    print(total)
+    conn.close()
 
 
 def cmd_seed(args):
@@ -82,6 +97,12 @@ def main(argv=None):
     s.add_argument("--max-generations", type=int, default=1)
     s.add_argument("--max-variants", type=int, default=8)
     s.set_defaults(func=cmd_scrape)
+
+    s = sub.add_parser("market", help="discover+scrape all current models of the top-20 makes")
+    s.add_argument("--max-models", type=int, default=None, help="cap models per make")
+    s.add_argument("--max-variants", type=int, default=3)
+    s.add_argument("--min-year", type=int, default=2018)
+    s.set_defaults(func=cmd_market)
 
     sub.add_parser("derive", help="recompute parking classification").set_defaults(func=cmd_derive)
     sub.add_parser("stats", help="coverage stats").set_defaults(func=cmd_stats)
