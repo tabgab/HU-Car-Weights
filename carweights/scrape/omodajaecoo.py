@@ -32,7 +32,7 @@ def _model_trim(brand: str, header: str, filename: str):
     """From a page header like 'OMODA 5 SHS-H MŰSZAKI ADATOK' -> ('Omoda 5', 'SHS-H')."""
     num = _model_num(brand, header) or _model_num(brand, filename.replace("o5", "omoda 5")
                                                   .replace("o7", "omoda 7").replace("o9", "omoda 9"))
-    model = f"{brand.title()} {num}" if num else brand.title()
+    model = num if num else brand.title()  # match katalogus model naming ('5'/'7'/'9')
     trim = ""
     if header:
         h = re.sub(r"m[űu]szaki adatok.*$", "", header, flags=re.I).strip()
