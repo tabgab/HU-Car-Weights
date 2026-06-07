@@ -58,9 +58,11 @@ def _predicates(f: Dict[str, Any], skip: str | None = None) -> Tuple[List[str], 
     where: List[str] = []
     params: List[Any] = []
 
-    # dataset switch: HU-only -> katalogus first-class variants; else cars-data set
-    where.append("source = ?")
-    params.append("katalogus.hu" if f.get("hu_only") else "cars-data")
+    # dataset switch: HU-only -> Hungarian first-class variants; else cars-data set
+    if f.get("hu_only"):
+        where.append("source IN ('katalogus.hu','omodajaecoo.hu')")
+    else:
+        where.append("source = 'cars-data'")
 
     if f.get("q"):
         like = f"%{f['q'].lower()}%"
