@@ -1,0 +1,28 @@
+INFO:     Started server process [1441039]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8099 (Press CTRL+C to quit)
+INFO:     127.0.0.1:56382 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56394 - "GET /api/cars?page_size=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46102 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46102 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46110 - "GET /app.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46110 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46102 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:46110 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:48710 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48710 - "GET /styles.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48714 - "GET /app.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48714 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48710 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42896 - "GET / HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:42896 - "GET /app.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:42910 - "GET /styles.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:42910 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:42896 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45210 - "GET /styles.css?v=2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45212 - "GET /?v=2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45212 - "GET /styles.css?v=2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45226 - "GET /app.js?v=2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45226 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:45212 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
