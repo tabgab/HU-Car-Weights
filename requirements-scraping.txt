@@ -1,0 +1,4 @@
+# Optional heavy scraping deps — install ONLY when a source needs JS rendering or
+# anti-bot bypass that requests+bs4 can't handle:
+#   .venv/bin/pip install -r requirements-scraping.txt && .venv/bin/scrapling install
+scrapling[all]

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hungarian Car Weights — Budapest Parking Fee</title>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="title">
+    <h1>🅿️ Hungarian Car Weights</h1>
+    <span class="subtitle">Budapest weight-based parking fee (from 2027): BEV &gt; 2000 kg, ICE/PHEV &gt; 1800 kg → double</span>
+  </div>
+  <div class="topbar-right">
+    <span id="count" class="count">—</span>
+    <button id="export" class="btn">⬇ Export CSV</button>
+  </div>
+</header>
+
+<main>
+  <aside class="sidebar">
+    <label class="field">
+      <span>Search</span>
+      <input id="q" type="search" placeholder="make / model / trim">
+    </label>
+
+    <fieldset><legend>Powertrain</legend>
+      <div id="f-powertrain" class="checks"></div>
+    </fieldset>
+
+    <fieldset><legend>Fee status</legend>
+      <div id="f-fee" class="checks"></div>
+    </fieldset>
+
+    <fieldset><legend>Sub-type</legend>
+      <div id="f-subtype" class="checks"></div>
+    </fieldset>
+
+    <fieldset><legend>Drivetrain</legend>
+      <div id="f-drivetrain" class="checks"></div>
+    </fieldset>
+
+    <fieldset><legend>Curb weight (kg)</legend>
+      <div class="range">
+        <input id="wmin" type="number" placeholder="min" min="0" step="10">
+        <span>–</span>
+        <input id="wmax" type="number" placeholder="max" min="0" step="10">
+      </div>
+      <label class="inline"><input id="incl-unknown" type="checkbox" checked> include unknown weight</label>
+    </fieldset>
+
+    <label class="field">
+      <span>Sort</span>
+      <select id="sort">
+        <option value="make">Make / model</option>
+        <option value="weight_desc">Weight ↓</option>
+        <option value="weight_asc">Weight ↑</option>
+        <option value="year_desc">Year ↓</option>
+      </select>
+    </label>
+    <button id="reset" class="btn btn-ghost">Reset filters</button>
+  </aside>
+
+  <section class="results">
+    <table id="grid">
+      <thead><tr>
+        <th>Make</th><th>Model</th><th>Trim</th><th>Drive</th><th>Power</th>
+        <th>Year</th><th>Curb weight</th><th>Fee</th><th>Source</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div id="empty" class="empty" hidden>No cars match these filters.</div>
+    <div class="pager">
+      <button id="prev" class="btn btn-ghost">← Prev</button>
+      <span id="pageinfo"></span>
+      <button id="next" class="btn btn-ghost">Next →</button>
+    </div>
+  </section>
+</main>
+
+<div id="detail" class="drawer" hidden>
+  <div class="drawer-inner">
+    <button id="detail-close" class="btn btn-ghost close">✕</button>
+    <div id="detail-body"></div>
+  </div>
+</div>
+
+<script src="/app.js" type="module"></script>
+</body>
+</html>
