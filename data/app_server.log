@@ -1,20 +1,15 @@
-INFO:     Started server process [1839778]
+INFO:     Started server process [1846062]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8099 (Press CTRL+C to quit)
-INFO:     127.0.0.1:54872 - "GET /api/cars?page_size=1 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54886 - "GET /api/cars?hu_only=true&page_size=1 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32828 - "GET /?v=7 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32828 - "GET /styles.css?v=7 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32832 - "GET /app.js?v=7 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32832 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32828 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32828 - "GET /api/cars?hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32832 - "GET /api/facets?hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32832 - "GET /api/cars?q=omoda&hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32828 - "GET /api/facets?q=omoda&hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:42520 - "GET /?v=7 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:42520 - "GET /styles.css?v=7 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:42528 - "GET /app.js?v=7 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:42528 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:42520 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54086 - "GET /api/cars?page_size=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54098 - "GET /api/cars?hu_only=true&page_size=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54108 - "GET /?v=8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54122 - "GET /app.js?v=8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54108 - "GET /styles.css?v=8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54108 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54122 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54122 - "GET /api/cars?hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54108 - "GET /api/facets?hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54108 - "GET /api/cars?q=zeekr&hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54122 - "GET /api/facets?q=zeekr&hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
