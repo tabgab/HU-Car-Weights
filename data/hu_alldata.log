@@ -7,3 +7,17 @@
 [2026-06-07 13:43:11] INFO: Cloudflare captcha is solved
 [2026-06-07 13:43:12] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
 [2026-06-07 13:43:12] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+  = HU toyota: {'variants': 1890, 'with_weight': 1890, 'errors': 0, 'brand_used': 'toyota'}
+• HU suzuki (as suzuki): 53 relevant variants
+  = HU suzuki: {'variants': 53, 'with_weight': 53, 'errors': 0, 'brand_used': 'suzuki'}
+• HU skoda (as skoda): 493 relevant variants
+  = HU skoda: {'variants': 493, 'with_weight': 493, 'errors': 0, 'brand_used': 'skoda'}
+• HU volkswagen (as volkswagen): 618 relevant variants
+  = HU volkswagen: {'variants': 618, 'with_weight': 614, 'errors': 0, 'brand_used': 'volkswagen'}
+• HU dacia (as dacia): 741 relevant variants
+  = HU dacia: {'variants': 741, 'with_weight': 741, 'errors': 0, 'brand_used': 'dacia'}
+• HU kia (as kia): 346 relevant variants
+  = HU kia: {'variants': 346, 'with_weight': 346, 'errors': 0, 'brand_used': 'kia'}
+• HU hyundai (as hyundai): 348 relevant variants
+  = HU hyundai: {'variants': 348, 'with_weight': 338, 'errors': 0, 'brand_used': 'hyundai'}
+• HU ford (as ford): 547 relevant variants

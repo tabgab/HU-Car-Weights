@@ -1,4 +1,23 @@
-# Manufacturer/importer Hungarian sites that publish 'Műszaki adatok' spec PDFs.
-# brand (cars-data slug) -> page listing the spec PDFs. Add brands as their pages are found.
+# Manufacturer/importer Hungarian sites. The dealer crawler auto-discovers each brand's
+# 'Műszaki adatok' per-model spec PDFs (homepage + download/catalog/price-list subpages)
+# and extracts 'Saját tömeg'. Brands that publish per-model spec sheets get ingested;
+# others (JS-only configurators, bot-blocked, or brochure-only) fall back to katalogus.
 brands:
   kia: https://www.kia.com/hu/vasarlas/arlistak-katalogusok-adatok/
+  toyota: https://www.toyota.hu/
+  suzuki: https://www.suzuki.hu/
+  skoda: https://www.skoda.hu/
+  volkswagen: https://www.volkswagen.hu/
+  dacia: https://www.dacia.hu/
+  hyundai: https://hyundai.hu/
+  ford: https://www.ford.hu/
+  nissan: https://www.nissan.hu/
+  renault: https://www.renault.hu/
+  peugeot: https://www.peugeot.hu/
+  opel: https://www.opel.hu/
+  audi: https://www.audi.hu/
+  cupra: https://www.cupraofficial.hu/
+  volvo: https://www.volvocars.com/hu/
+  mg: https://mgmotor.hu/
+  byd: https://www.byd.com/hu
+  geely: https://www.geely.hu/
