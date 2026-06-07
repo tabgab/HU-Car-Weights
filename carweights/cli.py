@@ -65,6 +65,35 @@ def cmd_hu(args):
     conn.close()
 
 
+def cmd_omodajaecoo(args):
+    """Scrape Omoda/Jaecoo HU importer catalog PDFs (gap-fill) -> first-class HU variants."""
+    from .scrape import omodajaecoo as OJ
+    from .db import repository as R
+    from .normalize.names import canonical_make
+    conn = init_db()
+    total = 0
+    for brand in (["omoda", "jaecoo"] if not args.brand else [args.brand]):
+        recs = OJ.crawl(brand)
+        make = canonical_make(brand)
+        mk = R.upsert_make(conn, make)
+        for rec in recs:
+            md = R.upsert_model(conn, mk, rec["model"])
+            fp = f"omodajaecoo|{rec['model']}|{rec['powertrain']}|{rec['weight']}"
+            vid = R.upsert_variant(conn, md, fp, rec["powertrain"], None, None, None, None,
+                                   None, source="omodajaecoo.hu")
+            R.upsert_weight(conn, vid, rec["weight"])
+            conn.execute("UPDATE weights SET primary_source='omodajaecoo.hu', n_sources=1, "
+                         "hu_weight_kg=?, hu_weight_url=? WHERE variant_id=?",
+                         (rec["weight"], rec["source_url"], vid))
+            R.add_provenance(conn, "weight", vid, "curb_weight_kg", "omodajaecoo.hu",
+                             value_text=f"{rec['weight']} kg", source_url=rec["source_url"], confidence=0.97)
+            total += 1
+        conn.commit()
+    print(f"ingested {total} Omoda/Jaecoo variants")
+    print("re-derive:", derive(conn))
+    conn.close()
+
+
 def cmd_firstclass(args):
     from .pipeline.hu import ingest_firstclass, crosscheck
     conn = init_db()
@@ -199,6 +228,10 @@ def main(argv=None):
     s = sub.add_parser("hu-pdf", help="ingest a manufacturer HU brochure PDF (gap-filler)")
     s.add_argument("make"); s.add_argument("model"); s.add_argument("pdf_url")
     s.set_defaults(func=cmd_hu_pdf)
+
+    s = sub.add_parser("omodajaecoo", help="scrape Omoda/Jaecoo HU importer catalog PDFs")
+    s.add_argument("--brand", default=None, choices=["omoda", "jaecoo"])
+    s.set_defaults(func=cmd_omodajaecoo)
 
     sub.add_parser("firstclass", help="promote katalogus catalog rows to first-class variants").set_defaults(func=cmd_firstclass)
     sub.add_parser("derive", help="recompute parking classification").set_defaults(func=cmd_derive)
