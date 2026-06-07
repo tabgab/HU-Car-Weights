@@ -68,35 +68,53 @@ def _powertrain_from(slug: str, page_low: str) -> str:
     return "ICE"
 
 
+def _spec_table(soup) -> dict:
+    """Build {label: value} from the variant page's 2-cell spec rows (reliable)."""
+    spec = {}
+    for tr in soup.find_all("tr"):
+        tds = tr.find_all(["td", "th"])
+        if len(tds) == 2:
+            k = re.sub(r"\s+", " ", tds[0].get_text(" ", strip=True)).strip().lower()
+            v = re.sub(r"\s+", " ", tds[1].get_text(" ", strip=True)).strip()
+            if k and v and k not in spec:
+                spec[k] = v
+    return spec
+
+
 def parse_variant(brand_slug: str, url: str) -> HuRecord:
     html = hu_fast.get(url, SOURCE)
-    low = html.lower()
     soup = BeautifulSoup(html, "lxml")
-    raw = None
-    weight = None
-    # 'Saját tömeg' label and value may sit in sibling cells -> read the whole row
-    for el in soup.find_all(string=re.compile(r"saját tömeg", re.I)):
-        row = el.find_parent(["tr", "li", "div"])
-        txt = re.sub(r"\s+", " ", row.get_text(" ", strip=True)) if row else str(el)
-        m = re.search(r"saját tömeg\D{0,6}([\d ]{3,8})\s*kg", txt, re.I)
-        if m:
-            digits = re.sub(r"\D", "", m.group(1))
-            if digits and 400 <= int(digits) <= 5000:
-                weight = int(digits)
-                raw = m.group(0)
-                break
-    slug = url[len(BASE) + 1:].rsplit("/", 1)[0].split("/", 1)[-1]  # the <slug> part
+    spec = _spec_table(soup)
+    slug = url[len(BASE) + 1:].rsplit("/", 1)[0].split("/", 1)[-1]
     model_slug = re.split(r"[_]", slug)[0]
-    drivetrain = "4WD" if re.search(r"(?<![a-z])awd(?![a-z])|4wd|x_?drive|quattro|4motion|allrad", slug.lower()) else None
 
-    # fuel type from the 'Üzemanyag' spec row -> authoritative powertrain
-    fuel = ""
-    for el in soup.find_all(string=re.compile(r"üzemanyag", re.I)):
-        row = el.find_parent(["tr", "li", "div"])
-        if row:
-            fuel = re.sub(r"\s+", " ", row.get_text(" ", strip=True)).lower()
-            break
-    pt = _powertrain_from_fuel(fuel) or _powertrain_from(slug, low)
+    # curb weight from the 'Saját tömeg' spec cell
+    raw = spec.get("saját tömeg") or spec.get("sajat tomeg")
+    weight = None
+    if raw:
+        d = re.sub(r"\D", "", raw.split("(")[0])
+        if d and 400 <= int(d) <= 5000:
+            weight = int(d)
+
+    # powertrain from the authoritative 'Üzemanyag' spec cell (not the filter widget)
+    fuel = spec.get("üzemanyag", "").lower()
+    pt = _powertrain_from_fuel(fuel) or _powertrain_from(slug, "")
+
+    # drivetrain from 'Hajtás'
+    hajtas = spec.get("hajtás", "").lower()
+    if "összkerék" in hajtas or "4" in hajtas or "awd" in hajtas or "négykerék" in hajtas:
+        drivetrain = "4WD"
+    elif hajtas:
+        drivetrain = "2WD"
+    else:
+        drivetrain = "4WD" if re.search(r"(?<![a-z])awd|4wd|quattro|4motion|xdrive|allrad", slug.lower()) else None
+
+    # power from 'Maximális teljesítmény' e.g. '150 kW, 204 LE'
+    power_kw = None
+    pw = spec.get("maximális teljesítmény", "")
+    mkw = re.search(r"(\d{2,4})\s*kw", pw.lower())
+    if mkw:
+        power_kw = int(mkw.group(1))
 
     # clean display name + model year from the H1 / title
     h1 = soup.find("h1")
@@ -105,11 +123,6 @@ def parse_variant(brand_slug: str, url: str) -> HuRecord:
     ym = re.search(r"\((\d{4})", display)
     model_year = int(ym.group(1)) if ym else None
     display = re.sub(r"\s*\(.*\)\s*$", "", display).strip()
-    pm = re.search(r"(\d{2,4})\s*(?:le|hp|kw)\b", low)
-    power_kw = None
-    if pm:
-        v = int(pm.group(1))
-        power_kw = round(v * 0.7355) if "le" in pm.group(0) or "hp" in pm.group(0) else v
 
     return HuRecord(make=brand_slug, model_slug=model_slug, variant_slug=slug, url=url,
                     weight_kg=weight, powertrain_hint=pt, drivetrain=drivetrain, raw_weight=raw,
