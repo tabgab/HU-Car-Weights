@@ -15,7 +15,7 @@ import requests
 from ..settings import USER_AGENT
 
 DEFAULT_DELAYS = {
-    "cars-data.com": 5.0, "www.cars-data.com": 5.0,
+    "cars-data.com": 1.5, "www.cars-data.com": 1.5,
     "carfolio.com": 10.0, "www.carfolio.com": 10.0,
     "ultimatespecs.com": 30.0, "www.ultimatespecs.com": 30.0,
 }

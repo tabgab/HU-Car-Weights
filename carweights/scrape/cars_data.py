@@ -48,6 +48,30 @@ def model_url(make_slug: str, model_slug: str) -> str:
     return f"{BASE}/en/{make_slug}/{model_slug}"
 
 
+# brand-page links that are body-type/fuel/category filters, not real models
+_NOT_A_MODEL = {
+    "diesel", "electric", "petrol", "hybrid", "lpg", "cng", "hydrogen", "ethanol",
+    "phev", "bev", "mhev", "hev", "ev", "mild-hybrid", "plug-in-hybrid",
+    "hatchback", "sedan", "saloon", "estate", "station-wagon", "wagon", "suv", "mpv",
+    "coupe", "convertible", "cabriolet", "cabrio", "van", "pickup", "pick-up", "minivan",
+    "crossover", "roadster", "limousine", "compact", "city-car", "sports", "off-road",
+    "4x4", "manual", "automatic", "new", "used", "commercial", "funcruiser", "targa",
+}
+
+
+def discover_models(make_slug: str) -> List[str]:
+    """All model slugs listed on a make's brand page (category pseudo-links removed)."""
+    html = http.get(f"{BASE}/en/{make_slug}", SOURCE)
+    soup = BeautifulSoup(html, "lxml")
+    pat = re.compile(rf"^/en/{re.escape(make_slug)}/([^/]+)$")
+    out = []
+    for a in soup.find_all("a", href=True):
+        m = pat.match(a["href"])
+        if m and m.group(1) not in _NOT_A_MODEL:
+            out.append(m.group(1))
+    return list(dict.fromkeys(out))
+
+
 def discover_generations(make_slug: str, model_slug: str) -> List[str]:
     """Generation page URLs (e.g. /golf/2024-hatchback) from the static model page."""
     html = http.get(model_url(make_slug, model_slug), SOURCE)

@@ -1,0 +1,23 @@
+# Top-20 makes in the Hungarian market (cars-data.com slugs). The `market` command
+# auto-discovers each make's current models (newest generation, year >= min_year).
+makes:
+  - toyota
+  - suzuki
+  - skoda
+  - volkswagen
+  - dacia
+  - kia
+  - hyundai
+  - ford
+  - bmw
+  - mercedes-benz
+  - nissan
+  - renault
+  - peugeot
+  - opel
+  - audi
+  - cupra
+  - volvo
+  - tesla
+  - byd
+  - mg

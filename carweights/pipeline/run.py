@@ -35,6 +35,13 @@ def _store(conn: sqlite3.Connection, rec: cars_data.VariantRecord) -> None:
                          confidence=rec.confidence)
 
 
+def _gen_year(gen_url: str) -> Optional[int]:
+    import re
+    # year appears in the generation segment, e.g. .../golf/2024-hatchback
+    m = re.search(r"(19|20)\d{2}", gen_url.rsplit("/", 1)[-1])
+    return int(m.group(0)) if m else None
+
+
 def scrape_model(
     conn: sqlite3.Connection,
     make_slug: str,
@@ -42,6 +49,7 @@ def scrape_model(
     *,
     max_generations: int = 1,
     max_variants: Optional[int] = 8,
+    min_year: Optional[int] = None,
     log=print,
 ) -> dict:
     stats = {"variants": 0, "with_weight": 0, "errors": 0}
@@ -54,6 +62,14 @@ def scrape_model(
     if not gens:
         log(f"  ! {make_slug}/{model_slug}: no generations found")
         return stats
+
+    # keep only current generations (year unknown is kept; newest first)
+    if min_year is not None:
+        cur = [g for g in gens if (_gen_year(g) is None or _gen_year(g) >= min_year)]
+        if not cur:
+            stats["skipped_old"] = True
+            return stats
+        gens = cur
 
     for gen in gens[:max_generations]:
         try:
@@ -78,6 +94,56 @@ def scrape_model(
                 stats["errors"] += 1
     conn.commit()
     return stats
+
+
+def scrape_make(
+    conn: sqlite3.Connection,
+    make_slug: str,
+    *,
+    max_models: Optional[int] = None,
+    max_variants: int = 3,
+    min_year: int = 2023,
+    log=print,
+) -> dict:
+    """Discover and scrape all current models of a make."""
+    agg = {"models": 0, "variants": 0, "with_weight": 0, "errors": 0, "skipped": 0}
+    try:
+        models = cars_data.discover_models(make_slug)
+    except Exception as e:
+        log(f"! {make_slug}: model discovery failed: {e}")
+        agg["errors"] += 1
+        return agg
+    if max_models:
+        models = models[:max_models]
+    log(f"• {make_slug}: {len(models)} candidate models")
+    for ms in models:
+        st = scrape_model(conn, make_slug, ms, max_generations=1,
+                          max_variants=max_variants, min_year=min_year, log=log)
+        if st.get("skipped_old"):
+            agg["skipped"] += 1
+            continue
+        if st["variants"]:
+            agg["models"] += 1
+        for k in ("variants", "with_weight", "errors"):
+            agg[k] += st[k]
+        conn.commit()
+    return agg
+
+
+def run_market(conn: sqlite3.Connection, makes: list[str], *, max_models=None,
+               max_variants=3, min_year=2018, log=print) -> dict:
+    total = {"makes": 0, "models": 0, "variants": 0, "with_weight": 0, "errors": 0, "skipped": 0}
+    for mk in makes:
+        st = scrape_make(conn, mk, max_models=max_models, max_variants=max_variants,
+                         min_year=min_year, log=log)
+        total["makes"] += 1
+        for k in ("models", "variants", "with_weight", "errors", "skipped"):
+            total[k] += st[k]
+        log(f"  = {mk}: {st['models']} current models, {st['variants']} variants, "
+            f"{st['skipped']} skipped(old), {st['errors']} errors")
+    log("• deriving parking classification…")
+    total["classification"] = derive(conn)
+    return total
 
 
 def run_seed(conn: sqlite3.Connection, seeds: list[dict], *, max_variants=8, log=print) -> dict:
