@@ -64,6 +64,35 @@ def cmd_hu(args):
     conn.close()
 
 
+def cmd_dealer(args):
+    """Crawl manufacturer/dealer HU spec PDFs (authoritative) -> hu_catalog + cross-check."""
+    import yaml
+    from .scrape import manufacturer_crawl as MC
+    from .pipeline.hu import crosscheck, _ascii
+    from .db import repository as R
+    if args.brand and args.page:
+        brands = {args.brand: args.page}
+    else:
+        conf = yaml.safe_load((CONFIG_DIR / "dealer_sources.yaml").read_text(encoding="utf-8")) or {}
+        brands = conf.get("brands", {})
+        if args.brand:
+            brands = {args.brand: brands[args.brand]}
+    conn = init_db()
+    total = 0
+    for brand, page in brands.items():
+        for res in MC.crawl_brand(brand, page):
+            mk, md = _ascii(brand), _ascii(res["model"])
+            for i, kg in enumerate(sorted(set(res["weights"]))):
+                R.upsert_hu_catalog(conn, mk, md, f"{md}_dealer{i}", None, None, kg,
+                                    res["source_url"] + f"#{i}")
+                total += 1
+        conn.commit()
+    print(f"ingested {total} manufacturer weight rows")
+    print("cross-check:", crosscheck(conn))
+    print("re-derive:", derive(conn))
+    conn.close()
+
+
 def cmd_hu_pdf(args):
     """Ingest a manufacturer HU brochure PDF to fill a katalogus gap."""
     from .scrape import manufacturer_pdf as M
@@ -147,6 +176,11 @@ def main(argv=None):
     s.add_argument("--full", action="store_true",
                    help="scrape ALL catalog variants (no model filter / per-model cap)")
     s.set_defaults(func=cmd_hu)
+
+    s = sub.add_parser("dealer", help="crawl manufacturer/dealer HU spec PDFs (config/dealer_sources.yaml)")
+    s.add_argument("--brand", default=None, help="single brand slug")
+    s.add_argument("--page", default=None, help="override spec-listing page URL")
+    s.set_defaults(func=cmd_dealer)
 
     s = sub.add_parser("hu-pdf", help="ingest a manufacturer HU brochure PDF (gap-filler)")
     s.add_argument("make"); s.add_argument("model"); s.add_argument("pdf_url")

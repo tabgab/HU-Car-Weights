@@ -1,0 +1,4 @@
+# Manufacturer/importer Hungarian sites that publish 'Műszaki adatok' spec PDFs.
+# brand (cars-data slug) -> page listing the spec PDFs. Add brands as their pages are found.
+brands:
+  kia: https://www.kia.com/hu/vasarlas/arlistak-katalogusok-adatok/
