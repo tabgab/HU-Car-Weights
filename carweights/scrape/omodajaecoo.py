@@ -23,21 +23,28 @@ def _pdf_urls(page_url: str) -> list[str]:
     return list(dict.fromkeys(re.findall(r'href="([^"]+\.pdf[^"]*)"', html, re.I)))
 
 
-def _model_and_powertrain(brand: str, filename: str):
-    fn = filename.lower()
-    m = re.search(r"(?:omoda|jaecoo|^o|^j)[ _]?([5789])", fn)
-    model = f"{brand.title()} {m.group(1)}" if m else brand.title()
-    if "ev" in fn:
-        pt = "BEV"
-    elif "shs-p" in fn or "phev" in fn or "plug" in fn:
-        pt = "PHEV"
-    else:
-        pt = "ICE"
-    return model, pt
+def _model_num(brand: str, text: str) -> str | None:
+    m = re.search(rf"{brand}\s*[ _]?([5789])", text, re.I)
+    return m.group(1) if m else None
+
+
+def _model_trim(brand: str, header: str, filename: str):
+    """From a page header like 'OMODA 5 SHS-H MŰSZAKI ADATOK' -> ('Omoda 5', 'SHS-H')."""
+    num = _model_num(brand, header) or _model_num(brand, filename.replace("o5", "omoda 5")
+                                                  .replace("o7", "omoda 7").replace("o9", "omoda 9"))
+    model = f"{brand.title()} {num}" if num else brand.title()
+    trim = ""
+    if header:
+        h = re.sub(r"m[űu]szaki adatok.*$", "", header, flags=re.I).strip()
+        h = re.sub(rf"^{brand}\s*{num or ''}\s*", "", h, flags=re.I).strip()
+        trim = h[:40] or None
+    return model, (trim or None)
 
 
 def crawl(brand: str, *, log=print) -> list[dict]:
-    """Return [{model, powertrain, weight, source_url}] for a brand."""
+    """Return ingest_manual records for a brand (per-variant model/trim/powertrain)."""
+    from ..normalize.names import canonical_make
+    make = canonical_make(brand)
     out = []
     for url in _pdf_urls(PAGES[brand]):
         fn = url.rsplit("/", 1)[-1].replace("%20", " ")
@@ -46,10 +53,20 @@ def crawl(brand: str, *, log=print) -> list[dict]:
         except Exception as e:
             log(f"  ! {fn}: {e}")
             continue
-        if not res["weights"]:
-            continue
-        model, pt = _model_and_powertrain(brand, fn)
-        for kg in sorted(set(res["weights"])):
-            out.append({"model": model, "powertrain": pt, "weight": kg, "source_url": url})
-        log(f"  · {fn[:40]:40s} {model} {pt} -> {sorted(set(res['weights']))}")
+        fnl = fn.lower()
+        for it in res.get("items", []):
+            model, trim = _model_trim(brand, it["header"], fn)
+            if trim in ("-", "–", ""):
+                trim = None
+            pt = it["powertrain"]
+            if ("ev" in re.split(r"[ _.-]", fnl)) and "shs" not in fnl:
+                pt = "BEV"          # 'Omoda 5 EV' brochure
+            elif "shs-p" in fnl or "phev" in fnl:
+                pt = "PHEV"
+            out.append({"make": make, "model": model, "trim": trim,
+                        "powertrain": pt, "weight": it["weight"],
+                        "source_url": url, "source_name": "omodajaecoo.hu"})
+        if res.get("items"):
+            here = [(r["model"], r["trim"], r["powertrain"], r["weight"]) for r in out if r["source_url"] == url]
+            log(f"  · {fn[:38]:38s} -> {here[:4]}")
     return out
