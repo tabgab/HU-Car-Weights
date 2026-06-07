@@ -165,6 +165,19 @@ def add_provenance(
     )
 
 
+def upsert_hu_catalog(conn, make_slug, model_slug, variant_slug, powertrain_type,
+                      drivetrain, weight_kg, source_url):
+    conn.execute(
+        """INSERT INTO hu_catalog(make_slug, model_slug, variant_slug, powertrain_type,
+                                  drivetrain, weight_kg, source_url)
+           VALUES(?,?,?,?,?,?,?)
+           ON CONFLICT(source_url) DO UPDATE SET
+             weight_kg=excluded.weight_kg, powertrain_type=excluded.powertrain_type,
+             drivetrain=excluded.drivetrain, scraped_at=datetime('now')""",
+        (make_slug, model_slug, variant_slug, powertrain_type, drivetrain, weight_kg, source_url),
+    )
+
+
 def log_fetch(conn, url, source_name, http_status, cache_path, etag=None, content_hash=None):
     conn.execute(
         """INSERT INTO fetch_log(url, source_name, http_status, cache_path, etag, content_hash)

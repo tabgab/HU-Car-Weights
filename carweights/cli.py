@@ -51,6 +51,18 @@ def cmd_scrape(args):
     conn.close()
 
 
+def cmd_hu(args):
+    from .pipeline.hu import scrape_make_hu, crosscheck
+    conn = init_db()
+    makes = args.makes.split(",") if args.makes else _load_makes()
+    for mk in makes:
+        st = scrape_make_hu(conn, mk.strip(), max_variants=args.max_variants)
+        print(f"  = HU {mk}: {st}")
+    print("cross-check:", crosscheck(conn))
+    print("re-derive:", derive(conn))
+    conn.close()
+
+
 def cmd_derive(args):
     conn = init_db()
     print(derive(conn))
@@ -103,6 +115,11 @@ def main(argv=None):
     s.add_argument("--max-variants", type=int, default=3)
     s.add_argument("--min-year", type=int, default=2018)
     s.set_defaults(func=cmd_market)
+
+    s = sub.add_parser("hu", help="scrape Hungarian catalog (katalogus.hasznaltauto.hu) + cross-check")
+    s.add_argument("--makes", default=None, help="comma-separated brand slugs (default: all)")
+    s.add_argument("--max-variants", type=int, default=None, help="cap HU variants per make")
+    s.set_defaults(func=cmd_hu)
 
     sub.add_parser("derive", help="recompute parking classification").set_defaults(func=cmd_derive)
     sub.add_parser("stats", help="coverage stats").set_defaults(func=cmd_stats)

@@ -166,6 +166,7 @@ def list_sql_for_export(f: Dict[str, Any]) -> Tuple[str, List[Any]]:
     where_sql = ("WHERE " + " AND ".join(where)) if where else ""
     sort = _SORTS.get(f.get("sort", "make"), _SORTS["make"])
     cols = ("make, model, trim, powertrain_type, powertrain_subtype, drivetrain, power_kw, "
-            "battery_kwh, model_year, weight, weight_min, weight_max, weight_unit, threshold, "
-            "fee_status, weight_source, weight_source_url, weight_confidence")
+            "battery_kwh, model_year, weight, weight_min, weight_max, weight_unit, "
+            "hu_weight_kg, n_sources, sources_agree, threshold, fee_status, "
+            "weight_source, weight_source_url")
     return (f"{_BASE_CTE} SELECT {cols} FROM classified {where_sql} ORDER BY {sort}", params)
