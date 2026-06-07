@@ -131,7 +131,7 @@ def crosscheck(conn: sqlite3.Connection, log=print) -> dict:
         mk = _ascii(r["make"])
         model = _ascii(r["model_slug"])
         cands = [w for (vslug, pt, w) in hu.get(mk, [])
-                 if pt == r["powertrain_type"] and vslug.startswith(model)]
+                 if (pt == r["powertrain_type"] or pt is None) and vslug.startswith(model)]
         cd = r["curb_weight_kg"]
         if not cands:
             conn.execute("UPDATE weights SET n_sources=1, sources_agree=NULL, hu_weight_kg=NULL,"
