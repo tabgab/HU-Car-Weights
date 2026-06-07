@@ -8,3 +8,8 @@ data/exports/
 *.db-shm
 .cache/
 .DS_Store
+
+# runtime
+*.log
+data/*.log
+data/*.pid
