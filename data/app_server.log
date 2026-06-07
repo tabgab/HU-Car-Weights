@@ -1,12 +1,8 @@
-INFO:     Started server process [1635041]
+INFO:     Started server process [1637606]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8099 (Press CTRL+C to quit)
-INFO:     127.0.0.1:37510 - "GET / HTTP/1.1" 200 OK
-INFO:     127.0.0.1:37526 - "GET /api/cars?q=s-cross&page_size=3 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:37538 - "GET /api/cars.csv?q=elroq HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43220 - "GET /?v=4 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43220 - "GET /styles.css?v=4 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43232 - "GET /app.js?v=4 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43232 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:43220 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57884 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57898 - "GET /api/cars?page_size=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57910 - "GET /api/cars?hu_only=true&page_size=3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57912 - "GET /api/facets?hu_only=true HTTP/1.1" 200 OK

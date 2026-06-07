@@ -1,7 +1,7 @@
 const state = {
   q: "", powertrain: new Set(), fee: new Set(), subtype: new Set(),
   drivetrain: new Set(), weight_min: null, weight_max: null,
-  include_unknown_weight: true, sort: "make", page: 1, page_size: 50,
+  include_unknown_weight: true, hu_only: false, sort: "make", page: 1, page_size: 50,
 };
 
 const $ = (s) => document.querySelector(s);
@@ -17,6 +17,7 @@ function buildParams(forExport = false) {
   if (state.weight_min != null) p.set("weight_min", state.weight_min);
   if (state.weight_max != null) p.set("weight_max", state.weight_max);
   if (!state.include_unknown_weight) p.set("include_unknown_weight", "false");
+  if (state.hu_only) p.set("hu_only", "true");
   p.set("sort", state.sort);
   if (!forExport) { p.set("page", state.page); p.set("page_size", state.page_size); }
   return p;
@@ -148,6 +149,7 @@ $("#q").oninput = (e) => { clearTimeout(qTimer); qTimer = setTimeout(() => { sta
 $("#wmin").onchange = (e) => { state.weight_min = e.target.value ? +e.target.value : null; state.page = 1; refresh(); };
 $("#wmax").onchange = (e) => { state.weight_max = e.target.value ? +e.target.value : null; state.page = 1; refresh(); };
 $("#incl-unknown").onchange = (e) => { state.include_unknown_weight = e.target.checked; state.page = 1; refresh(); };
+$("#hu-only").onchange = (e) => { state.hu_only = e.target.checked; state.page = 1; refresh(); };
 $("#sort").onchange = (e) => { state.sort = e.target.value; refresh(); };
 $("#prev").onclick = () => { if (state.page > 1) { state.page--; refresh(); } };
 $("#next").onclick = () => { state.page++; refresh(); };
@@ -157,9 +159,9 @@ $("#detail").onclick = (e) => { if (e.target.id === "detail") $("#detail").hidde
 $("#reset").onclick = () => {
   Object.assign(state, { q: "", powertrain: new Set(), fee: new Set(), subtype: new Set(),
     drivetrain: new Set(), weight_min: null, weight_max: null, include_unknown_weight: true,
-    sort: "make", page: 1 });
+    hu_only: false, sort: "make", page: 1 });
   $("#q").value = ""; $("#wmin").value = ""; $("#wmax").value = "";
-  $("#incl-unknown").checked = true; $("#sort").value = "make";
+  $("#incl-unknown").checked = true; $("#hu-only").checked = false; $("#sort").value = "make";
   refresh();
 };
 
