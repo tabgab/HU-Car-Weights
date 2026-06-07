@@ -57,8 +57,8 @@ def cmd_hu(args):
     makes = args.makes.split(",") if args.makes else _load_makes()
     for mk in makes:
         st = scrape_make_hu(conn, mk.strip(), max_variants=args.max_variants,
-                            per_model=args.per_model)
-        print(f"  = HU {mk}: {st}")
+                            per_model=args.per_model, model_filter=not args.full)
+        print(f"  = HU {mk}: {st}", flush=True)
     print("cross-check:", crosscheck(conn))
     print("re-derive:", derive(conn))
     conn.close()
@@ -144,6 +144,8 @@ def main(argv=None):
     s.add_argument("--makes", default=None, help="comma-separated brand slugs (default: all)")
     s.add_argument("--max-variants", type=int, default=None, help="cap HU variants per make")
     s.add_argument("--per-model", type=int, default=3, help="cap variants per model+powertrain")
+    s.add_argument("--full", action="store_true",
+                   help="scrape ALL catalog variants (no model filter / per-model cap)")
     s.set_defaults(func=cmd_hu)
 
     s = sub.add_parser("hu-pdf", help="ingest a manufacturer HU brochure PDF (gap-filler)")

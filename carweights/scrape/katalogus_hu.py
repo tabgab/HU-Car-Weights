@@ -11,7 +11,7 @@ from typing import List, Optional
 
 from bs4 import BeautifulSoup
 
-from ..fetch import dynamic
+from ..fetch import hu_fast
 
 SOURCE = "katalogus.hu"
 BASE = "https://katalogus.hasznaltauto.hu"
@@ -31,7 +31,7 @@ class HuRecord:
 
 
 def discover_variant_urls(brand_slug: str) -> List[str]:
-    html = dynamic.render_stealth(f"{BASE}/{brand_slug}", SOURCE)
+    html = hu_fast.get(f"{BASE}/{brand_slug}", SOURCE)
     soup = BeautifulSoup(html, "lxml")
     pat = re.compile(rf"{re.escape(BASE)}/{re.escape(brand_slug)}/[^/]+/\d+$")
     urls = [a["href"] for a in soup.find_all("a", href=True) if pat.match(a["href"])]
@@ -53,7 +53,7 @@ def _powertrain_from(slug: str, page_low: str) -> str:
 
 
 def parse_variant(brand_slug: str, url: str) -> HuRecord:
-    html = dynamic.render_stealth(url, SOURCE)
+    html = hu_fast.get(url, SOURCE)
     low = html.lower()
     soup = BeautifulSoup(html, "lxml")
     raw = None

@@ -92,18 +92,27 @@ def scrape_make_hu(conn: sqlite3.Connection, brand_slug: str, *, max_variants=No
     if max_variants:
         urls = urls[:max_variants]
     log(f"• HU {brand_slug} (as {st['brand_used']}): {len(urls)} relevant variants")
-    for u in urls:
-        try:
-            rec = K.parse_variant(st["brand_used"], u)
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    brand_used = st["brand_used"]
+
+    def fetch(u):
+        return K.parse_variant(brand_used, u)
+
+    with ThreadPoolExecutor(max_workers=4) as ex:
+        futs = {ex.submit(fetch, u): u for u in urls}
+        for fut in as_completed(futs):
+            try:
+                rec = fut.result()
+            except Exception as e:
+                log(f"  ! {futs[fut]}: {e}")
+                st["errors"] += 1
+                continue
             R.upsert_hu_catalog(conn, _ascii(brand_slug), _ascii(rec.variant_slug),
                                 rec.variant_slug, rec.powertrain_hint, rec.drivetrain,
                                 rec.weight_kg, rec.url)
             st["variants"] += 1
             if rec.weight_kg:
                 st["with_weight"] += 1
-        except Exception as e:
-            log(f"  ! {u}: {e}")
-            st["errors"] += 1
     conn.commit()
     return st
 
