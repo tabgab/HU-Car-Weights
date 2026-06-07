@@ -20,6 +20,14 @@ makes:
   mercedes-benz: Mercedes-Benz
   byd: BYD
   mg: MG
+  omoda: Omoda
+  jaecoo: Jaecoo
+  xpeng: XPeng
+  zeekr: Zeekr
+  leapmotor: Leapmotor
+  geely: Geely
+  changan: Changan
+  dongfeng: Dongfeng
 models:
   golf: Golf
   spring: Spring
