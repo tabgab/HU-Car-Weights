@@ -27,6 +27,7 @@ makes:
   leapmotor: Leapmotor
   geely: Geely
   changan: Changan
+  chery: Chery
   dongfeng: Dongfeng
 models:
   golf: Golf

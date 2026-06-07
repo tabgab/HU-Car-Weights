@@ -90,6 +90,21 @@ def cmd_omodajaecoo(args):
     conn.close()
 
 
+def cmd_chery(args):
+    """Scrape Chery HU importer pricelist PDFs (cherymotors.hu) -> first-class HU variants."""
+    from .scrape import chery as CH
+    from .pipeline.hu import ingest_manual
+    conn = init_db()
+    conn.execute("DELETE FROM variants WHERE source='cherymotors.hu'")
+    conn.execute("DELETE FROM models WHERE model_id NOT IN (SELECT model_id FROM variants)")
+    conn.commit()
+    recs = CH.crawl()
+    n = ingest_manual(conn, recs)
+    print(f"ingested {n} Chery variants")
+    print("re-derive:", derive(conn))
+    conn.close()
+
+
 def cmd_extra_hu(args):
     """Ingest extra HU sources: downloaded brochure PDFs + Changan S05 web specs."""
     from .scrape import extra_hu as EX
@@ -242,6 +257,8 @@ def main(argv=None):
     s = sub.add_parser("omodajaecoo", help="scrape Omoda/Jaecoo HU importer catalog PDFs")
     s.add_argument("--brand", default=None, choices=["omoda", "jaecoo"])
     s.set_defaults(func=cmd_omodajaecoo)
+
+    sub.add_parser("chery", help="scrape Chery HU importer pricelist PDFs (cherymotors.hu)").set_defaults(func=cmd_chery)
 
     sub.add_parser("extra-hu", help="ingest downloaded brochure PDFs + Changan S05 web specs").set_defaults(func=cmd_extra_hu)
     sub.add_parser("firstclass", help="promote katalogus catalog rows to first-class variants").set_defaults(func=cmd_firstclass)
