@@ -85,12 +85,13 @@ def upsert_variant(
     battery_kwh: Optional[float] = None,
     model_year: Optional[int] = None,
     on_sale_hu: int = 1,
+    source: str = "cars-data",
 ) -> int:
     conn.execute(
         """INSERT INTO variants(model_id, trim_name, powertrain_type, powertrain_subtype,
                                 drivetrain, power_kw, battery_kwh, model_year, on_sale_hu,
-                                fingerprint)
-           VALUES(?,?,?,?,?,?,?,?,?,?)
+                                source, fingerprint)
+           VALUES(?,?,?,?,?,?,?,?,?,?,?)
            ON CONFLICT(model_id, fingerprint) DO UPDATE SET
              trim_name=COALESCE(excluded.trim_name, variants.trim_name),
              powertrain_type=excluded.powertrain_type,
@@ -100,9 +101,10 @@ def upsert_variant(
              battery_kwh=COALESCE(excluded.battery_kwh, variants.battery_kwh),
              model_year=COALESCE(excluded.model_year, variants.model_year),
              on_sale_hu=excluded.on_sale_hu,
+             source=excluded.source,
              updated_at=datetime('now')""",
         (model_id, trim_name, powertrain_type, powertrain_subtype, drivetrain,
-         power_kw, battery_kwh, model_year, on_sale_hu, fingerprint),
+         power_kw, battery_kwh, model_year, on_sale_hu, source, fingerprint),
     )
     return conn.execute(
         "SELECT variant_id FROM variants WHERE model_id=? AND fingerprint=?",
@@ -166,15 +168,20 @@ def add_provenance(
 
 
 def upsert_hu_catalog(conn, make_slug, model_slug, variant_slug, powertrain_type,
-                      drivetrain, weight_kg, source_url):
+                      drivetrain, weight_kg, source_url, display_name=None,
+                      power_kw=None, model_year=None):
     conn.execute(
         """INSERT INTO hu_catalog(make_slug, model_slug, variant_slug, powertrain_type,
-                                  drivetrain, weight_kg, source_url)
-           VALUES(?,?,?,?,?,?,?)
+                                  drivetrain, weight_kg, display_name, power_kw, model_year,
+                                  source_url)
+           VALUES(?,?,?,?,?,?,?,?,?,?)
            ON CONFLICT(source_url) DO UPDATE SET
              weight_kg=excluded.weight_kg, powertrain_type=excluded.powertrain_type,
-             drivetrain=excluded.drivetrain, scraped_at=datetime('now')""",
-        (make_slug, model_slug, variant_slug, powertrain_type, drivetrain, weight_kg, source_url),
+             drivetrain=excluded.drivetrain, display_name=excluded.display_name,
+             power_kw=excluded.power_kw, model_year=excluded.model_year,
+             scraped_at=datetime('now')""",
+        (make_slug, model_slug, variant_slug, powertrain_type, drivetrain, weight_kg,
+         display_name, power_kw, model_year, source_url),
     )
 
 

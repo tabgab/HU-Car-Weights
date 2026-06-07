@@ -109,12 +109,59 @@ def scrape_make_hu(conn: sqlite3.Connection, brand_slug: str, *, max_variants=No
                 continue
             R.upsert_hu_catalog(conn, _ascii(brand_slug), _ascii(rec.variant_slug),
                                 rec.variant_slug, rec.powertrain_hint, rec.drivetrain,
-                                rec.weight_kg, rec.url)
+                                rec.weight_kg, rec.url, display_name=rec.display_name,
+                                power_kw=rec.power_kw, model_year=rec.model_year)
             st["variants"] += 1
             if rec.weight_kg:
                 st["with_weight"] += 1
     conn.commit()
     return st
+
+
+def _split_model_trim(display_name: str, make: str, model_slug: str):
+    """From 'CUPRA Formentor 2.0 TSI VZ DSG' -> ('Formentor', '2.0 TSI VZ DSG')."""
+    from ..normalize.names import canonical_model
+    dn = (display_name or "").strip()
+    if not dn:
+        return (model_slug.title(), None)
+    toks = dn.split()
+    mwords = make.split()
+    i = 0
+    while i < len(mwords) and i < len(toks) and \
+            toks[i].lower().strip("-.") == mwords[i].lower().strip("-."):
+        i += 1
+    rest = toks[i:] or toks
+    model = canonical_model(rest[0]) if rest else model_slug.title()
+    trim = " ".join(rest[1:]) or None
+    return (model, trim)
+
+
+def ingest_firstclass(conn: sqlite3.Connection, log=print) -> dict:
+    """Promote katalogus catalog rows to first-class variants (source='katalogus.hu')
+    so the app can list the full Hungarian market, not just cross-matched cars."""
+    from ..normalize.names import canonical_make
+    rows = conn.execute("SELECT * FROM hu_catalog WHERE weight_kg IS NOT NULL").fetchall()
+    n = 0
+    for r in rows:
+        make = canonical_make(r["make_slug"])
+        model, trim = _split_model_trim(r["display_name"], make, r["model_slug"])
+        mk = R.upsert_make(conn, make)
+        md = R.upsert_model(conn, mk, model)
+        fp = "katalogus|" + r["variant_slug"]
+        vid = R.upsert_variant(conn, md, fp, r["powertrain_type"] or "ICE", None, trim,
+                               r["drivetrain"], r["power_kw"], None, r["model_year"],
+                               source="katalogus.hu")
+        R.upsert_weight(conn, vid, r["weight_kg"])
+        conn.execute("UPDATE weights SET primary_source='katalogus.hu', n_sources=1, "
+                     "hu_weight_kg=?, hu_weight_url=? WHERE variant_id=?",
+                     (r["weight_kg"], r["source_url"], vid))
+        R.add_provenance(conn, "weight", vid, "curb_weight_kg", "katalogus.hu",
+                         value_text=f"{r['weight_kg']} kg", source_url=r["source_url"], confidence=0.95)
+        n += 1
+        if n % 500 == 0:
+            conn.commit()
+    conn.commit()
+    return {"ingested_firstclass": n}
 
 
 def crosscheck(conn: sqlite3.Connection, log=print) -> dict:
@@ -132,7 +179,8 @@ def crosscheck(conn: sqlite3.Connection, log=print) -> dict:
            FROM variants v
            JOIN models md ON md.model_id=v.model_id
            JOIN makes mk ON mk.make_id=md.make_id
-           LEFT JOIN weights w ON w.variant_id=v.variant_id"""
+           LEFT JOIN weights w ON w.variant_id=v.variant_id
+           WHERE v.source='cars-data'"""  # only annotate the international set
     ).fetchall()
 
     stats = {"matched": 0, "confirmed": 0, "conflict": 0}

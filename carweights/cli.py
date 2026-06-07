@@ -52,13 +52,23 @@ def cmd_scrape(args):
 
 
 def cmd_hu(args):
-    from .pipeline.hu import scrape_make_hu, crosscheck
+    from .pipeline.hu import scrape_make_hu, crosscheck, ingest_firstclass
     conn = init_db()
     makes = args.makes.split(",") if args.makes else _load_makes()
     for mk in makes:
         st = scrape_make_hu(conn, mk.strip(), max_variants=args.max_variants,
                             per_model=args.per_model, model_filter=not args.full)
         print(f"  = HU {mk}: {st}", flush=True)
+    print("first-class ingest:", ingest_firstclass(conn))
+    print("cross-check:", crosscheck(conn))
+    print("re-derive:", derive(conn))
+    conn.close()
+
+
+def cmd_firstclass(args):
+    from .pipeline.hu import ingest_firstclass, crosscheck
+    conn = init_db()
+    print("first-class ingest:", ingest_firstclass(conn))
     print("cross-check:", crosscheck(conn))
     print("re-derive:", derive(conn))
     conn.close()
@@ -190,6 +200,7 @@ def main(argv=None):
     s.add_argument("make"); s.add_argument("model"); s.add_argument("pdf_url")
     s.set_defaults(func=cmd_hu_pdf)
 
+    sub.add_parser("firstclass", help="promote katalogus catalog rows to first-class variants").set_defaults(func=cmd_firstclass)
     sub.add_parser("derive", help="recompute parking classification").set_defaults(func=cmd_derive)
     sub.add_parser("stats", help="coverage stats").set_defaults(func=cmd_stats)
     sub.add_parser("export", help="export v_parking_summary to CSV").set_defaults(func=cmd_export)
