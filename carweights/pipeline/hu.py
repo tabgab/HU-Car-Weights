@@ -118,21 +118,40 @@ def scrape_make_hu(conn: sqlite3.Connection, brand_slug: str, *, max_variants=No
     return st
 
 
-def _split_model_trim(display_name: str, make: str, model_slug: str):
-    """From 'CUPRA Formentor 2.0 TSI VZ DSG' -> ('Formentor', '2.0 TSI VZ DSG')."""
-    from ..normalize.names import canonical_model
-    dn = (display_name or "").strip()
-    if not dn:
-        return (model_slug.title(), None)
-    toks = dn.split()
+def _strip_make(display_name: str, make: str) -> str:
+    toks = display_name.split()
     mwords = make.split()
     i = 0
     while i < len(mwords) and i < len(toks) and \
             toks[i].lower().strip("-.") == mwords[i].lower().strip("-."):
         i += 1
-    rest = toks[i:] or toks
-    model = canonical_model(rest[0]) if rest else model_slug.title()
-    trim = " ".join(rest[1:]) or None
+    return " ".join(toks[i:]) or display_name
+
+
+def _split_model_trim(display_name: str, make: str, model_slug: str, known_models=None):
+    """From 'CUPRA Formentor 2.0 TSI VZ DSG' -> ('Formentor', '2.0 TSI VZ DSG').
+
+    Prefers the longest known model name (from the cars-data clean names) that prefixes
+    the post-make string, so multi-word models ('Yaris Cross', 'ID. Buzz') stay intact.
+    """
+    from ..normalize.names import canonical_model
+    dn = (display_name or "").strip()
+    if not dn:
+        return (model_slug.title(), None)
+    rest = _strip_make(dn, make).strip()
+    low = rest.lower()
+    if known_models:
+        for name in sorted(known_models, key=len, reverse=True):
+            n = name.lower()
+            if low == n or low.startswith(n + " "):
+                return (name, rest[len(name):].strip() or None)
+    toks = rest.split()
+    if not toks:
+        return (model_slug.title(), None)
+    # fallback: model = first token; if it's a 1-char class letter, take two tokens
+    take = 2 if len(toks) > 1 and len(toks[0].strip(".-")) == 1 else 1
+    model = canonical_model(" ".join(toks[:take]))
+    trim = " ".join(toks[take:]) or None
     return (model, trim)
 
 
@@ -140,11 +159,23 @@ def ingest_firstclass(conn: sqlite3.Connection, log=print) -> dict:
     """Promote katalogus catalog rows to first-class variants (source='katalogus.hu')
     so the app can list the full Hungarian market, not just cross-matched cars."""
     from ..normalize.names import canonical_make
+    # idempotent: drop prior first-class rows + their orphan models
+    conn.execute("DELETE FROM variants WHERE source='katalogus.hu'")
+    conn.execute("DELETE FROM models WHERE model_id NOT IN (SELECT model_id FROM variants)")
+    conn.commit()
+    # clean model-name lookup per make, from the cars-data dataset
+    known: dict[str, set] = {}
+    for r in conn.execute("""SELECT mk.canonical_name AS mk, md.canonical_name AS md
+                             FROM models md JOIN makes mk ON mk.make_id=md.make_id
+                             JOIN variants v ON v.model_id=md.model_id
+                             WHERE v.source='cars-data' GROUP BY mk.canonical_name, md.canonical_name"""):
+        known.setdefault(r["mk"], set()).add(r["md"])
+
     rows = conn.execute("SELECT * FROM hu_catalog WHERE weight_kg IS NOT NULL").fetchall()
     n = 0
     for r in rows:
         make = canonical_make(r["make_slug"])
-        model, trim = _split_model_trim(r["display_name"], make, r["model_slug"])
+        model, trim = _split_model_trim(r["display_name"], make, r["model_slug"], known.get(make))
         mk = R.upsert_make(conn, make)
         md = R.upsert_model(conn, mk, model)
         fp = "katalogus|" + r["variant_slug"]
