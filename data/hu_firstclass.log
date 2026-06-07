@@ -1,0 +1,157 @@
+• HU toyota (as toyota): 1905 relevant variants
+[2026-06-07 14:31:04] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 14:31:05] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:31:17] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 14:31:17] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 14:31:17] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:31:19] INFO: Cloudflare captcha is solved
+[2026-06-07 14:31:21] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:31:21] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+  = HU toyota: {'variants': 1905, 'with_weight': 1905, 'errors': 0, 'brand_used': 'toyota'}
+• HU suzuki (as suzuki): 63 relevant variants
+  = HU suzuki: {'variants': 63, 'with_weight': 53, 'errors': 0, 'brand_used': 'suzuki'}
+• HU skoda (as skoda): 983 relevant variants
+  = HU skoda: {'variants': 983, 'with_weight': 983, 'errors': 0, 'brand_used': 'skoda'}
+• HU volkswagen (as volkswagen): 788 relevant variants
+  = HU volkswagen: {'variants': 788, 'with_weight': 784, 'errors': 0, 'brand_used': 'volkswagen'}
+• HU dacia (as dacia): 1059 relevant variants
+  = HU dacia: {'variants': 1059, 'with_weight': 1056, 'errors': 0, 'brand_used': 'dacia'}
+• HU kia (as kia): 346 relevant variants
+  = HU kia: {'variants': 346, 'with_weight': 346, 'errors': 0, 'brand_used': 'kia'}
+• HU hyundai (as hyundai): 378 relevant variants
+  = HU hyundai: {'variants': 378, 'with_weight': 368, 'errors': 0, 'brand_used': 'hyundai'}
+• HU ford (as ford): 753 relevant variants
+  = HU ford: {'variants': 753, 'with_weight': 745, 'errors': 0, 'brand_used': 'ford'}
+• HU bmw (as bmw): 30 relevant variants
+  = HU bmw: {'variants': 30, 'with_weight': 17, 'errors': 0, 'brand_used': 'bmw'}
+• HU mercedes-benz (as mercedes-benz): 117 relevant variants
+  = HU mercedes-benz: {'variants': 117, 'with_weight': 117, 'errors': 0, 'brand_used': 'mercedes-benz'}
+• HU mercedes-amg (as mercedes-amg): 31 relevant variants
+  = HU mercedes-amg: {'variants': 31, 'with_weight': 31, 'errors': 0, 'brand_used': 'mercedes-amg'}
+• HU nissan (as nissan): 420 relevant variants
+  = HU nissan: {'variants': 420, 'with_weight': 420, 'errors': 0, 'brand_used': 'nissan'}
+• HU renault (as renault): 349 relevant variants
+  = HU renault: {'variants': 349, 'with_weight': 349, 'errors': 0, 'brand_used': 'renault'}
+• HU peugeot (as peugeot): 1374 relevant variants
+  = HU peugeot: {'variants': 1374, 'with_weight': 1374, 'errors': 0, 'brand_used': 'peugeot'}
+• HU opel (as opel): 1837 relevant variants
+  = HU opel: {'variants': 1837, 'with_weight': 1837, 'errors': 0, 'brand_used': 'opel'}
+• HU audi (as audi): 605 relevant variants
+  = HU audi: {'variants': 605, 'with_weight': 605, 'errors': 0, 'brand_used': 'audi'}
+• HU cupra (as cupra): 95 relevant variants
+  = HU cupra: {'variants': 95, 'with_weight': 95, 'errors': 0, 'brand_used': 'cupra'}
+• HU volvo (as volvo): 1276 relevant variants
+  = HU volvo: {'variants': 1276, 'with_weight': 1276, 'errors': 0, 'brand_used': 'volvo'}
+• HU tesla (as tesla): 92 relevant variants
+  = HU tesla: {'variants': 92, 'with_weight': 91, 'errors': 0, 'brand_used': 'tesla'}
+• HU byd (as byd): 36 relevant variants
+  = HU byd: {'variants': 36, 'with_weight': 36, 'errors': 0, 'brand_used': 'byd'}
+• HU mg (as mg): 48 relevant variants
+  = HU mg: {'variants': 48, 'with_weight': 47, 'errors': 0, 'brand_used': 'mg'}
+• HU omoda (as omoda): 11 relevant variants
+  = HU omoda: {'variants': 11, 'with_weight': 11, 'errors': 0, 'brand_used': 'omoda'}
+• HU jaecoo (as jaecoo): 6 relevant variants
+  = HU jaecoo: {'variants': 6, 'with_weight': 6, 'errors': 0, 'brand_used': 'jaecoo'}
+• HU xpeng (as xpeng): 18 relevant variants
+  = HU xpeng: {'variants': 18, 'with_weight': 18, 'errors': 0, 'brand_used': 'xpeng'}
+[2026-06-07 14:42:26] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 14:42:28] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:42:39] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 14:42:39] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 14:42:39] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:42:40] INFO: Cloudflare captcha is solved
+[2026-06-07 14:42:41] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:42:41] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:42:41] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 14:42:43] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:42:55] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 14:42:55] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 14:42:55] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:42:56] INFO: Cloudflare captcha is solved
+[2026-06-07 14:42:56] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:42:56] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:42:57] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 14:42:58] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:43:10] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 14:43:10] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 14:43:10] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:43:12] INFO: Cloudflare captcha is solved
+[2026-06-07 14:43:12] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:43:12] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+! zeekr: no HU catalog brand page
+  = HU zeekr: {'variants': 0, 'with_weight': 0, 'errors': 0, 'brand_used': None}
+• HU leapmotor (as leapmotor): 12 relevant variants
+  = HU leapmotor: {'variants': 12, 'with_weight': 12, 'errors': 0, 'brand_used': 'leapmotor'}
+• HU geely (as geely): 20 relevant variants
+[2026-06-07 14:43:13] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 14:43:15] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:43:26] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 14:43:26] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 14:43:26] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:43:27] INFO: Cloudflare captcha is solved
+[2026-06-07 14:43:28] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:43:28] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+  = HU geely: {'variants': 20, 'with_weight': 7, 'errors': 0, 'brand_used': 'geely'}
+[2026-06-07 14:43:30] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 14:43:32] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:43:44] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 14:43:44] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 14:43:44] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:43:45] INFO: Cloudflare captcha is solved
+[2026-06-07 14:43:46] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:43:46] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:43:46] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 14:43:48] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:44:00] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 14:44:00] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 14:44:00] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:44:01] INFO: Cloudflare captcha is solved
+[2026-06-07 14:44:02] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:44:02] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:44:02] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 14:44:04] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:44:15] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 14:44:15] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 14:44:15] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:44:16] INFO: Cloudflare captcha is solved
+[2026-06-07 14:44:17] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:44:17] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+! changan: no HU catalog brand page
+  = HU changan: {'variants': 0, 'with_weight': 0, 'errors': 0, 'brand_used': None}
+[2026-06-07 14:44:17] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 14:44:19] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:44:31] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 14:44:31] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 14:44:31] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:44:32] INFO: Cloudflare captcha is solved
+[2026-06-07 14:44:33] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:44:33] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:44:33] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 14:44:35] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:44:47] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 14:44:47] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 14:44:47] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:44:48] INFO: Cloudflare captcha is solved
+[2026-06-07 14:44:48] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:44:48] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:44:49] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 14:44:51] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:45:02] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 14:45:02] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 14:45:02] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:45:03] INFO: Cloudflare captcha is solved
+[2026-06-07 14:45:04] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:45:04] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:45:04] WARNING: This logic is deprecated now, and have no effect; It will be removed with v0.3. Use `StealthyFetcher.configure()` instead before fetching
+[2026-06-07 14:45:06] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:45:18] INFO: Cloudflare page didn't disappear after 10s, continuing...
+[2026-06-07 14:45:18] INFO: Looks like Cloudflare captcha is still present, solving again
+[2026-06-07 14:45:18] INFO: The turnstile version discovered is "managed"
+[2026-06-07 14:45:20] INFO: Cloudflare captcha is solved
+[2026-06-07 14:45:20] INFO: Fetched (307) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+[2026-06-07 14:45:20] INFO: Fetched (200) <GET https://katalogus.hasznaltauto.hu/> (referer: https://www.google.com/)
+! dongfeng: no HU catalog brand page
+  = HU dongfeng: {'variants': 0, 'with_weight': 0, 'errors': 0, 'brand_used': None}
+first-class ingest: {'ingested_firstclass': 12589}
+cross-check: {'matched': 362, 'confirmed': 291, 'conflict': 62}
+re-derive: {'under': 7275, 'over': 1818, 'straddling': 0, 'unknown': 18, 'total': 9111}
