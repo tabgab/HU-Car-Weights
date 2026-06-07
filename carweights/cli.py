@@ -94,6 +94,20 @@ def cmd_omodajaecoo(args):
     conn.close()
 
 
+def cmd_extra_hu(args):
+    """Ingest extra HU sources: downloaded brochure PDFs + Changan S05 web specs."""
+    from .scrape import extra_hu as EX
+    from .pipeline.hu import ingest_manual
+    from .settings import DATA_DIR
+    conn = init_db()
+    recs = EX.manual_pdf_records(str(DATA_DIR / "manual_pdfs"))
+    recs += EX.changan_s05_records()
+    n = ingest_manual(conn, recs)
+    print(f"ingested {n} extra-HU variants")
+    print("re-derive:", derive(conn))
+    conn.close()
+
+
 def cmd_firstclass(args):
     from .pipeline.hu import ingest_firstclass, crosscheck
     conn = init_db()
@@ -233,6 +247,7 @@ def main(argv=None):
     s.add_argument("--brand", default=None, choices=["omoda", "jaecoo"])
     s.set_defaults(func=cmd_omodajaecoo)
 
+    sub.add_parser("extra-hu", help="ingest downloaded brochure PDFs + Changan S05 web specs").set_defaults(func=cmd_extra_hu)
     sub.add_parser("firstclass", help="promote katalogus catalog rows to first-class variants").set_defaults(func=cmd_firstclass)
     sub.add_parser("derive", help="recompute parking classification").set_defaults(func=cmd_derive)
     sub.add_parser("stats", help="coverage stats").set_defaults(func=cmd_stats)
