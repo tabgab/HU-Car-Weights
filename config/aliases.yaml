@@ -1,0 +1,35 @@
+# Canonical display names. Keys are cars-data slugs (lowercased); values are display names.
+makes:
+  volkswagen: Volkswagen
+  dacia: Dacia
+  toyota: Toyota
+  skoda: Škoda
+  tesla: Tesla
+  hyundai: Hyundai
+  bmw: BMW
+  kia: Kia
+  ford: Ford
+  suzuki: Suzuki
+  volvo: Volvo
+  nissan: Nissan
+  renault: Renault
+  peugeot: Peugeot
+  opel: Opel
+  audi: Audi
+  cupra: Cupra
+  mercedes-benz: Mercedes-Benz
+  byd: BYD
+  mg: MG
+models:
+  golf: Golf
+  spring: Spring
+  rav4: RAV4
+  octavia: Octavia
+  model-y: Model Y
+  model-3: Model 3
+  ioniq-5: Ioniq 5
+  ix: iX
+  ev6: EV6
+  kuga: Kuga
+  vitara: Vitara
+  xc60: XC60

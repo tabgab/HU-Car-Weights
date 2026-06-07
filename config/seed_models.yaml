@@ -1,0 +1,12 @@
+# Seed set: top Hungarian-market models spanning BEV / PHEV / ICE and light / heavy /
+# threshold-straddling cases. `make`/`model` are cars-data.com slugs.
+# Expand by adding entries; the pipeline is idempotent (re-runs converge).
+models:
+  - {make: volkswagen, model: golf,    max_variants: 6}   # petrol / MHEV / PHEV
+  - {make: dacia,      model: spring,  max_variants: 4}   # light BEV (under 2000)
+  - {make: toyota,     model: rav4,    max_variants: 6}   # HEV (ICE) + PHEV, heavy
+  - {make: skoda,      model: octavia, max_variants: 6}   # petrol / diesel
+  - {make: tesla,      model: model-y, max_variants: 5}   # BEV around 2000 (straddle)
+  - {make: hyundai,    model: ioniq-5, max_variants: 5}   # BEV ~2000 (straddle)
+  - {make: bmw,        model: ix,      max_variants: 4}   # heavy BEV (> 2000)
+  - {make: ford,       model: kuga,    max_variants: 5}   # ICE + PHEV
