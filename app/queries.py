@@ -18,20 +18,18 @@ _SORTS = {
 }
 
 _PROJECT = ("id, make, model, trim, powertrain_type, powertrain_subtype, drivetrain, power_kw, "
-            "battery_kwh, model_year, weight_unit, is_missing, hu_weight_kg, hu_weight_url, "
+            "battery_kwh, model_year, source, weight_unit, is_missing, hu_weight_kg, hu_weight_url, "
             "n_sources, sources_agree, primary_source, weight_source, weight_source_url, "
             "db_fee_status")
 
 
 def base_cte(hu_only: bool) -> str:
-    if hu_only:
-        wsel, wmin, wmax = "hu_weight_kg", "NULL", "NULL"
-    else:
-        wsel, wmin, wmax = "weight", "weight_min", "weight_max"
+    # hu_only selects the katalogus (Hungarian) dataset; otherwise the cars-data dataset.
+    # Each variant uses its own curb weight; the source filter is applied in _predicates.
     return f"""
 WITH base AS (
   SELECT {_PROJECT},
-         {wsel} AS weight, {wmin} AS weight_min, {wmax} AS weight_max,
+         weight, weight_min, weight_max,
          CASE WHEN powertrain_type='BEV' THEN 2000 ELSE 1800 END AS threshold
   FROM v_parking_summary
 ),
@@ -60,8 +58,9 @@ def _predicates(f: Dict[str, Any], skip: str | None = None) -> Tuple[List[str], 
     where: List[str] = []
     params: List[Any] = []
 
-    if f.get("hu_only"):
-        where.append("hu_weight_kg IS NOT NULL")
+    # dataset switch: HU-only -> katalogus first-class variants; else cars-data set
+    where.append("source = ?")
+    params.append("katalogus.hu" if f.get("hu_only") else "cars-data")
 
     if f.get("q"):
         like = f"%{f['q'].lower()}%"

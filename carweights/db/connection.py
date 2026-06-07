@@ -33,6 +33,13 @@ def _migrate(conn: sqlite3.Connection) -> None:
     for name, decl in add.items():
         if name not in cols:
             conn.execute(f"ALTER TABLE weights ADD COLUMN {name} {decl}")
+    vcols = {r["name"] for r in conn.execute("PRAGMA table_info(variants)")}
+    if "source" not in vcols:
+        conn.execute("ALTER TABLE variants ADD COLUMN source TEXT NOT NULL DEFAULT 'cars-data'")
+    hcols = {r["name"] for r in conn.execute("PRAGMA table_info(hu_catalog)")}
+    for name, decl in {"display_name": "TEXT", "power_kw": "INTEGER", "model_year": "INTEGER"}.items():
+        if name not in hcols:
+            conn.execute(f"ALTER TABLE hu_catalog ADD COLUMN {name} {decl}")
     conn.commit()
 
 

@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS variants (
     battery_kwh        REAL,
     model_year         INTEGER,
     on_sale_hu         INTEGER NOT NULL DEFAULT 1,
+    source             TEXT NOT NULL DEFAULT 'cars-data',  -- 'cars-data' | 'katalogus.hu'
     fingerprint        TEXT NOT NULL,
     created_at         TEXT NOT NULL DEFAULT (datetime('now')),
     updated_at         TEXT NOT NULL DEFAULT (datetime('now')),
@@ -82,6 +83,9 @@ CREATE TABLE IF NOT EXISTS hu_catalog (
     powertrain_type TEXT,
     drivetrain      TEXT,
     weight_kg       INTEGER,
+    display_name    TEXT,
+    power_kw        INTEGER,
+    model_year      INTEGER,
     source_url      TEXT NOT NULL UNIQUE,
     scraped_at      TEXT NOT NULL DEFAULT (datetime('now'))
 );
@@ -149,6 +153,7 @@ SELECT v.variant_id                                AS id,
        v.power_kw,
        v.battery_kwh,
        v.model_year,
+       v.source,
        w.curb_weight_kg                            AS weight,
        w.curb_weight_min_kg                        AS weight_min,
        w.curb_weight_max_kg                        AS weight_max,
