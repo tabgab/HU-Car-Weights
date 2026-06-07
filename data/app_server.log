@@ -1,7 +1,0 @@
-INFO:     Started server process [1855761]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8099 (Press CTRL+C to quit)
-INFO:     127.0.0.1:33752 - "GET /api/cars?page_size=1 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:33758 - "GET /api/cars?hu_only=true&page_size=1 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:33766 - "GET /api/cars?q=omoda&page_size=50 HTTP/1.1" 200 OK
