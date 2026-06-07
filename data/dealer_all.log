@@ -1,0 +1,30 @@
+• kia: 18 spec PDFs
+  · k4                             -> [1340, 1516]
+  · xceed                          -> [1276, 1466]
+  · k4 sw                          -> [1380, 1550]
+  · pv5 passenger                  -> [1990, 2140]
+  · pv5 cargo                      -> [1785, 1955]
+  · sportage                       -> [1477, 1935]
+  · picanto                        -> [947, 1056]
+  · ceed kombi                     -> [1260, 1449]
+  · ev5                            -> [1994, 2100, 2130, 2174, 2177, 2189]
+  · ev9                            -> [2674]
+  · niro hev phev my25             -> [1399, 1610]
+  · pv5 chassis cab                -> [1570, 1615]
+  · ev4                            -> [1736, 1835, 1910]
+  · ev6                            -> [1880, 2165]
+  · stonic                         -> [1130, 1258]
+  · ev3                            -> [1725, 2050]
+  · ev4 fastback                   -> [1740, 1839, 1912]
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/gabor/DEV/carWeights/carweights/cli.py", line 198, in <module>
+    main()
+  File "/home/gabor/DEV/carWeights/carweights/cli.py", line 194, in main
+    args.func(args)
+  File "/home/gabor/DEV/carWeights/carweights/cli.py", line 86, in cmd_dealer
+    R.upsert_hu_catalog(conn, mk, md, f"{md}_dealer{i}", None, None, kg,
+  File "/home/gabor/DEV/carWeights/carweights/db/repository.py", line 170, in upsert_hu_catalog
+    conn.execute(
+sqlite3.OperationalError: database is locked
