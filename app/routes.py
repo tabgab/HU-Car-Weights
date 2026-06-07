@@ -21,7 +21,7 @@ _CATEGORY = {"BEV": "electric", "PHEV": "PHEV", "ICE": "ICE"}
 def _collect_filters(
     q, powertrain, subtype, drivetrain, weight_min, weight_max,
     weight_threshold, weight_cmp, fee, include_unknown_weight, model_year,
-    min_confidence, sort, page, page_size,
+    min_confidence, sort, page, page_size, hu_only=False,
 ):
     return {
         "q": q,
@@ -39,6 +39,7 @@ def _collect_filters(
         "sort": sort,
         "page": page,
         "page_size": page_size,
+        "hu_only": hu_only,
     }
 
 
@@ -64,10 +65,11 @@ def list_cars(
     sort: str = "make",
     page: int = 1,
     page_size: int = 50,
+    hu_only: bool = False,
 ):
     f = _collect_filters(q, powertrain, subtype, drivetrain, weight_min, weight_max,
                          weight_threshold, weight_cmp, fee, include_unknown_weight,
-                         model_year, min_confidence, sort, page, page_size)
+                         model_year, min_confidence, sort, page, page_size, hu_only)
     conn = get_conn()
     try:
         res = queries.list_cars(conn, f)
@@ -92,10 +94,11 @@ def facets(
     include_unknown_weight: bool = True,
     model_year: Optional[List[int]] = Query(None),
     min_confidence: Optional[float] = None,
+    hu_only: bool = False,
 ):
     f = _collect_filters(q, powertrain, subtype, drivetrain, weight_min, weight_max,
                          weight_threshold, weight_cmp, fee, include_unknown_weight,
-                         model_year, min_confidence, "make", 1, 50)
+                         model_year, min_confidence, "make", 1, 50, hu_only)
     conn = get_conn()
     try:
         return queries.facets(conn, f)
@@ -104,10 +107,10 @@ def facets(
 
 
 @router.get("/cars/{car_id}")
-def car_detail(car_id: int):
+def car_detail(car_id: int, hu_only: bool = False):
     conn = get_conn()
     try:
-        row = queries.get_car(conn, car_id)
+        row = queries.get_car(conn, car_id, hu_only)
     finally:
         conn.close()
     if not row:
@@ -137,10 +140,11 @@ def export_csv(
     model_year: Optional[List[int]] = Query(None),
     min_confidence: Optional[float] = None,
     sort: str = "make",
+    hu_only: bool = False,
 ):
     f = _collect_filters(q, powertrain, subtype, drivetrain, weight_min, weight_max,
                          weight_threshold, weight_cmp, fee, include_unknown_weight,
-                         model_year, min_confidence, sort, 1, 10 ** 9)
+                         model_year, min_confidence, sort, 1, 10 ** 9, hu_only)
     sql, params = queries.list_sql_for_export(f)
     conn = get_conn()
     try:

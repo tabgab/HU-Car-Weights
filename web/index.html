@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hungarian Car Weights — Budapest Parking Fee</title>
-<link rel="stylesheet" href="/styles.css?v=4">
+<link rel="stylesheet" href="/styles.css?v=5">
 </head>
 <body>
 <header class="topbar">
@@ -23,6 +23,10 @@
     <label class="field">
       <span>Search</span>
       <input id="q" type="search" placeholder="make / model / trim">
+    </label>
+
+    <label class="hu-toggle"><input id="hu-only" type="checkbox"> 🇭🇺 HU data only
+      <span class="hu-hint">use only Hungarian-sourced weights</span>
     </label>
 
     <fieldset><legend>Powertrain</legend>
@@ -86,6 +90,6 @@
   </div>
 </div>
 
-<script src="/app.js?v=4" type="module"></script>
+<script src="/app.js?v=5" type="module"></script>
 </body>
 </html>
