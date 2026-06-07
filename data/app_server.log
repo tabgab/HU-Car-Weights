@@ -1,61 +1,7 @@
-INFO:     Started server process [1851462]
+INFO:     Started server process [1855761]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://127.0.0.1:8099 (Press CTRL+C to quit)
-INFO:     127.0.0.1:40730 - "GET /?v=9 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:40740 - "GET /app.js?v=9 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:40730 - "GET /styles.css?v=9 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:40730 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:40740 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:40740 - "GET /api/cars?hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:40730 - "GET /api/facets?hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:40730 - "GET /api/cars?q=omoda+5&hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:40740 - "GET /api/facets?q=omoda+5&hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:33212 - "GET /api/cars/756 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38302 - "GET /api/cars?q=o&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38306 - "GET /api/facets?q=o&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38302 - "GET /api/cars?q=om&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38306 - "GET /api/facets?q=om&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38302 - "GET /api/cars?q=omo&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38306 - "GET /api/facets?q=omo&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38302 - "GET /api/cars?q=omod&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38306 - "GET /api/facets?q=omod&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38312 - "GET /api/cars?q=omoda&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38316 - "GET /api/facets?q=omoda&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52470 - "GET /?v=8 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52470 - "GET /styles.css?v=9 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52484 - "GET /app.js?v=9 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52484 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:52470 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58510 - "GET /api/cars?q=omoda+&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58516 - "GET /api/facets?q=omoda+&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58516 - "GET /api/cars?q=omoda&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58510 - "GET /api/facets?q=omoda&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50090 - "GET /?v=9 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50090 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50100 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50106 - "GET /api/cars?q=omo&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:50116 - "GET /api/facets?q=omo&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32920 - "GET /api/cars?q=omo&powertrain=electric&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32930 - "GET /api/facets?q=omo&powertrain=electric&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32920 - "GET /api/cars?q=omo&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:32930 - "GET /api/facets?q=omo&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:41762 - "GET /api/cars?q=omoda&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:41774 - "GET /api/facets?q=omoda&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:38336 - "GET /api/cars?hu_only=true&q=omoda&page_size=20 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44876 - "GET /api/cars?q=omoda&hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44884 - "GET /api/facets?q=omoda&hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44876 - "GET /api/cars?q=omoda&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44884 - "GET /api/facets?q=omoda&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44876 - "GET /api/cars?q=omoda&hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:44884 - "GET /api/facets?q=omoda&hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:39092 - "GET /app.js?v=9 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:39106 - "GET /?v=9 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:39108 - "GET /app.js?v=9 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:39106 - "GET /styles.css?v=9 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:39108 - "GET /api/cars?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:39106 - "GET /api/facets?sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:39106 - "GET /api/cars?hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:39108 - "GET /api/facets?hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:39108 - "GET /api/cars?q=omoda&hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:39106 - "GET /api/facets?q=omoda&hu_only=true&sort=make&page=1&page_size=50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33752 - "GET /api/cars?page_size=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33758 - "GET /api/cars?hu_only=true&page_size=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33766 - "GET /api/cars?q=omoda&page_size=50 HTTP/1.1" 200 OK
