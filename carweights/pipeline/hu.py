@@ -119,13 +119,17 @@ def scrape_make_hu(conn: sqlite3.Connection, brand_slug: str, *, max_variants=No
 
 
 def _strip_make(display_name: str, make: str) -> str:
+    """Strip the make from the front — repeatedly, since some H1s double it
+    (e.g. 'OMODA Omoda 5 ...')."""
     toks = display_name.split()
-    mwords = make.split()
-    i = 0
-    while i < len(mwords) and i < len(toks) and \
-            toks[i].lower().strip("-.") == mwords[i].lower().strip("-."):
-        i += 1
-    return " ".join(toks[i:]) or display_name
+    mwords = [w.lower().strip("-.") for w in make.split()]
+    changed = True
+    while changed and len(toks) > len(mwords):
+        changed = False
+        if all(toks[i].lower().strip("-.") == mwords[i] for i in range(len(mwords))):
+            toks = toks[len(mwords):]
+            changed = True
+    return " ".join(toks) or display_name
 
 
 def _split_model_trim(display_name: str, make: str, model_slug: str, known_models=None):
@@ -148,8 +152,10 @@ def _split_model_trim(display_name: str, make: str, model_slug: str, known_model
     toks = rest.split()
     if not toks:
         return (model_slug.title(), None)
-    # fallback: model = first token; if it's a 1-char class letter, take two tokens
-    take = 2 if len(toks) > 1 and len(toks[0].strip(".-")) == 1 else 1
+    # fallback: model = first token; if it's a 1-char class LETTER (Audi A/Q, BMW i/X,
+    # Merc C/E), take two tokens. A bare number ('5','7') stays a single-token model.
+    first = toks[0].strip(".-")
+    take = 2 if len(toks) > 1 and len(first) == 1 and first.isalpha() else 1
     model = canonical_model(" ".join(toks[:take]))
     trim = " ".join(toks[take:]) or None
     return (model, trim)
@@ -193,6 +199,34 @@ def ingest_firstclass(conn: sqlite3.Connection, log=print) -> dict:
             conn.commit()
     conn.commit()
     return {"ingested_firstclass": n}
+
+
+def ingest_manual(conn: sqlite3.Connection, records: list[dict], log=print) -> int:
+    """Ingest first-class HU variants from manual/manufacturer records.
+
+    Each record: {make, model, powertrain, weight, source_url, source_name, trim?, drivetrain?}.
+    source_name (e.g. 'changaneurope.com') is set as the variant source so HU-only shows it.
+    """
+    mk_cache: dict[str, int] = {}
+    n = 0
+    for r in records:
+        make = r["make"]
+        mk = mk_cache.get(make) or R.upsert_make(conn, make)
+        mk_cache[make] = mk
+        md = R.upsert_model(conn, mk, r["model"])
+        fp = f"manual|{r['source_name']}|{r['model']}|{r['powertrain']}|{r['weight']}|{r.get('trim','')}"
+        vid = R.upsert_variant(conn, md, fp, r["powertrain"], None, r.get("trim"),
+                               r.get("drivetrain"), None, None, r.get("model_year"),
+                               source=r["source_name"])
+        R.upsert_weight(conn, vid, r["weight"])
+        conn.execute("UPDATE weights SET primary_source=?, n_sources=1, hu_weight_kg=?, "
+                     "hu_weight_url=? WHERE variant_id=?",
+                     (r["source_name"], r["weight"], r.get("source_url"), vid))
+        R.add_provenance(conn, "weight", vid, "curb_weight_kg", r["source_name"],
+                         value_text=f"{r['weight']} kg", source_url=r.get("source_url"), confidence=0.97)
+        n += 1
+    conn.commit()
+    return n
 
 
 def crosscheck(conn: sqlite3.Connection, log=print) -> dict:
