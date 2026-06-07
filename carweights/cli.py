@@ -56,7 +56,8 @@ def cmd_hu(args):
     conn = init_db()
     makes = args.makes.split(",") if args.makes else _load_makes()
     for mk in makes:
-        st = scrape_make_hu(conn, mk.strip(), max_variants=args.max_variants)
+        st = scrape_make_hu(conn, mk.strip(), max_variants=args.max_variants,
+                            per_model=args.per_model)
         print(f"  = HU {mk}: {st}")
     print("cross-check:", crosscheck(conn))
     print("re-derive:", derive(conn))
@@ -119,6 +120,7 @@ def main(argv=None):
     s = sub.add_parser("hu", help="scrape Hungarian catalog (katalogus.hasznaltauto.hu) + cross-check")
     s.add_argument("--makes", default=None, help="comma-separated brand slugs (default: all)")
     s.add_argument("--max-variants", type=int, default=None, help="cap HU variants per make")
+    s.add_argument("--per-model", type=int, default=3, help="cap variants per model+powertrain")
     s.set_defaults(func=cmd_hu)
 
     sub.add_parser("derive", help="recompute parking classification").set_defaults(func=cmd_derive)
