@@ -40,5 +40,10 @@ object DbProvider {
         context.assets.open(DB_NAME).use { input ->
             FileOutputStream(target).use { out -> input.copyTo(out) }
         }
+        // WAL/journal sidecars from a previous install (or from build-time) can hold
+        // POSIX file locks that block us from opening. Remove them on every fresh copy.
+        listOf("-wal", "-shm", "-journal").forEach { suffix ->
+            File(target.parentFile, target.name + suffix).takeIf { it.exists() }?.delete()
+        }
     }
 }

@@ -32,7 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tabigabor.carweights.data.CarsRepository
+import com.tabigabor.carweights.AppState
 import com.tabigabor.carweights.domain.FeeClassifier
 import com.tabigabor.carweights.domain.FeeStatus
 import com.tabigabor.carweights.ui.theme.Amber
@@ -45,13 +45,25 @@ import com.tabigabor.carweights.ui.theme.Text
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LookupScreen(@Suppress("UNUSED_PARAMETER") repository: CarsRepository, modifier: Modifier = Modifier) {
+fun LookupScreen(state: AppState, modifier: Modifier = Modifier) {
+    val cars by state.cars
     var powertrain by remember { mutableStateOf("BEV") }
     var weightText by remember { mutableStateOf("1800") }
 
     val weight = weightText.toIntOrNull()
     val status = FeeClassifier.classify(powertrain, weight)
     val threshold = FeeClassifier.thresholdFor(powertrain)
+    val matchingCars = remember(cars, powertrain, weight) {
+        if (weight == null) emptyList()
+        else cars.asSequence()
+            .filter { it.powertrainType == powertrain }
+            .mapNotNull { c ->
+                val w = c.weight ?: c.weightMin ?: c.weightMax ?: return@mapNotNull null
+                if (kotlin.math.abs(w - weight) <= 50) c to w else null
+            }
+            .take(10)
+            .toList()
+    }
 
     Column(
         modifier = modifier
@@ -117,6 +129,20 @@ fun LookupScreen(@Suppress("UNUSED_PARAMETER") repository: CarsRepository, modif
                 Spacer(Modifier.height(6.dp))
                 Text(ruleText(powertrain, status, threshold, weight),
                     color = Text, fontSize = 13.sp)
+            }
+        }
+
+        if (matchingCars.isNotEmpty()) {
+            Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+                Column(Modifier.padding(14.dp)) {
+                    Text("Cars near this weight (within 50 kg):",
+                        color = Muted, fontSize = 12.sp)
+                    Spacer(Modifier.height(8.dp))
+                    matchingCars.forEach { (c, w) ->
+                        Text("${c.make} ${c.model}${c.trim?.let { " $it" } ?: ""}  ·  $w kg",
+                            color = Text, fontSize = 13.sp)
+                    }
+                }
             }
         }
     }

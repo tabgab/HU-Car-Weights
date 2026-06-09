@@ -14,14 +14,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.tabigabor.carweights.data.CarsRepository
+import com.tabigabor.carweights.AppState
+import com.tabigabor.carweights.ui.browse.BrowseScreen
 import com.tabigabor.carweights.ui.lookup.LookupScreen
 import com.tabigabor.carweights.ui.policy.PolicyExplorerScreen
 import com.tabigabor.carweights.ui.settings.SettingsScreen
-import com.tabigabor.carweights.ui.browse.BrowseScreen
 
 enum class Tab(val label: String) {
     POLICY("Policy"),
@@ -31,8 +31,8 @@ enum class Tab(val label: String) {
 }
 
 @Composable
-fun MainScreen(repository: CarsRepository) {
-    var tab by remember { mutableStateOf(Tab.POLICY) }
+fun MainScreen(state: AppState) {
+    var tab by rememberSaveable { mutableStateOf(Tab.POLICY) }
     Scaffold(
         bottomBar = {
             NavigationBar {
@@ -58,10 +58,18 @@ fun MainScreen(repository: CarsRepository) {
         }
     ) { inner ->
         when (tab) {
-            Tab.POLICY -> PolicyExplorerScreen(repository = repository, modifier = Modifier.padding(inner))
-            Tab.LOOKUP -> LookupScreen(repository = repository, modifier = Modifier.padding(inner))
-            Tab.BROWSE -> BrowseScreen(repository = repository, modifier = Modifier.padding(inner))
-            Tab.SETTINGS -> SettingsScreen(modifier = Modifier.padding(inner))
+            Tab.POLICY -> PolicyExplorerScreen(
+                state = state, modifier = Modifier.padding(inner),
+            )
+            Tab.LOOKUP -> LookupScreen(
+                state = state, modifier = Modifier.padding(inner),
+            )
+            Tab.BROWSE -> BrowseScreen(
+                state = state, modifier = Modifier.padding(inner),
+            )
+            Tab.SETTINGS -> SettingsScreen(
+                state = state, modifier = Modifier.padding(inner),
+            )
         }
     }
 }

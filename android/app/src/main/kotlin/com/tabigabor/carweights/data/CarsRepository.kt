@@ -10,7 +10,7 @@ class CarsRepository(context: Context) {
         val sql = """
             SELECT id, make, model, trim, powertrain_type, powertrain_subtype, drivetrain,
                    power_kw, battery_kwh, model_year, weight, weight_min, weight_max,
-                   weight_source, hu_weight_kg, sources_agree, on_sale_hu
+                   weight_source, hu_weight_kg, sources_agree
             FROM v_parking_summary
             WHERE COALESCE(is_missing, 0) = 0
         """.trimIndent()
@@ -36,7 +36,7 @@ class CarsRepository(context: Context) {
                             weightSource = c.getString(13),
                             huWeightKg = c.getIntOrNull(14),
                             sourcesAgree = c.getIntOrNull(15),
-                            onSaleHu = (c.getIntOrNull(16) ?: 1) == 1,
+                            onSaleHu = true,
                         )
                     )
                 }

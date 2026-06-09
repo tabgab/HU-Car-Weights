@@ -42,7 +42,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tabigabor.carweights.data.CarsRepository
+import com.tabigabor.carweights.AppState
 import com.tabigabor.carweights.data.PolicySimulator
 import com.tabigabor.carweights.domain.Car
 import com.tabigabor.carweights.domain.CarDecision
@@ -75,15 +75,24 @@ private fun Int.locs(): String = java.util.Locale.US.let { String.format(it, "%,
  */
 @Composable
 fun PolicyExplorerScreen(
-    repository: CarsRepository,
+    state: AppState,
     modifier: Modifier = Modifier,
 ) {
-    val cars by remember { mutableStateOf(runCatching { repository.loadAll() }.getOrElse { emptyList() }) }
+    val cars by state.cars
+    val isLoading by state.isLoading
+    val loadError by state.loadError
+    val huOnly by state.huOnly
     var policy by remember { mutableStateOf(Policy()) }
-
-    val outcome by remember(cars) {
-        derivedStateOf { PolicySimulator.run(cars, policy) }
+    var resetTick by remember { mutableStateOf(0) }
+    var lastHuOnly by remember { mutableStateOf(huOnly) }
+    if (lastHuOnly != huOnly) {
+        lastHuOnly = huOnly
+        policy = Policy()
+        resetTick++
     }
+
+    val filtered = remember(cars, huOnly) { applyHuOnly(cars, huOnly) }
+    val outcome = remember(filtered, policy, resetTick) { PolicySimulator.run(filtered, policy) }
 
     Column(
         modifier = modifier
@@ -107,10 +116,21 @@ fun PolicyExplorerScreen(
             value = policy.combustionThresholdKg,
             onChange = { policy = policy.copy(combustionThresholdKg = it) },
         )
-        DistributionCard(outcome)
-        BorderCasesCard(outcome)
+        when {
+            loadError != null -> ErrorCard(loadError!!)
+            isLoading -> LoadingCard()
+            else -> {
+                DistributionCard(outcome)
+                BorderCasesCard(outcome)
+            }
+        }
         NoteCard(policy)
     }
+}
+
+private fun applyHuOnly(all: List<Car>, huOnly: Boolean): List<Car> {
+    if (!huOnly) return all
+    return all.filter { it.huWeightKg != null }
 }
 
 @Composable
@@ -127,6 +147,29 @@ private fun Header() {
             style = MaterialTheme.typography.bodySmall,
             color = Muted,
         )
+    }
+}
+
+@Composable
+private fun LoadingCard() {
+    Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+        Column(Modifier.padding(14.dp)) {
+            Text("Loading fleet…", fontWeight = FontWeight.SemiBold, color = Text)
+            Spacer(Modifier.height(4.dp))
+            Text("Reading the bundled cars.db (9k+ rows).",
+                color = Muted, fontSize = 12.sp)
+        }
+    }
+}
+
+@Composable
+private fun ErrorCard(msg: String) {
+    Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+        Column(Modifier.padding(14.dp)) {
+            Text("Could not load the fleet", fontWeight = FontWeight.SemiBold, color = Red)
+            Spacer(Modifier.height(4.dp))
+            Text(msg, color = Muted, fontSize = 12.sp)
+        }
     }
 }
 
