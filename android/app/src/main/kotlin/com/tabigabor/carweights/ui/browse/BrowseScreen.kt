@@ -1,5 +1,7 @@
 package com.tabigabor.carweights.ui.browse
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -98,17 +100,22 @@ fun BrowseScreen(state: AppState, modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                items(shown, key = { it.id }) { c -> CarRow(c) }
+                items(shown, key = { it.id }) { c ->
+                    CarRow(c, onClick = { state.selectedCarId.value = c.id })
+                }
             }
         }
     }
 }
 
 @Composable
-private fun CarRow(c: Car) {
+private fun CarRow(c: Car, onClick: () -> Unit) {
     val status = FeeClassifier.classify(c.powertrainType, c.weight, c.weightMin, c.weightMax)
     val w = c.weight ?: c.weightMin ?: c.weightMax
-    Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+    Card(
+        colors = CardDefaults.cardColors(containerColor = Panel),
+        modifier = Modifier.clickable { onClick() },
+    ) {
         Row(
             Modifier.fillMaxWidth().padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,

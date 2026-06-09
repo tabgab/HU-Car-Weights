@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.tabigabor.carweights.AppState
 import com.tabigabor.carweights.ui.browse.BrowseScreen
+import com.tabigabor.carweights.ui.detail.CarDetailScreen
 import com.tabigabor.carweights.ui.lookup.LookupScreen
 import com.tabigabor.carweights.ui.policy.PolicyExplorerScreen
 import com.tabigabor.carweights.ui.settings.SettingsScreen
@@ -57,7 +58,11 @@ fun MainScreen(state: AppState) {
             }
         }
     ) { inner ->
-        when (tab) {
+        // When a car is selected (from Browse or Policy border cases), overlay the
+        // detail screen on top of the current tab. Back clears selection.
+        if (state.selectedCarId.value != null) {
+            CarDetailScreen(state = state, modifier = Modifier.padding(inner))
+        } else when (tab) {
             Tab.POLICY -> PolicyExplorerScreen(
                 state = state, modifier = Modifier.padding(inner),
             )
