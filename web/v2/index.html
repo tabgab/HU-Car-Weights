@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>carWeights HU — Policy Explorer</title>
+<link rel="stylesheet" href="/v2/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="title">
+      <h1>🅿️ Hungarian Car Weights</h1>
+      <span class="subtitle">Budapest weight-based parking fee (from 2027): BEV &gt; 2000 kg, ICE/PHEV &gt; 1800 kg → double</span>
+    </div>
+    <div class="topbar-right">
+      <a class="btn btn-ghost" href="/" title="Switch to the classic UI">← Classic UI</a>
+      <button id="export" class="btn">⬇ Export CSV</button>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" data-tab="policy" role="tab" aria-selected="true">
+      <span class="tab-icon">⚖</span><span class="tab-label">Policy</span>
+    </button>
+    <button class="tab" data-tab="lookup" role="tab" aria-selected="false">
+      <span class="tab-icon">🔍</span><span class="tab-label">Lookup</span>
+    </button>
+    <button class="tab" data-tab="browse" role="tab" aria-selected="false">
+      <span class="tab-icon">▦</span><span class="tab-label">Browse</span>
+    </button>
+    <button class="tab" data-tab="settings" role="tab" aria-selected="false">
+      <span class="tab-icon">⚙</span><span class="tab-label">Settings</span>
+    </button>
+  </nav>
+
+  <main>
+    <section id="tab-policy" class="tabpanel active">
+      <div class="card">
+        <h3>Filter</h3>
+        <div class="filter-row">
+          <div class="filter-label">Powertrain</div>
+          <div class="chip-row" id="filter-powertrain"></div>
+        </div>
+        <div class="filter-row">
+          <div class="filter-label">Make</div>
+          <div class="chip-row" id="filter-makes-quick"></div>
+          <button class="btn btn-ghost small" id="open-make-picker">Pick all makes…</button>
+          <button class="btn btn-ghost small hidden" id="clear-makes">Clear makes</button>
+        </div>
+      </div>
+
+      <div class="card threshold-card" data-powertrain="BEV">
+        <div class="threshold-header">
+          <span class="threshold-icon bev">⚡</span>
+          <span class="threshold-title">BEV (electric) threshold</span>
+          <span class="threshold-value" id="bev-value">2000 kg</span>
+        </div>
+        <input type="range" class="slider" id="bev-slider" min="1000" max="3000" step="25" value="2000">
+        <div class="range-axis"><span>1000</span><span>3000</span></div>
+      </div>
+
+      <div class="card threshold-card" data-powertrain="ICE">
+        <div class="threshold-header">
+          <span class="threshold-icon ice">⛽</span>
+          <span class="threshold-title">ICE / PHEV / HEV threshold</span>
+          <span class="threshold-value" id="ice-value">1800 kg</span>
+        </div>
+        <input type="range" class="slider" id="ice-slider" min="1000" max="3000" step="25" value="1800">
+        <div class="range-axis"><span>1000</span><span>3000</span></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-ghost" id="reset-defaults">↺ Reset to defaults (2000 / 1800)</button>
+      </div>
+
+      <div class="card" id="fleet-outcome">
+        <div class="card-header">Fleet outcome · <span id="outcome-total">—</span></div>
+        <div class="bar" id="outcome-bar"></div>
+        <div class="legend">
+          <div class="legend-item"><span class="dot ok"></span>OK <span class="muted" id="legend-ok">—</span></div>
+          <div class="legend-item"><span class="dot double"></span>Double <span class="muted" id="legend-double">—</span></div>
+          <div class="legend-item"><span class="dot borderline"></span>Borderline <span class="muted" id="legend-borderline">—</span></div>
+          <div class="legend-item"><span class="dot unknown"></span>Unknown <span class="muted" id="legend-unknown">—</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Border cases — cars paying double within…</div>
+        <div class="buckets">
+          <div class="bucket"><div class="bucket-label red">≤ 5%</div><div class="bucket-value" id="b-5">—</div></div>
+          <div class="bucket"><div class="bucket-label amber">≤ 10%</div><div class="bucket-value" id="b-10">—</div></div>
+          <div class="bucket"><div class="bucket-label muted">≤ 25%</div><div class="bucket-value" id="b-25">—</div></div>
+        </div>
+        <div class="muted small" id="b-hint">—</div>
+        <div class="borders" id="borders"></div>
+      </div>
+
+      <div class="card note">
+        <div>Default 2027 rule: BEV &gt; 2000 kg, ICE/PHEV &gt; 1800 kg.</div>
+        <div class="muted" id="note-current">Currently: BEV 2000 kg · ICE 1800 kg.</div>
+      </div>
+    </section>
+
+    <section id="tab-lookup" class="tabpanel">
+      <div class="card">
+        <h3>Powertrain</h3>
+        <div class="seg-row" id="lookup-pt">
+          <button data-pt="BEV" class="seg active">BEV</button>
+          <button data-pt="PHEV" class="seg">PHEV</button>
+          <button data-pt="ICE" class="seg">ICE</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Curb weight (kg)</h3>
+        <input type="number" id="lookup-weight" min="500" max="3500" value="1800">
+        <input type="range" class="slider" id="lookup-slider" min="800" max="3000" step="10" value="1800">
+        <div class="muted small" id="lookup-threshold-hint">Threshold: 1800 kg</div>
+      </div>
+      <div class="card">
+        <div class="verdict">
+          <span class="verdict-pill" id="lookup-status">OK</span>
+          <span class="muted" id="lookup-threshold">Threshold: 1800 kg</span>
+        </div>
+        <div class="rule" id="lookup-rule">—</div>
+      </div>
+      <div class="card hidden" id="lookup-nearby-card">
+        <div class="card-header">Cars near this weight (within 50 kg)</div>
+        <div id="lookup-nearby"></div>
+      </div>
+    </section>
+
+    <section id="tab-browse" class="tabpanel">
+      <div class="card">
+        <input type="search" id="browse-q" placeholder="Search make / model / trim">
+        <div class="row-between">
+          <div class="muted" id="browse-count">— cars</div>
+          <label class="inline-switch">
+            <span>HU-catalog only</span>
+            <input type="checkbox" id="browse-hu-only">
+          </label>
+        </div>
+      </div>
+      <div class="list" id="browse-list"></div>
+    </section>
+
+    <section id="tab-settings" class="tabpanel">
+      <div class="card">
+        <h3>Text size</h3>
+        <div class="muted small">Scales every text on every tab. Persists across launches.</div>
+        <div class="row-between" style="margin: 8px 0;">
+          <span class="muted">Aa</span>
+          <strong id="font-current">Current: 1.15×</strong>
+          <span style="font-size: 22px;">Aa</span>
+        </div>
+        <input type="range" class="slider" id="font-slider" min="0" max="6" step="1" value="2">
+        <div class="chip-row" id="font-presets"></div>
+      </div>
+      <div class="card">
+        <h3>Data source</h3>
+        <div class="muted" id="data-source">cars.db is bundled server-side (read-only SQLite). Loading…</div>
+        <label class="inline-switch" style="margin-top: 10px;">
+          <span>HU-catalog only</span>
+          <input type="checkbox" id="settings-hu-only">
+        </label>
+        <div class="muted small">Filter the fleet to variants with a Hungarian-katalógus weight.</div>
+      </div>
+      <div class="card">
+        <h3>Refresh data</h3>
+        <div class="muted small">In-app download of a newer cars.db.gz (configured in a future release).</div>
+      </div>
+      <div class="card note">
+        <h3>About</h3>
+        <div class="muted small">Curb weights from cars-data.com and katalogus.hasznaltauto.hu.
+          The default 2027 policy is BEV &gt; 2000 kg, ICE/PHEV &gt; 1800 kg.</div>
+        <div class="muted small" style="margin-top: 8px;">UI mirror of the native Android app (Policy Explorer with live threshold simulation).</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Car detail drawer -->
+  <div id="detail" class="drawer hidden">
+    <div class="drawer-inner">
+      <button id="detail-close" class="btn btn-ghost close">✕ Close</button>
+      <div id="detail-body"></div>
+    </div>
+  </div>
+
+  <!-- Make picker bottom sheet -->
+  <div id="make-sheet" class="sheet hidden">
+    <div class="sheet-inner">
+      <div class="sheet-header">
+        <h3>Make filter</h3>
+        <button class="btn btn-ghost" id="make-sheet-close">✕</button>
+      </div>
+      <input type="search" id="make-search" placeholder="Search makes…">
+      <div class="row-between" style="margin: 8px 0;">
+        <div class="muted" id="make-sheet-count">— selected · — total</div>
+        <div>
+          <button class="btn btn-ghost small" id="make-sheet-clear">Clear</button>
+          <button class="btn btn-ghost small" id="make-sheet-all">All</button>
+        </div>
+      </div>
+      <div class="sheet-list" id="make-sheet-list"></div>
+      <div class="row-end">
+        <button class="btn btn-ghost" id="make-sheet-reset">Reset</button>
+        <button class="btn" id="make-sheet-apply">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/v2/app.js"></script>
+</body>
+</html>
