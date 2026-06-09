@@ -1,0 +1,302 @@
+{
+  "/Users/gabortabi/DEV/HU-Car-Weights/app/__init__.py": {
+    "mtime": 1781001973.3999434,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/app/config.py": {
+    "mtime": 1781001973.4000242,
+    "ast_hash": "fb9627abd88c5b8d985d7647eee3beed",
+    "semantic_hash": "fb9627abd88c5b8d985d7647eee3beed"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/app/db.py": {
+    "mtime": 1781001973.400087,
+    "ast_hash": "cc6679d31db45a9782d679cddccc0b11",
+    "semantic_hash": "cc6679d31db45a9782d679cddccc0b11"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/app/fees.py": {
+    "mtime": 1781001973.400156,
+    "ast_hash": "d48c12ca2184e9d5d37609804cfad205",
+    "semantic_hash": "d48c12ca2184e9d5d37609804cfad205"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/app/main.py": {
+    "mtime": 1781028862.3757007,
+    "ast_hash": "7ed9df9c251b3197280ca97bd671aa20",
+    "semantic_hash": "7ed9df9c251b3197280ca97bd671aa20"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/app/queries.py": {
+    "mtime": 1781001973.400329,
+    "ast_hash": "ce6a17de2926be48234321c1ec28c9d8",
+    "semantic_hash": "ce6a17de2926be48234321c1ec28c9d8"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/app/routes.py": {
+    "mtime": 1781001973.4004245,
+    "ast_hash": "a391d166ca7bdd049123de46aabb821c",
+    "semantic_hash": "a391d166ca7bdd049123de46aabb821c"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/app/v2_api.py": {
+    "mtime": 1781028919.9833927,
+    "ast_hash": "376969a3025d8fce60dadadb5bcddef1",
+    "semantic_hash": "376969a3025d8fce60dadadb5bcddef1"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/backups/refresh.sh": {
+    "mtime": 1781001973.4049184,
+    "ast_hash": "4b3c64b8c2e3167e00367c2d2271d04e",
+    "semantic_hash": "4b3c64b8c2e3167e00367c2d2271d04e"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/__init__.py": {
+    "mtime": 1781001973.4050055,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/cli.py": {
+    "mtime": 1781001973.4052181,
+    "ast_hash": "9ff3d1495e665d91281551792adda13a",
+    "semantic_hash": "9ff3d1495e665d91281551792adda13a"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/db/__init__.py": {
+    "mtime": 1781001973.4052873,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/db/connection.py": {
+    "mtime": 1781001973.4053733,
+    "ast_hash": "a5ddcbddc49591269d64657997418344",
+    "semantic_hash": "a5ddcbddc49591269d64657997418344"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/db/repository.py": {
+    "mtime": 1781001973.4054697,
+    "ast_hash": "f7cd94bdbce7aff70286aad376847ff6",
+    "semantic_hash": "f7cd94bdbce7aff70286aad376847ff6"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/db/schema.sql": {
+    "mtime": 1781001973.40557,
+    "ast_hash": "f668c1b1530bd6f266d11d5162c6edbe",
+    "semantic_hash": "f668c1b1530bd6f266d11d5162c6edbe"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/discover/__init__.py": {
+    "mtime": 1781001973.4056304,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/fetch/__init__.py": {
+    "mtime": 1781001973.4057004,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/fetch/cache.py": {
+    "mtime": 1781001973.405776,
+    "ast_hash": "3885ab67102f0fb62eb795955f6a5334",
+    "semantic_hash": "3885ab67102f0fb62eb795955f6a5334"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/fetch/dynamic.py": {
+    "mtime": 1781001973.405849,
+    "ast_hash": "4c8f7d5151aa5f82953e7014c0c41043",
+    "semantic_hash": "4c8f7d5151aa5f82953e7014c0c41043"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/fetch/http.py": {
+    "mtime": 1781001973.405919,
+    "ast_hash": "33e492ff1f4addef0cb5b881c67d7fbf",
+    "semantic_hash": "33e492ff1f4addef0cb5b881c67d7fbf"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/fetch/hu_fast.py": {
+    "mtime": 1781001973.4059794,
+    "ast_hash": "6b31f6cc6067ec26c10e352c76eeaa5d",
+    "semantic_hash": "6b31f6cc6067ec26c10e352c76eeaa5d"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/fetch/robots.py": {
+    "mtime": 1781001973.406052,
+    "ast_hash": "f4db18a35b5ea8de79f5cffe30544997",
+    "semantic_hash": "f4db18a35b5ea8de79f5cffe30544997"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/normalize/__init__.py": {
+    "mtime": 1781001973.406117,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/normalize/names.py": {
+    "mtime": 1781001973.4061892,
+    "ast_hash": "7630f95fddb9f6c96c32710796f46b24",
+    "semantic_hash": "7630f95fddb9f6c96c32710796f46b24"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/normalize/powertrain.py": {
+    "mtime": 1781001973.4062824,
+    "ast_hash": "60bd75a3e9dcc4b84a0d1ee43fd22f6d",
+    "semantic_hash": "60bd75a3e9dcc4b84a0d1ee43fd22f6d"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/normalize/units.py": {
+    "mtime": 1781001973.406347,
+    "ast_hash": "f6b4e3927ce6d45b94f6d5dbe52b162e",
+    "semantic_hash": "f6b4e3927ce6d45b94f6d5dbe52b162e"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/pipeline/__init__.py": {
+    "mtime": 1781001973.4064054,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/pipeline/derive.py": {
+    "mtime": 1781001973.406479,
+    "ast_hash": "0e5f5de991b05489e6447d9d6d9d7f93",
+    "semantic_hash": "0e5f5de991b05489e6447d9d6d9d7f93"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/pipeline/hu.py": {
+    "mtime": 1781001973.4065847,
+    "ast_hash": "bad5060f6ebc019fcee929f23a17e3f4",
+    "semantic_hash": "bad5060f6ebc019fcee929f23a17e3f4"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/pipeline/run.py": {
+    "mtime": 1781001973.4066753,
+    "ast_hash": "80c50f7187c5ff221893e2022a8d7bfe",
+    "semantic_hash": "80c50f7187c5ff221893e2022a8d7bfe"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/scrape/__init__.py": {
+    "mtime": 1781001973.4067478,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/scrape/cars_data.py": {
+    "mtime": 1781001973.4068668,
+    "ast_hash": "cad09ac65c677c9d143ee5c35fbb7926",
+    "semantic_hash": "cad09ac65c677c9d143ee5c35fbb7926"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/scrape/chery.py": {
+    "mtime": 1781001973.4069617,
+    "ast_hash": "cbddf2b2c3b21cc1e27e4c2a896b7d70",
+    "semantic_hash": "cbddf2b2c3b21cc1e27e4c2a896b7d70"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/scrape/extra_hu.py": {
+    "mtime": 1781001973.4070423,
+    "ast_hash": "a6c64a187af1cf6cdcec40cccb3d4d5b",
+    "semantic_hash": "a6c64a187af1cf6cdcec40cccb3d4d5b"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/scrape/katalogus_hu.py": {
+    "mtime": 1781001973.407137,
+    "ast_hash": "7f6dc6efac8f12d20adaf29b425f8c43",
+    "semantic_hash": "7f6dc6efac8f12d20adaf29b425f8c43"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/scrape/manufacturer_crawl.py": {
+    "mtime": 1781001973.4072003,
+    "ast_hash": "e54ed1b787fd0f44f79e3ba3bb7c1db3",
+    "semantic_hash": "e54ed1b787fd0f44f79e3ba3bb7c1db3"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/scrape/manufacturer_pdf.py": {
+    "mtime": 1781001973.4072635,
+    "ast_hash": "ba0f26efb5d9e549078958ab7ca8675f",
+    "semantic_hash": "ba0f26efb5d9e549078958ab7ca8675f"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/scrape/omodajaecoo.py": {
+    "mtime": 1781001973.4073334,
+    "ast_hash": "652edc4ae554afd15f205e3fc3030a28",
+    "semantic_hash": "652edc4ae554afd15f205e3fc3030a28"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/carweights/settings.py": {
+    "mtime": 1781001973.407396,
+    "ast_hash": "abafb86e9fe4a7e834a56ca209f4bd4d",
+    "semantic_hash": "abafb86e9fe4a7e834a56ca209f4bd4d"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/run.sh": {
+    "mtime": 1781001973.4309366,
+    "ast_hash": "1f569c84cb3277f0f8e2966566bb6b78",
+    "semantic_hash": "1f569c84cb3277f0f8e2966566bb6b78"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/tests/__init__.py": {
+    "mtime": 1781001973.4310377,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/tests/test_fees.py": {
+    "mtime": 1781001973.4311423,
+    "ast_hash": "6c3eb33090cf59290a34a430998bc175",
+    "semantic_hash": "6c3eb33090cf59290a34a430998bc175"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/tests/test_powertrain.py": {
+    "mtime": 1781001973.431214,
+    "ast_hash": "ef80e19d185658e099880571d9f645b2",
+    "semantic_hash": "ef80e19d185658e099880571d9f645b2"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/tests/test_units.py": {
+    "mtime": 1781001973.4312792,
+    "ast_hash": "0ed7510e790c645f1ac7ca9c04b30ebb",
+    "semantic_hash": "0ed7510e790c645f1ac7ca9c04b30ebb"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/web/app.js": {
+    "mtime": 1781001973.4314244,
+    "ast_hash": "239378af042bd0a11b1b9218574c0007",
+    "semantic_hash": "239378af042bd0a11b1b9218574c0007"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/web/v2/app.js": {
+    "mtime": 1781028714.1225002,
+    "ast_hash": "7be2910a5ce7ee65124bb1fe6ad0077c",
+    "semantic_hash": "7be2910a5ce7ee65124bb1fe6ad0077c"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/README.md": {
+    "mtime": 1781029034.038217,
+    "ast_hash": "8c3ddf07abaef47146ae44fe284007d9",
+    "semantic_hash": "8c3ddf07abaef47146ae44fe284007d9"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/backups/README.md": {
+    "mtime": 1781001973.4005315,
+    "ast_hash": "b62d64d2216b0b60243440ec6ae9584f",
+    "semantic_hash": "b62d64d2216b0b60243440ec6ae9584f"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/config/aliases.yaml": {
+    "mtime": 1781001973.4074907,
+    "ast_hash": "c81b61455270773dc509ceafe6dba7ef",
+    "semantic_hash": "c81b61455270773dc509ceafe6dba7ef"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/config/dealer_sources.yaml": {
+    "mtime": 1781001973.407552,
+    "ast_hash": "29effeafa43f34ee875c86b1cd08f3f2",
+    "semantic_hash": "29effeafa43f34ee875c86b1cd08f3f2"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/config/makes_hu.yaml": {
+    "mtime": 1781001973.407621,
+    "ast_hash": "88105dbd0d58fb843ca93c6ae377e45d",
+    "semantic_hash": "88105dbd0d58fb843ca93c6ae377e45d"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/config/seed_models.yaml": {
+    "mtime": 1781001973.4076884,
+    "ast_hash": "b5357d1115e598be2f6708faa2d9ae61",
+    "semantic_hash": "b5357d1115e598be2f6708faa2d9ae61"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/requirements-scraping.txt": {
+    "mtime": 1781001973.4307954,
+    "ast_hash": "464ebbbab5b3cc400d036ef41545e332",
+    "semantic_hash": "464ebbbab5b3cc400d036ef41545e332"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/requirements.txt": {
+    "mtime": 1781001973.430862,
+    "ast_hash": "67948e2d1f18ad2e49d4cf865e9a28f4",
+    "semantic_hash": "67948e2d1f18ad2e49d4cf865e9a28f4"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/web/index.html": {
+    "mtime": 1781028740.9575272,
+    "ast_hash": "6f7c0eb10431d4f89cfcb2a6951e86ee",
+    "semantic_hash": "6f7c0eb10431d4f89cfcb2a6951e86ee"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/web/v2/index.html": {
+    "mtime": 1781028575.2944822,
+    "ast_hash": "8045ed07b5b060c82260fc1a9f68a4b8",
+    "semantic_hash": "8045ed07b5b060c82260fc1a9f68a4b8"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/data/manual_pdfs/1753865127-zeekr-7x-prodcut-leaflet-eng.pdf": {
+    "mtime": 1781001973.4113452,
+    "ast_hash": "e3ab26a5e943ba71c061844199edf224",
+    "semantic_hash": "e3ab26a5e943ba71c061844199edf224"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/data/manual_pdfs/1767885540-zeekr-7gt-a4-product-leaflet-en.pdf": {
+    "mtime": 1781001973.4147515,
+    "ast_hash": "0a1d66c1d583470443e6dee5ac2dab2a",
+    "semantic_hash": "0a1d66c1d583470443e6dee5ac2dab2a"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/data/manual_pdfs/1773048205-zeekr-x-a2-a4-product-leaflet-en-master.pdf": {
+    "mtime": 1781001973.4206789,
+    "ast_hash": "f9c081797ffab3f3093d9045a805673b",
+    "semantic_hash": "f9c081797ffab3f3093d9045a805673b"
+  },
+  "/Users/gabortabi/DEV/HU-Car-Weights/data/manual_pdfs/Broschu\u0308re Changan Deepal S07.pdf": {
+    "mtime": 1781001973.4298038,
+    "ast_hash": "1b7ea669356c2006ceccb2224a0c7bc0",
+    "semantic_hash": "1b7ea669356c2006ceccb2224a0c7bc0"
+  }
+}
