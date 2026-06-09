@@ -1,6 +1,7 @@
 package com.tabigabor.carweights.ui.policy
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,13 +22,24 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.LocalGasStation
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -39,6 +51,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -66,22 +79,20 @@ private const val STEP = 25
 
 private fun Int.locs(): String = java.util.Locale.US.let { String.format(it, "%,d", this) }
 
-/**
- * Policy Explorer — the headline feature.
- *
- * Live-recomputes fee status across the full fleet as the user drags the two
- * thresholds. Shows: counts + percentages, distribution bar, and "border cases"
- * (cars paying double within 5/10/25% of the threshold).
- */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PolicyExplorerScreen(
     state: AppState,
     modifier: Modifier = Modifier,
 ) {
+    val ctx = LocalContext.current
     val cars by state.cars
     val isLoading by state.isLoading
     val loadError by state.loadError
     val huOnly by state.huOnly
+    val ptFilter by state.powertrainFilter
+    val makeFilter by state.makeFilter
+
     var policy by remember { mutableStateOf(Policy()) }
     var resetTick by remember { mutableStateOf(0) }
     var lastHuOnly by remember { mutableStateOf(huOnly) }
@@ -91,8 +102,13 @@ fun PolicyExplorerScreen(
         resetTick++
     }
 
-    val filtered = remember(cars, huOnly) { applyHuOnly(cars, huOnly) }
+    val filtered = remember(cars, huOnly, ptFilter, makeFilter, resetTick) {
+        applyAllFilters(cars, huOnly, ptFilter, makeFilter)
+    }
     val outcome = remember(filtered, policy, resetTick) { PolicySimulator.run(filtered, policy) }
+
+    val allMakes = remember(cars) { cars.map { it.make }.distinct().sorted() }
+    var makeSheetOpen by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -102,6 +118,15 @@ fun PolicyExplorerScreen(
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         Header()
+        FilterCard(
+            ptFilter = ptFilter,
+            onPtChange = { state.setPowertrainFilter(ctx, it) },
+            makeFilter = makeFilter,
+            onMakeChange = { state.setMakeFilter(ctx, it) },
+            onOpenMakePicker = { makeSheetOpen = true },
+            onClearMakes = { state.setMakeFilter(ctx, emptySet()) },
+            activeMakeCount = if (makeFilter.isEmpty()) 0 else makeFilter.size,
+        )
         ThresholdCard(
             icon = Icons.Filled.Bolt,
             title = "BEV (electric) threshold",
@@ -116,21 +141,71 @@ fun PolicyExplorerScreen(
             value = policy.combustionThresholdKg,
             onChange = { policy = policy.copy(combustionThresholdKg = it) },
         )
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            val defaults = remember { Policy() }
+            val atDefaults = policy == defaults
+            TextButton(
+                onClick = {
+                    policy = Policy()
+                    resetTick++
+                },
+                enabled = !atDefaults,
+            ) {
+                Icon(Icons.Filled.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(6.dp))
+                Text("Reset to defaults (2000 / 1800)")
+            }
+        }
         when {
             loadError != null -> ErrorCard(loadError!!)
             isLoading -> LoadingCard()
             else -> {
-                DistributionCard(outcome)
-                BorderCasesCard(outcome)
+                DistributionCard(outcome, filtered.size)
+                BorderCasesCard(
+                    outcome = outcome,
+                    onOpenCar = { id -> state.selectedCarId.value = id },
+                )
             }
         }
         NoteCard(policy)
     }
+
+    if (makeSheetOpen) {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        ModalBottomSheet(
+            onDismissRequest = { makeSheetOpen = false },
+            sheetState = sheetState,
+            containerColor = Panel,
+        ) {
+            MakePickerSheet(
+                allMakes = allMakes,
+                selected = makeFilter,
+                onApply = { picked ->
+                    state.setMakeFilter(ctx, picked)
+                    makeSheetOpen = false
+                },
+                onClear = { state.setMakeFilter(ctx, emptySet()) },
+            )
+        }
+    }
 }
 
-private fun applyHuOnly(all: List<Car>, huOnly: Boolean): List<Car> {
-    if (!huOnly) return all
-    return all.filter { it.huWeightKg != null }
+private fun applyAllFilters(
+    all: List<Car>,
+    huOnly: Boolean,
+    ptFilter: Set<String>,
+    makeFilter: Set<String>,
+): List<Car> {
+    if (!huOnly && ptFilter.isEmpty() && makeFilter.isEmpty()) return all
+    return all.asSequence().filter { c ->
+        (!huOnly || c.huWeightKg != null) &&
+            (ptFilter.isEmpty() || c.powertrainSubtype in ptFilter) &&
+            (makeFilter.isEmpty() || c.make in makeFilter)
+    }.toList()
 }
 
 @Composable
@@ -150,26 +225,151 @@ private fun Header() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-private fun LoadingCard() {
+private fun FilterCard(
+    ptFilter: Set<String>,
+    onPtChange: (Set<String>) -> Unit,
+    makeFilter: Set<String>,
+    onMakeChange: (Set<String>) -> Unit,
+    onOpenMakePicker: () -> Unit,
+    onClearMakes: () -> Unit,
+    activeMakeCount: Int,
+) {
     Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
         Column(Modifier.padding(14.dp)) {
-            Text("Loading fleet…", fontWeight = FontWeight.SemiBold, color = Text)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Filled.Tune, contentDescription = null,
+                    tint = Accent, modifier = Modifier.size(18.dp),
+                )
+                Spacer(Modifier.width(6.dp))
+                Text("Filter", fontWeight = FontWeight.SemiBold, color = Text, fontSize = 14.sp)
+            }
+            Spacer(Modifier.height(8.dp))
+            Text("Powertrain", color = Muted, fontSize = 12.sp)
             Spacer(Modifier.height(4.dp))
-            Text("Reading the bundled cars.db (9k+ rows).",
-                color = Muted, fontSize = 12.sp)
+            androidx.compose.foundation.layout.FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                AppState.POWERTRAIN_FILTER_OPTIONS.forEach { opt ->
+                    val on = opt in ptFilter
+                    FilterChip(
+                        selected = on,
+                        onClick = {
+                            val next = if (on) ptFilter - opt else ptFilter + opt
+                            onPtChange(next)
+                        },
+                        label = { Text(opt) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = Accent,
+                            selectedLabelColor = Text,
+                        ),
+                    )
+                }
+            }
+            Spacer(Modifier.height(10.dp))
+            Text("Make", color = Muted, fontSize = 12.sp)
+            Spacer(Modifier.height(4.dp))
+            androidx.compose.foundation.layout.FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                AppState.TOP_MAKES.forEach { m ->
+                    val on = m in makeFilter
+                    FilterChip(
+                        selected = on,
+                        onClick = {
+                            val next = if (on) makeFilter - m else makeFilter + m
+                            onMakeChange(next)
+                        },
+                        label = { Text(m) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = Accent,
+                            selectedLabelColor = Text,
+                        ),
+                    )
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                TextButton(onClick = onOpenMakePicker) {
+                    val label = if (activeMakeCount == 0) "All makes"
+                        else if (activeMakeCount == 1) "1 make"
+                        else "$activeMakeCount makes"
+                    Text("Pick: $label →")
+                }
+                if (activeMakeCount > 0) {
+                    TextButton(onClick = onClearMakes) { Text("Clear") }
+                }
+            }
         }
     }
 }
 
+private val Accent: Color = com.tabigabor.carweights.ui.theme.Accent
+
 @Composable
-private fun ErrorCard(msg: String) {
-    Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
-        Column(Modifier.padding(14.dp)) {
-            Text("Could not load the fleet", fontWeight = FontWeight.SemiBold, color = Red)
-            Spacer(Modifier.height(4.dp))
-            Text(msg, color = Muted, fontSize = 12.sp)
+private fun MakePickerSheet(
+    allMakes: List<String>,
+    selected: Set<String>,
+    onApply: (Set<String>) -> Unit,
+    onClear: () -> Unit,
+) {
+    var picked by remember(selected) { mutableStateOf(selected) }
+    var q by remember { mutableStateOf("") }
+    val filtered = remember(allMakes, q) {
+        if (q.isBlank()) allMakes
+        else allMakes.filter { it.contains(q, ignoreCase = true) }
+    }
+    Column(Modifier.padding(16.dp).fillMaxWidth()) {
+        Text("Make filter", fontWeight = FontWeight.Bold, color = Text, fontSize = 18.sp)
+        Spacer(Modifier.height(8.dp))
+        OutlinedTextField(
+            value = q,
+            onValueChange = { q = it },
+            placeholder = { Text("Search makes…") },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Spacer(Modifier.height(8.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text("${picked.size} selected · ${allMakes.size} total",
+                color = Muted, fontSize = 12.sp)
+            Spacer(Modifier.weight(1f))
+            TextButton(onClick = { picked = emptySet() }) { Text("Clear") }
+            TextButton(onClick = { picked = allMakes.toSet() }) { Text("All") }
         }
+        Spacer(Modifier.height(4.dp))
+        LazyColumn(modifier = Modifier.height(420.dp)) {
+            items(filtered) { m ->
+                val on = m in picked
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    androidx.compose.material3.Checkbox(
+                        checked = on,
+                        onCheckedChange = { checked ->
+                            picked = if (checked) picked + m else picked - m
+                        },
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(m, color = Text, fontSize = 14.sp)
+                }
+            }
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            TextButton(onClick = onClear) { Text("Reset") }
+            Spacer(Modifier.width(8.dp))
+            TextButton(onClick = { onApply(picked) }) {
+                Text("Apply", fontWeight = FontWeight.Bold)
+            }
+        }
+        Spacer(Modifier.height(8.dp))
     }
 }
 
@@ -216,19 +416,19 @@ private fun ThresholdCard(
 }
 
 @Composable
-private fun DistributionCard(outcome: PolicyOutcome) {
+private fun DistributionCard(o: PolicyOutcome, total: Int) {
     Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
         Column(Modifier.padding(14.dp)) {
-            Text("Fleet outcome · ${outcome.total.locs()} cars",
+            Text("Fleet outcome · ${o.total.locs()} of ${total.locs()} cars",
                 fontWeight = FontWeight.SemiBold, color = Text, fontSize = 15.sp)
             Spacer(Modifier.height(10.dp))
-            DistributionBar(outcome)
+            DistributionBar(o)
             Spacer(Modifier.height(10.dp))
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Legend("OK", outcome.countOk, outcome.pctOk, Green)
-                Legend("Double", outcome.countDouble, outcome.pctDouble, Red)
-                Legend("Borderline", outcome.countBorderline, outcome.pctBorderline, Amber)
-                Legend("Unknown", outcome.countUnknown, outcome.pctUnknown, Grey)
+                Legend("OK", o.countOk, o.pctOk, Green)
+                Legend("Double", o.countDouble, o.pctDouble, Red)
+                Legend("Borderline", o.countBorderline, o.pctBorderline, Amber)
+                Legend("Unknown", o.countUnknown, o.pctUnknown, Grey)
             }
         }
     }
@@ -276,7 +476,10 @@ private fun Legend(label: String, n: Int, pct: Double, color: Color) {
 }
 
 @Composable
-private fun BorderCasesCard(outcome: PolicyOutcome) {
+private fun BorderCasesCard(
+    outcome: PolicyOutcome,
+    onOpenCar: (Long) -> Unit,
+) {
     val cases5 = outcome.borderCases(5.0)
     val cases10 = outcome.borderCases(10.0)
     val cases25 = outcome.borderCases(25.0)
@@ -295,12 +498,12 @@ private fun BorderCasesCard(outcome: PolicyOutcome) {
                 Text("No border cases at this policy.", color = Muted, fontSize = 12.sp)
             } else {
                 Text(
-                    "Closest to threshold (top ${cases25.size.coerceAtMost(10)}):",
+                    "Closest to threshold (tap for details):",
                     color = Muted, fontSize = 11.sp,
                 )
                 Spacer(Modifier.height(4.dp))
                 cases25.take(10).forEach { d ->
-                    BorderRow(d)
+                    BorderRow(d, onClick = { onOpenCar(d.car.id) })
                 }
                 if (cases25.size > 10) {
                     Text(
@@ -324,24 +527,27 @@ private fun Bucket(label: String, items: List<CarDecision>, color: Color) {
 }
 
 @Composable
-private fun BorderRow(d: CarDecision) {
+private fun BorderRow(d: CarDecision, onClick: () -> Unit) {
     val c = d.car
     val w = d.repsWeight ?: 0
     val pctOver = d.marginPct ?: 0.0
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(vertical = 3.dp),
+            .clip(RoundedCornerShape(8.dp))
+            .background(Panel2)
+            .padding(horizontal = 8.dp, vertical = 6.dp)
+            .clickable { onClick() }
+            .padding(vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
             Text(
                 "${c.make} ${c.model}${c.trim?.let { " $it" } ?: ""}",
-                color = Text, fontSize = 13.sp,
-                maxLines = 1,
+                color = Text, fontSize = 13.sp, maxLines = 1,
             )
             Text(
-                "${c.powertrainType} · ${d.threshold} kg",
+                "${c.powertrainSubtype ?: c.powertrainType} · ${d.threshold} kg",
                 color = Muted, fontSize = 11.sp,
             )
         }
@@ -349,6 +555,29 @@ private fun BorderRow(d: CarDecision) {
             "$w kg  +${"%.1f".format(pctOver)}%",
             color = Red, fontSize = 12.sp, fontWeight = FontWeight.SemiBold,
         )
+    }
+}
+
+@Composable
+private fun LoadingCard() {
+    Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+        Column(Modifier.padding(14.dp)) {
+            Text("Loading fleet…", fontWeight = FontWeight.SemiBold, color = Text)
+            Spacer(Modifier.height(4.dp))
+            Text("Reading the bundled cars.db (9k+ rows).",
+                color = Muted, fontSize = 12.sp)
+        }
+    }
+}
+
+@Composable
+private fun ErrorCard(msg: String) {
+    Card(colors = CardDefaults.cardColors(containerColor = Panel)) {
+        Column(Modifier.padding(14.dp)) {
+            Text("Could not load the fleet", fontWeight = FontWeight.SemiBold, color = Red)
+            Spacer(Modifier.height(4.dp))
+            Text(msg, color = Muted, fontSize = 12.sp)
+        }
     }
 }
 
@@ -361,7 +590,7 @@ private fun NoteCard(policy: Policy) {
                 color = Muted, fontSize = 11.sp,
             )
             Text(
-                "Reset to defaults: BEV ${policy.bevThresholdKg} kg · ICE ${policy.combustionThresholdKg} kg.",
+                "Currently: BEV ${policy.bevThresholdKg} kg · ICE ${policy.combustionThresholdKg} kg.",
                 color = Muted, fontSize = 11.sp,
             )
         }
