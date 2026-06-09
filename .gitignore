@@ -13,3 +13,16 @@ data/exports/
 *.log
 data/*.log
 data/*.pid
+
+# Android build outputs
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/captures/
+android/.idea/
+android/*.iml
+android/app/*.iml
+android/app/release/
+android/app/debug/
+android/.kotlin/
