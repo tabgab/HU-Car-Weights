@@ -1,8 +1,15 @@
 package com.tabigabor.carweights
 
 import android.app.Application
-import com.tabigabor.carweights.data.CarsRepository
+import androidx.multidex.MultiDex
 
 class CarWeightsApp : Application() {
-    val repository: CarsRepository by lazy { CarsRepository(this) }
+    lateinit var state: AppState
+        private set
+
+    override fun onCreate() {
+        super.onCreate()
+        MultiDex.install(this)
+        state = AppState(this)
+    }
 }
