@@ -64,3 +64,20 @@ cars that **straddle** a threshold (some trims pay double, some don't).
 ```
 Covers the fee logic (BEV/PHEV/ICE thresholds, range straddle, boundaries), powertrain
 classification edge cases (e-Power → ICE, e-tron → BEV, 4xe/Recharge → PHEV), and weight parsing.
+
+## Android app (`android/`)
+
+A native Kotlin + Jetpack Compose client that ships the same `cars.db` SQLite inside the APK
+and reads it read-only against `v_parking_summary`. **Four screens, three of them powered by
+the fee classifier; the headline feature is a Policy Explorer.**
+
+- **Policy Explorer** — drag the BEV and ICE/PHEV thresholds, see in real time how many cars
+  in the fleet pay double, plus a *border-cases* list of cars paying double within 5/10/25%
+  of the threshold. The main benefit of the app: helps reason about the threshold policy.
+- **Lookup** — pick powertrain + weight, get the verdict + rule.
+- **Browse** — search + paginated list with fee status pills (uses the bundled DB).
+- **Settings** — data source, refresh (future), about.
+
+Build: `cd android && ./gradlew :app:assembleDebug` → `app/build/outputs/apk/debug/app-debug.apk`.
+Install: `adb install -r <apk>`.
+Unit tests: `./gradlew :app:testDebugUnitTest` (mirrors `tests/test_fees.py` 1:1).
