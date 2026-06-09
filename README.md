@@ -64,3 +64,32 @@ cars that **straddle** a threshold (some trims pay double, some don't).
 ```
 Covers the fee logic (BEV/PHEV/ICE thresholds, range straddle, boundaries), powertrain
 classification edge cases (e-Power → ICE, e-tron → BEV, 4xe/Recharge → PHEV), and weight parsing.
+
+## Android app (`android/`, on branch `AndroidApp`)
+
+A native Kotlin + Jetpack Compose client that ships the same `cars.db` SQLite inside the APK
+and reads it read-only against `v_parking_summary`. Four screens, three of them powered by
+the fee classifier; the headline feature is a **Policy Explorer**.
+
+- **Policy Explorer** — drag the BEV and ICE/PHEV thresholds, see in real time how many cars
+  in the fleet pay double, plus a *border-cases* list of cars paying double within 5/10/25%
+  of the threshold. The main benefit: helps reason about the threshold policy.
+- **Lookup** — pick powertrain + weight, get the verdict + rule.
+- **Browse** — search + paginated list with fee status pills (uses the bundled DB).
+- **Settings** — text-size slider, HU-only toggle, refresh (future), about.
+
+Build: `cd android && ./gradlew :app:assembleDebug` → `app/build/outputs/apk/debug/app-debug.apk`.
+Unit tests: `./gradlew :app:testDebugUnitTest` (mirrors `tests/test_fees.py` 1:1).
+
+## Web v2 UI (`web/v2/`)
+
+A second web UI that mirrors the Android app's Policy Explorer UX in vanilla JS +
+dark theme. Reach it at **[/v2/](http://127.0.0.1:8000/v2/)** (the legacy SPA at `/` has a
+"📱 AndroidApp UI" button in the top-bar that switches over).
+
+Backed by `GET /api/v2/policy?bev=N&ice=N&pt=BEV,PHEV&make=Skoda,VW&hu_only=true` — a
+single server-side endpoint that returns the fleet outcome + border cases for any
+user-set thresholds + filters in one round-trip. Reuses the existing classifier
+logic in `app/fees.py` (single source of truth).
+
+Settings (font size, HU-only) persist via `localStorage`.
