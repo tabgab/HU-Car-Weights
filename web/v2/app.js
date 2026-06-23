@@ -4,7 +4,18 @@
 
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
-const fmt = (n) => (n == null ? '—' : Number(n).toLocaleString('en-US'));
+const fmt = (n) => (n == null ? '—' : Number(n).toLocaleString(window.I18N.lang() === 'hu' ? 'hu-HU' : 'en-US'));
+const T = (k, ...a) => window.I18N.t(k, ...a);
+const FEE_KEY = { ok: 'fee_ok', double: 'fee_double', borderline: 'fee_borderline', unknown: 'fee_unknown' };
+function feeLabel(s) { return FEE_KEY[s] ? T(FEE_KEY[s]) : (s ? s.toUpperCase() : '?'); }
+function ruleText(pt, thr) {
+  const noun = pt === 'BEV' ? T('rule_pt_bev') : pt === 'PHEV' ? T('rule_pt_phev') : T('rule_pt_ice');
+  return T('parking_rule', noun, thr);
+}
+function renderDataSource() {
+  const el = document.querySelector('#data-source');
+  if (el) el.textContent = state.totalCars != null ? T('v2_data_source_n', fmt(state.totalCars)) : T('v2_data_source_loading');
+}
 
 const POWERTRAIN_OPTIONS = ['BEV', 'PHEV', 'HEV', 'MHEV', 'petrol', 'diesel'];
 const TOP_MAKES = ['Škoda', 'Volkswagen', 'BMW', 'Audi', 'Mercedes-Benz',
@@ -24,6 +35,7 @@ const state = {
   allCars: [],
   outcome: null,
   selectedCarId: null,
+  totalCars: null,
   // Lookup
   lookupPt: 'BEV',
   lookupWeight: 1800,
@@ -51,7 +63,7 @@ $$('.tab').forEach(t => t.addEventListener('click', () => selectTab(t.dataset.ta
 function applyFontScale() {
   document.documentElement.style.setProperty('--font-scale', state.fontScale);
   const el = $('#font-current');
-  if (el) el.textContent = `Current: ${state.fontScale.toFixed(2)}×`;
+  if (el) el.textContent = T('v2_current_scale', state.fontScale.toFixed(2));
 }
 applyFontScale();
 
@@ -118,7 +130,7 @@ $('#reset-defaults').onclick = () => {
   saveN('bev', 2000); saveN('ice', 1800);
   $('#bev-slider').value = 2000; $('#bev-value').textContent = '2000 kg';
   $('#ice-slider').value = 1800; $('#ice-value').textContent = '1800 kg';
-  $('#note-current').textContent = 'Currently: BEV 2000 kg · ICE 1800 kg.';
+  $('#note-current').textContent = T('v2_note_current', 2000, 1800);
   runPolicy();
 };
 
@@ -155,7 +167,7 @@ function refreshMakeSheetList() {
     cb.onchange = () => {
       if (cb.checked) state.makeFilter.add(m); else state.makeFilter.delete(m);
       saveS('make_filter', state.makeFilter);
-      $('#make-sheet-count').textContent = `${state.makeFilter.size} selected · ${state.allMakes.length} total`;
+      $('#make-sheet-count').textContent = T('v2_make_count', state.makeFilter.size, state.allMakes.length);
     };
     const label = document.createElement('label');
     label.htmlFor = id; label.textContent = m;
@@ -190,7 +202,7 @@ async function _runPolicy() {
 function renderOutcome() {
   const o = state.outcome;
   if (!o) return;
-  $('#outcome-total').textContent = `${fmt(o.total)} cars`;
+  $('#outcome-total').textContent = T('cars_n', fmt(o.total));
   $('#legend-ok').textContent = `${fmt(o.ok)} · ${pct(o.ok, o.total)}%`;
   $('#legend-double').textContent = `${fmt(o.double)} · ${pct(o.double, o.total)}%`;
   $('#legend-borderline').textContent = `${fmt(o.borderline)} · ${pct(o.borderline, o.total)}%`;
@@ -215,8 +227,8 @@ function renderOutcome() {
   $('#b-10').textContent = fmt(b10.length);
   $('#b-25').textContent = fmt(b25.length);
   $('#b-hint').textContent = b25.length
-    ? `Closest to threshold (top ${Math.min(b25.length, 10)}):`
-    : 'No border cases at this policy.';
+    ? T('v2_border_hint_top', Math.min(b25.length, 10))
+    : T('v2_border_hint_none');
   // rows
   const list = $('#borders');
   list.innerHTML = '';
@@ -233,8 +245,7 @@ function renderOutcome() {
     row.onclick = () => openDetail(b.id);
     list.appendChild(row);
   });
-  $('#note-current').textContent =
-    `Currently: BEV ${state.bev} kg · ICE ${state.ice} kg.`;
+  $('#note-current').textContent = T('v2_note_current', state.bev, state.ice);
 }
 
 function pct(n, total) {
@@ -262,18 +273,18 @@ function runLookup() {
   const w = state.lookupWeight;
   const pt = state.lookupPt;
   const t = pt === 'BEV' ? 2000 : 1800;
-  $('#lookup-threshold').textContent = `Threshold: ${t} kg`;
-  $('#lookup-threshold-hint').textContent = `Threshold: ${t} kg`;
+  $('#lookup-threshold').textContent = T('v2_threshold', t);
+  $('#lookup-threshold-hint').textContent = T('v2_threshold', t);
   const status = classifyClient(pt, w, t);
   const pill = $('#lookup-status');
   pill.className = 'verdict-pill ' + status;
-  pill.textContent = status.toUpperCase();
-  const margin = w - t;
+  pill.textContent = feeLabel(status);
+  const margin = Math.abs(w - t);
   $('#lookup-rule').textContent = w
-    ? (status === 'ok' ? `${pt} at ${w} kg is ${margin} kg under the ${t} kg limit — OK.`
-       : status === 'double' ? `${pt} at ${w} kg is +${margin} kg over the ${t} kg limit — pays double.`
+    ? (status === 'ok' ? T('v2_lookup_under', pt, w, margin, t)
+       : status === 'double' ? T('v2_lookup_over', pt, w, margin, t)
        : '—')
-    : 'Enter a weight to see the verdict.';
+    : T('v2_lookup_enter');
   // nearby cars
   fetchNearby(pt, w);
 }
@@ -332,11 +343,11 @@ async function runBrowse() {
   const data = await apiGet('/api/cars?' + params.toString());
   state.allCars = data.items || [];
   const total = data.total || 0;
-  $('#browse-count').textContent = `${fmt(state.allCars.length)} of ${fmt(total)} cars`;
+  $('#browse-count').textContent = T('v2_browse_count', fmt(state.allCars.length), fmt(total));
   const list = $('#browse-list');
   list.innerHTML = '';
   if (state.allCars.length === 0) {
-    list.innerHTML = '<div class="muted" style="padding: 20px;">No cars match.</div>';
+    list.innerHTML = `<div class="muted" style="padding: 20px;">${T('v2_browse_empty')}</div>`;
     return;
   }
   state.allCars.forEach(c => {
@@ -349,7 +360,7 @@ async function runBrowse() {
         <div class="meta">${[c.trim, c.powertrain_type, c.drivetrain, c.model_year].filter(Boolean).join(' · ')}</div>
       </div>
       <div class="w">${w || '—'} kg</div>
-      <span class="pill ${c.fee_status}">${c.fee_status ? c.fee_status.toUpperCase() : '?'}</span>
+      <span class="pill ${c.fee_status}">${feeLabel(c.fee_status)}</span>
     `;
     row.onclick = () => openDetail(c.id);
     list.appendChild(row);
@@ -400,22 +411,23 @@ async function openDetail(id) {
   const w = c.weight || c.weight_min;
   const hu = c.hu_weight_kg;
   const disagree = hu != null && c.weight != null && hu !== c.weight;
+  const thr = fee.threshold || (c.powertrain_type === 'BEV' ? 2000 : 1800);
   $('#detail-body').innerHTML = `
     <h2 class="detail-h">${esc(c.make)} ${esc(c.model)}${c.trim ? ' · ' + esc(c.trim) : ''}</h2>
     <div class="muted small">${esc(c.powertrain_subtype || c.powertrain_type)}</div>
-    <div class="detail-verdict ${colorClass}">${verdict.toUpperCase()}</div>
-    <div class="muted small">Threshold: ${fee.threshold || (c.powertrain_type==='BEV' ? 2000 : 1800)} kg</div>
-    <div class="detail-row"><span class="k">Powertrain</span><span class="v">${esc(c.powertrain_type || '—')}</span></div>
-    <div class="detail-row"><span class="k">Sub-type</span><span class="v">${esc(c.powertrain_subtype || '—')}</span></div>
-    <div class="detail-row"><span class="k">Drivetrain</span><span class="v">${esc(c.drivetrain || '—')}</span></div>
-    <div class="detail-row"><span class="k">Power</span><span class="v">${c.power_kw || '—'} kW</span></div>
-    <div class="detail-row"><span class="k">Battery</span><span class="v">${c.battery_kwh || '—'} kWh</span></div>
-    <div class="detail-row"><span class="k">Model year</span><span class="v">${c.model_year || '—'}</span></div>
-    <div class="detail-row"><span class="k">Curb weight (cars-data)</span><span class="v">${w || '—'} kg</span></div>
-    <div class="detail-row"><span class="k">Curb weight (HU katalógus)</span><span class="v">${hu || '—'} kg</span></div>
-    ${disagree ? `<div class="detail-row"><span class="k">Disagreement</span><span class="v" style="color: var(--amber);">${(hu - c.weight) > 0 ? '+' : ''}${hu - c.weight} kg — HU is authoritative</span></div>` : ''}
-    <div class="detail-row"><span class="k">Primary source</span><span class="v">${esc(c.weight_source || 'cars-data')}</span></div>
-    <div class="detail-rule">${esc(fee.rule || '')}</div>
+    <div class="detail-verdict ${colorClass}">${feeLabel(verdict)}</div>
+    <div class="muted small">${T('v2_threshold', thr)}</div>
+    <div class="detail-row"><span class="k">${T('d_powertrain')}</span><span class="v">${esc(c.powertrain_type || '—')}</span></div>
+    <div class="detail-row"><span class="k">${T('d_subtype')}</span><span class="v">${esc(c.powertrain_subtype || '—')}</span></div>
+    <div class="detail-row"><span class="k">${T('d_drivetrain')}</span><span class="v">${esc(c.drivetrain || '—')}</span></div>
+    <div class="detail-row"><span class="k">${T('d_power')}</span><span class="v">${c.power_kw || '—'} kW</span></div>
+    <div class="detail-row"><span class="k">${T('d_battery')}</span><span class="v">${c.battery_kwh || '—'} kWh</span></div>
+    <div class="detail-row"><span class="k">${T('d_year')}</span><span class="v">${c.model_year || '—'}</span></div>
+    <div class="detail-row"><span class="k">${T('d_weight_cd')}</span><span class="v">${w || '—'} kg</span></div>
+    <div class="detail-row"><span class="k">${T('d_weight_hu')}</span><span class="v">${hu || '—'} kg</span></div>
+    ${disagree ? `<div class="detail-row"><span class="k">${T('v2_disagreement')}</span><span class="v" style="color: var(--amber);">${(hu - c.weight) > 0 ? '+' : ''}${hu - c.weight} kg — ${T('v2_hu_authoritative')}</span></div>` : ''}
+    <div class="detail-row"><span class="k">${T('v2_primary_source')}</span><span class="v">${esc(c.weight_source || 'cars-data')}</span></div>
+    <div class="detail-rule">${ruleText(c.powertrain_type, thr)}</div>
   `;
 }
 function closeDetail() {
@@ -458,6 +470,20 @@ function esc(s) {
   // Total car count
   try {
     const d = await apiGet('/api/cars?page_size=1');
-    $('#data-source').textContent = `${fmt(d.total)} cars in the dataset.`;
+    state.totalCars = d.total;
+    renderDataSource();
   } catch (e) {}
+
+  // re-render dynamic content when the language is switched
+  window.I18N.onChange(() => {
+    applyFontScale();
+    renderPowertrainChips();
+    renderMakeQuickChips();
+    renderFontPresets();
+    renderDataSource();
+    renderOutcome();
+    runLookup();
+    runBrowse();
+    if (state.selectedCarId != null && !$('#detail').classList.contains('hidden')) openDetail(state.selectedCarId);
+  });
 })();

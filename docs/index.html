@@ -3,84 +3,87 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hungarian Car Weights — Budapest Parking Fee</title>
+<title data-i18n="page_title_legacy">Hungarian Car Weights — Budapest Parking Fee</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>🅿️</text></svg>">
-<link rel="stylesheet" href="styles.css?v=10">
+<link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body>
 <header class="topbar">
   <div class="title">
-    <h1>🅿️ Hungarian Car Weights</h1>
-    <span class="subtitle">Budapest weight-based parking fee (from 2027): BEV &gt; 2000 kg, ICE/PHEV &gt; 1800 kg → double</span>
+    <h1 data-i18n="brand">🅿️ Hungarian Car Weights</h1>
+    <span class="subtitle" data-i18n="subtitle">Budapest weight-based parking fee (from 2027): BEV &gt; 2000 kg, ICE/PHEV &gt; 1800 kg → double</span>
   </div>
   <div class="topbar-right">
     <span id="count" class="count">—</span>
-    <a class="btn" id="android-link" href="v2/" title="Switch to the new AndroidApp-style UI">📱 AndroidApp UI</a>
-    <button id="export" class="btn">⬇ Export CSV</button>
+    <button id="lang-toggle" class="btn btn-ghost" type="button">🌐</button>
+    <a class="btn" id="android-link" href="v2/" data-i18n="nav_android">📱 AndroidApp UI</a>
+    <button id="export" class="btn" data-i18n="export_csv">⬇ Export CSV</button>
   </div>
 </header>
 
 <main>
   <aside class="sidebar">
     <label class="field">
-      <span>Search</span>
-      <input id="q" type="search" placeholder="make / model / trim">
+      <span data-i18n="search_label">Search</span>
+      <input id="q" type="search" data-i18n-ph="search_ph" placeholder="make / model / trim">
     </label>
 
-    <label class="hu-toggle"><input id="hu-only" type="checkbox"> 🇭🇺 HU data only
-      <span class="hu-hint">use only Hungarian-sourced weights</span>
+    <label class="hu-toggle"><input id="hu-only" type="checkbox"> <span data-i18n="hu_only_label">🇭🇺 HU data only</span>
+      <span class="hu-hint" data-i18n="hu_only_hint">use only Hungarian-sourced weights</span>
     </label>
 
-    <fieldset><legend>Powertrain</legend>
+    <fieldset><legend data-i18n="f_powertrain">Powertrain</legend>
       <div id="f-powertrain" class="checks"></div>
     </fieldset>
 
-    <fieldset><legend>Fee status</legend>
+    <fieldset><legend data-i18n="f_fee">Fee status</legend>
       <div id="f-fee" class="checks"></div>
     </fieldset>
 
-    <fieldset><legend>Sub-type</legend>
+    <fieldset><legend data-i18n="f_subtype">Sub-type</legend>
       <div id="f-subtype" class="checks"></div>
     </fieldset>
 
-    <fieldset><legend>Drivetrain</legend>
+    <fieldset><legend data-i18n="f_drivetrain">Drivetrain</legend>
       <div id="f-drivetrain" class="checks"></div>
     </fieldset>
 
-    <fieldset><legend>Curb weight (kg)</legend>
+    <fieldset><legend data-i18n="f_weight">Curb weight (kg)</legend>
       <div class="range">
-        <input id="wmin" type="number" placeholder="min" min="0" step="10">
+        <input id="wmin" type="number" data-i18n-ph="ph_min" placeholder="min" min="0" step="10">
         <span>–</span>
-        <input id="wmax" type="number" placeholder="max" min="0" step="10">
+        <input id="wmax" type="number" data-i18n-ph="ph_max" placeholder="max" min="0" step="10">
       </div>
-      <label class="inline"><input id="incl-unknown" type="checkbox" checked> include unknown weight</label>
+      <label class="inline"><input id="incl-unknown" type="checkbox" checked> <span data-i18n="include_unknown">include unknown weight</span></label>
     </fieldset>
 
     <label class="field">
-      <span>Sort</span>
+      <span data-i18n="sort_label">Sort</span>
       <select id="sort">
-        <option value="make">Make / model</option>
-        <option value="weight_desc">Weight ↓</option>
-        <option value="weight_asc">Weight ↑</option>
-        <option value="year_desc">Year ↓</option>
+        <option value="make" data-i18n="sort_make">Make / model</option>
+        <option value="weight_desc" data-i18n="sort_wdesc">Weight ↓</option>
+        <option value="weight_asc" data-i18n="sort_wasc">Weight ↑</option>
+        <option value="year_desc" data-i18n="sort_ydesc">Year ↓</option>
       </select>
     </label>
-    <button id="reset" class="btn btn-ghost">Reset filters</button>
+    <button id="reset" class="btn btn-ghost" data-i18n="reset_filters">Reset filters</button>
   </aside>
 
   <section class="results">
     <table id="grid">
       <thead><tr>
-        <th>Make</th><th>Model</th><th>Trim</th><th>Drive</th><th>Power</th>
-        <th>Year</th><th>Curb weight</th><th>Fee</th><th>Source</th>
+        <th data-i18n="th_make">Make</th><th data-i18n="th_model">Model</th><th data-i18n="th_trim">Trim</th>
+        <th data-i18n="th_drive">Drive</th><th data-i18n="th_power">Power</th>
+        <th data-i18n="th_year">Year</th><th data-i18n="th_weight">Curb weight</th>
+        <th data-i18n="th_fee">Fee</th><th data-i18n="th_source">Source</th>
       </tr></thead>
       <tbody id="rows"></tbody>
     </table>
-    <div id="empty" class="empty" hidden>No cars match these filters.</div>
+    <div id="empty" class="empty" hidden data-i18n="empty">No cars match these filters.</div>
     <div class="pager">
-      <button id="prev" class="btn btn-ghost">← Prev</button>
+      <button id="prev" class="btn btn-ghost" data-i18n="prev">← Prev</button>
       <span id="pageinfo"></span>
-      <button id="next" class="btn btn-ghost">Next →</button>
+      <button id="next" class="btn btn-ghost" data-i18n="next">Next →</button>
     </div>
   </section>
 </main>
@@ -92,9 +95,10 @@
   </div>
 </div>
 
+<script src="i18n.js"></script>
 <!-- API backend: api.http.js (live FastAPI) — build_static.py swaps this for carquery.js + api.local.js -->
 <script src="carquery.js"></script>
 <script src="api.local.js"></script>
-<script src="app.js?v=10" type="module"></script>
+<script src="app.js?v=11" type="module"></script>
 </body>
 </html>

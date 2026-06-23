@@ -22,7 +22,7 @@ DOCS = os.path.join(ROOT, "docs")
 
 # Files copied verbatim (relative to web/).
 VERBATIM = [
-    "app.js", "styles.css", "carquery.js", "api.local.js",
+    "app.js", "styles.css", "carquery.js", "api.local.js", "i18n.js",
     "v2/app.js", "v2/styles.css",
 ]
 
@@ -31,6 +31,7 @@ HTML = [
     ("index.html", "index.html", [
         ('href="/styles.css', 'href="styles.css'),
         ('href="/v2/"', 'href="v2/"'),
+        ('<script src="/i18n.js"></script>', '<script src="i18n.js"></script>'),
         ('<script src="/api.http.js"></script>',
          '<script src="carquery.js"></script>\n<script src="api.local.js"></script>'),
         ('src="/app.js', 'src="app.js'),
@@ -38,6 +39,7 @@ HTML = [
     ("v2/index.html", "v2/index.html", [
         ('href="/v2/styles.css', 'href="styles.css'),
         ('href="/"', 'href="../"'),
+        ('<script src="/i18n.js"></script>', '<script src="../i18n.js"></script>'),
         ('<script src="/api.http.js"></script>',
          '<script src="../carquery.js"></script>\n  <script src="../api.local.js"></script>'),
         ('src="/v2/app.js"', 'src="app.js"'),

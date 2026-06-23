@@ -2,7 +2,18 @@ const state = {
   q: "", powertrain: new Set(), fee: new Set(), subtype: new Set(),
   drivetrain: new Set(), weight_min: null, weight_max: null,
   include_unknown_weight: true, hu_only: false, sort: "make", page: 1, page_size: 50,
+  detailId: null,
 };
+
+const T = (k, ...a) => window.I18N.t(k, ...a);
+const FEE_KEY = { ok: "fee_ok", double: "fee_double", borderline: "fee_borderline", unknown: "fee_unknown" };
+const PT_KEY = { electric: "pt_electric", PHEV: "pt_phev", ICE: "pt_ice" };
+function feeLabel(s) { return FEE_KEY[s] ? T(FEE_KEY[s]) : (s || ""); }
+function ptLabel(v) { return PT_KEY[v] ? T(PT_KEY[v]) : (v || ""); }
+function ruleText(pt, thr) {
+  const noun = pt === "BEV" ? T("rule_pt_bev") : pt === "PHEV" ? T("rule_pt_phev") : T("rule_pt_ice");
+  return T("parking_rule", noun, thr);
+}
 
 const $ = (s) => document.querySelector(s);
 const rowsEl = $("#rows"), emptyEl = $("#empty"), countEl = $("#count");
@@ -23,8 +34,7 @@ function buildParams(forExport = false) {
   return p;
 }
 
-const FEE_LABEL = { ok: "OK", double: "DOUBLE", borderline: "BORDERLINE", unknown: "UNKNOWN" };
-function feeBadge(s) { return `<span class="badge badge--${s}">${FEE_LABEL[s] || s}</span>`; }
+function feeBadge(s) { return `<span class="badge badge--${s}">${feeLabel(s)}</span>`; }
 function confDot(c) {
   if (c == null) return `<span class="muted">—</span>`;
   const lvl = c >= 0.8 ? "high" : c >= 0.6 ? "medium" : "low";
@@ -32,22 +42,21 @@ function confDot(c) {
 }
 function weightText(r) {
   if (r.weight == null && r.weight_min == null && r.weight_max == null)
-    return `<span class="muted"><i>unknown</i></span>`;
+    return `<span class="muted"><i>${T("weight_unknown")}</i></span>`;
   if (r.weight_min != null && r.weight_max != null && r.weight_min !== r.weight_max)
     return `${r.weight_min}–${r.weight_max}${r.weight != null ? ` (≈${r.weight})` : ""} kg`;
   return `${r.weight ?? r.weight_min ?? r.weight_max} kg`;
 }
-const PT_LABEL = { electric: "Electric", PHEV: "PHEV", ICE: "ICE" };
 
 function sourceTooltip(r) {
-  const lines = [`${r.make} ${r.model}${r.trim ? " " + r.trim : ""}`, "Curb weight sources:"];
-  lines.push(`  • cars-data (intl): ${r.weight ?? "?"} kg`);
+  const lines = [`${r.make} ${r.model}${r.trim ? " " + r.trim : ""}`, T("tip_sources")];
+  lines.push(T("tip_intl", r.weight ?? "?"));
   if (r.hu_weight_kg != null) {
-    lines.push(`  • katalogus.hu (HU): ${r.hu_weight_kg} kg`);
-    lines.push(r.sources_agree === 1 ? "✓ sources agree"
-      : r.sources_agree === 0 ? "⚠ sources disagree — HU is authoritative" : "");
+    lines.push(T("tip_hu", r.hu_weight_kg));
+    lines.push(r.sources_agree === 1 ? T("tip_agree")
+      : r.sources_agree === 0 ? T("tip_disagree") : "");
   } else {
-    lines.push("  • (no Hungarian-catalog match yet)");
+    lines.push(T("tip_nomatch"));
   }
   return lines.filter(Boolean).join("\n");
 }
@@ -55,12 +64,12 @@ function sourceTooltip(r) {
 function sourcesCell(r) {
   if (r.hu_weight_kg != null) {
     if (r.sources_agree === 1)
-      return `<span class="badge badge--ok" title="confirmed by 2 sources">✓ 2 src</span>`;
+      return `<span class="badge badge--ok" title="${T("src_2_title")}">${T("src_2")}</span>`;
     if (r.sources_agree === 0)
-      return `<span class="badge badge--borderline" title="HU=${r.hu_weight_kg}kg vs intl=${r.weight}kg">⚠ HU ${r.hu_weight_kg}</span>`;
-    return `<span class="badge badge--unknown">HU</span>`;
+      return `<span class="badge badge--borderline" title="${T("src_hu_title", r.hu_weight_kg, r.weight)}">⚠ ${T("src_hu")} ${r.hu_weight_kg}</span>`;
+    return `<span class="badge badge--unknown">${T("src_hu")}</span>`;
   }
-  return `<span class="muted">cars-data</span>`;
+  return `<span class="muted">${T("src_carsdata")}</span>`;
 }
 
 async function refresh() {
@@ -70,9 +79,9 @@ async function refresh() {
   ]);
   renderRows(list);
   renderFacets(facets);
-  countEl.textContent = `${list.total.toLocaleString()} cars`;
+  countEl.textContent = T("cars_n", list.total.toLocaleString(window.I18N.lang() === "hu" ? "hu-HU" : "en-US"));
   const pages = Math.max(1, Math.ceil(list.total / list.page_size));
-  $("#pageinfo").textContent = `Page ${list.page} / ${pages}`;
+  $("#pageinfo").textContent = T("page_of", list.page, pages);
   $("#prev").disabled = list.page <= 1;
   $("#next").disabled = list.page >= pages;
 }
@@ -96,8 +105,10 @@ function renderRows(list) {
 }
 
 function renderFacets(f) {
-  facetGroup("#f-powertrain", "powertrain", f.powertrain, PT_LABEL);
-  facetGroup("#f-fee", "fee", f.fee_status, FEE_LABEL);
+  const PT = { electric: T("pt_electric"), PHEV: T("pt_phev"), ICE: T("pt_ice") };
+  const FEE = { ok: T("fee_ok"), double: T("fee_double"), borderline: T("fee_borderline"), unknown: T("fee_unknown") };
+  facetGroup("#f-powertrain", "powertrain", f.powertrain, PT);
+  facetGroup("#f-fee", "fee", f.fee_status, FEE);
   facetGroup("#f-subtype", "subtype", f.subtype, {});
   facetGroup("#f-drivetrain", "drivetrain", f.drivetrain, {});
 }
@@ -123,23 +134,25 @@ function facetGroup(sel, key, buckets, labels) {
 }
 
 async function openDetail(id) {
+  state.detailId = id;
   const r = await apiGet("/api/cars/" + id);
   const row = (k, v) => `<div class="detail-row"><span class="k">${k}</span><span>${v}</span></div>`;
+  const thr = r.fee?.threshold ?? (r.powertrain_type === "BEV" ? 2000 : 1800);
   $("#detail-body").innerHTML = `
     <h2 class="detail-h">${r.make} ${r.model}</h2>
     <div class="muted">${r.trim ?? ""}</div>
     <div style="margin:14px 0">${feeBadge(r.fee_status)}</div>
-    ${row("Powertrain", PT_LABEL[r.powertrain_category] || r.powertrain_type)}
-    ${row("Sub-type", r.powertrain_subtype ?? "—")}
-    ${row("Drivetrain", r.drivetrain ?? "—")}
-    ${row("Power", r.power_kw != null ? r.power_kw + " kW" : "—")}
-    ${row("Battery", r.battery_kwh != null ? r.battery_kwh + " kWh" : "—")}
-    ${row("Model year", r.model_year ?? "—")}
-    ${row("Curb weight (cars-data)", (r.weight != null ? r.weight + " kg" : "—"))}
-    ${row("Curb weight (HU katalógus)", (r.hu_weight_kg != null ? r.hu_weight_kg + " kg" : "—"))}
-    ${row("Sources", sourcesCell(r) + (r.sources_agree === 0 ? " — HU authoritative" : ""))}
-    ${row("Threshold", (r.fee?.threshold ?? "—") + " kg")}
-    <div class="rule">${r.fee?.rule ?? ""}</div>`;
+    ${row(T("d_powertrain"), ptLabel(r.powertrain_category) || r.powertrain_type)}
+    ${row(T("d_subtype"), r.powertrain_subtype ?? "—")}
+    ${row(T("d_drivetrain"), r.drivetrain ?? "—")}
+    ${row(T("d_power"), r.power_kw != null ? r.power_kw + " kW" : "—")}
+    ${row(T("d_battery"), r.battery_kwh != null ? r.battery_kwh + " kWh" : "—")}
+    ${row(T("d_year"), r.model_year ?? "—")}
+    ${row(T("d_weight_cd"), (r.weight != null ? r.weight + " kg" : "—"))}
+    ${row(T("d_weight_hu"), (r.hu_weight_kg != null ? r.hu_weight_kg + " kg" : "—"))}
+    ${row(T("d_sources"), sourcesCell(r) + (r.sources_agree === 0 ? " — " + T("v2_hu_authoritative") : ""))}
+    ${row(T("d_threshold"), thr + " kg")}
+    <div class="rule">${ruleText(r.powertrain_type, thr)}</div>`;
   $("#detail").hidden = false;
 }
 
@@ -166,3 +179,9 @@ $("#reset").onclick = () => {
 };
 
 refresh();
+
+// re-render dynamic content when the language is switched
+window.I18N.onChange(() => {
+  refresh();
+  if (!$("#detail").hidden && state.detailId != null) openDetail(state.detailId);
+});
