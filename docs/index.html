@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hungarian Car Weights — Budapest Parking Fee</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>🅿️</text></svg>">
-<link rel="stylesheet" href="/styles.css?v=10">
+<link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
 <header class="topbar">
@@ -15,7 +15,7 @@
   </div>
   <div class="topbar-right">
     <span id="count" class="count">—</span>
-    <a class="btn" id="android-link" href="/v2/" title="Switch to the new AndroidApp-style UI">📱 AndroidApp UI</a>
+    <a class="btn" id="android-link" href="v2/" title="Switch to the new AndroidApp-style UI">📱 AndroidApp UI</a>
     <button id="export" class="btn">⬇ Export CSV</button>
   </div>
 </header>
@@ -93,7 +93,8 @@
 </div>
 
 <!-- API backend: api.http.js (live FastAPI) — build_static.py swaps this for carquery.js + api.local.js -->
-<script src="/api.http.js"></script>
-<script src="/app.js?v=10" type="module"></script>
+<script src="carquery.js"></script>
+<script src="api.local.js"></script>
+<script src="app.js?v=10" type="module"></script>
 </body>
 </html>

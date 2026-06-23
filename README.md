@@ -47,6 +47,25 @@ re-running `seed` — the pipeline is idempotent and caches raw pages under `dat
 ./run.sh           # http://127.0.0.1:8000
 ```
 
+## Host it online — free, static, no server (GitHub Pages)
+
+Both UIs also run **fully client-side**: the dataset is exported to a static `docs/cars.json`
+(~76 KB gzipped) and the entire backend (filter / facet / classify / policy-sim / CSV) is
+re-implemented in the browser (`web/carquery.js`), so no Python server is needed. Published
+on **GitHub Pages** → free, HTTPS, no cold starts.
+
+```bash
+python3 scripts/build_static.py   # regenerate docs/ from web/ + the DB
+```
+
+Live: **https://tabgab.github.io/HU-Car-Weights/** (classic) · **/v2/** (Policy Explorer).
+
+The same UI source serves both backends via a small pluggable layer: `web/api.http.js`
+(calls the FastAPI `/api/...`) for the local app, `web/api.local.js` (calls `carquery.js`)
+for the static site — `build_static.py` swaps them and rewrites absolute paths to relative.
+Re-run `scripts/export_cars_json.py` (or the build) and commit `docs/` whenever `cars.db`
+changes. Parity with the live API is verified black-box.
+
 ## Data sourcing — honest scope
 
 There is **no single source** listing every HU-market car with curb weight per variant, so

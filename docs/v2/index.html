@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>carWeights HU — Policy Explorer</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>🅿️</text></svg>">
-<link rel="stylesheet" href="/v2/styles.css">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
@@ -14,7 +14,7 @@
       <span class="subtitle">Budapest weight-based parking fee (from 2027): BEV &gt; 2000 kg, ICE/PHEV &gt; 1800 kg → double</span>
     </div>
     <div class="topbar-right">
-      <a class="btn btn-ghost" href="/" title="Switch to the classic UI">← Classic UI</a>
+      <a class="btn btn-ghost" href="../" title="Switch to the classic UI">← Classic UI</a>
       <button id="export" class="btn">⬇ Export CSV</button>
     </div>
   </header>
@@ -210,7 +210,8 @@
   </div>
 
   <!-- API backend: api.http.js (live FastAPI) — build_static.py swaps this for carquery.js + api.local.js -->
-  <script src="/api.http.js"></script>
-  <script src="/v2/app.js"></script>
+  <script src="../carquery.js"></script>
+  <script src="../api.local.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
