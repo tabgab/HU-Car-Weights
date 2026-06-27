@@ -73,6 +73,7 @@
       v2_border_title: "Border cases — cars paying double within…",
       v2_note_default: "Default 2027 rule: BEV > 2000 kg, ICE/PHEV > 1800 kg.",
       v2_note_current: "Currently: BEV {0} kg · ICE {1} kg.",
+      v2_funfact: "💡 Fun fact: even the 1999 kg XPeng P7+ sedan sits just under 2 tonnes. But fit a tow bar (e.g. for a bike rack, ~15–25 kg) and its kerb weight tips over 2 tonnes — so it pays double. A single accessory decides it; countless examples like this show how misguided the idea is.",
       v2_border_hint_top: "Closest to threshold (top {0}):",
       v2_border_hint_none: "No border cases at this policy.",
       // ── v2 lookup ──
@@ -176,6 +177,7 @@
       v2_border_title: "Határesetek — dupla díjat fizetők ezen belül…",
       v2_note_default: "Alap 2027-es szabály: elektromos > 2000 kg, belső égésű/PHEV > 1800 kg.",
       v2_note_current: "Jelenleg: elektromos {0} kg · belső égésű {1} kg.",
+      v2_funfact: "💡 Fun fact: az 1999 kg-os XPeng P7+ szedán is épphogy a 2 tonna alatt van. De szereltess rá egy vonóhorgot (pl. kerékpárszállításhoz, ~15–25 kg), és a saját tömege átlépi a 2 tonnát — máris dupla díj. Egyetlen kiegészítő dönt; számtalan ilyen példa mutatja, mennyire elhibázott ez az elképzelés.",
       v2_border_hint_top: "Küszöbhöz legközelebb (első {0}):",
       v2_border_hint_none: "Nincs határeset ennél a szabálynál.",
       // ── v2 lookup ──
