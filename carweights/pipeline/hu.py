@@ -157,6 +157,13 @@ def _split_model_trim(display_name: str, make: str, model_slug: str, known_model
     # ('AMG' alone is NOT stripped — 'AMG GT' is a genuine model name.)
     if make == "Mercedes-Benz" and rest.lower().startswith("mercedes-amg "):
         rest = rest[len("mercedes-amg "):].strip()
+    # A renamed brand's catalog titles still carry the OLD name ('SSANGYONG Tivoli…'
+    # under make KGM): strip a leading token that canonicalizes to this same make.
+    head = rest.split(None, 1)
+    if len(head) == 2:
+        from ..normalize.names import canonical_make
+        if canonical_make(head[0]) == make and head[0].lower() != make.lower():
+            rest = head[1].strip()
     low = rest.lower()
     if known_models:
         for name in sorted(known_models, key=len, reverse=True):
