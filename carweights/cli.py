@@ -27,7 +27,8 @@ def _load_makes() -> list[str]:
 
 def cmd_market(args):
     conn = init_db()
-    total = run_market(conn, _load_makes(), max_models=args.max_models,
+    makes = args.makes.split(",") if args.makes else _load_makes()
+    total = run_market(conn, [m.strip() for m in makes], max_models=args.max_models,
                        max_variants=args.max_variants, min_year=args.min_year)
     print("\n=== market scrape complete ===")
     print(total)
@@ -184,6 +185,14 @@ def cmd_hu_pdf(args):
     conn.close()
 
 
+def cmd_normalize(args):
+    from .pipeline.normalize_db import normalize_names
+    conn = init_db()
+    print("normalize:", normalize_names(conn))
+    print("re-derive:", derive(conn))
+    conn.close()
+
+
 def cmd_derive(args):
     conn = init_db()
     print(derive(conn))
@@ -231,7 +240,8 @@ def main(argv=None):
     s.add_argument("--max-variants", type=int, default=8)
     s.set_defaults(func=cmd_scrape)
 
-    s = sub.add_parser("market", help="discover+scrape all current models of the top-20 makes")
+    s = sub.add_parser("market", help="discover+scrape all current models of the configured makes")
+    s.add_argument("--makes", default=None, help="comma-separated make slugs (default: config/makes_hu.yaml)")
     s.add_argument("--max-models", type=int, default=None, help="cap models per make")
     s.add_argument("--max-variants", type=int, default=3)
     s.add_argument("--min-year", type=int, default=2018)
@@ -262,6 +272,7 @@ def main(argv=None):
 
     sub.add_parser("extra-hu", help="ingest downloaded brochure PDFs + Changan S05 web specs").set_defaults(func=cmd_extra_hu)
     sub.add_parser("firstclass", help="promote katalogus catalog rows to first-class variants").set_defaults(func=cmd_firstclass)
+    sub.add_parser("normalize", help="re-apply aliases.yaml canonical names to existing rows (merge dupes)").set_defaults(func=cmd_normalize)
     sub.add_parser("derive", help="recompute parking classification").set_defaults(func=cmd_derive)
     sub.add_parser("stats", help="coverage stats").set_defaults(func=cmd_stats)
     sub.add_parser("export", help="export v_parking_summary to CSV").set_defaults(func=cmd_export)

@@ -11,7 +11,7 @@
   <header class="topbar">
     <div class="title">
       <h1 data-i18n="brand">🅿️ Hungarian Car Weights</h1>
-      <span class="subtitle" data-i18n="subtitle">Budapest weight-based parking fee (from 2027): BEV &gt; 2000 kg, ICE/PHEV &gt; 1800 kg → double</span>
+      <span class="subtitle" data-i18n="subtitle">Budapest weight-based parking fee (from 2027): any car &gt; 2000 kg → double</span>
     </div>
     <div class="topbar-right">
       <button id="lang-toggle" class="btn btn-ghost" type="button">🌐</button>
@@ -65,14 +65,14 @@
         <div class="threshold-header">
           <span class="threshold-icon ice">⛽</span>
           <span class="threshold-title" data-i18n="v2_ice_threshold">ICE / PHEV / HEV threshold</span>
-          <span class="threshold-value" id="ice-value">1800 kg</span>
+          <span class="threshold-value" id="ice-value">2000 kg</span>
         </div>
-        <input type="range" class="slider" id="ice-slider" min="1000" max="3000" step="25" value="1800">
+        <input type="range" class="slider" id="ice-slider" min="1000" max="3000" step="25" value="2000">
         <div class="range-axis"><span>1000</span><span>3000</span></div>
       </div>
 
       <div class="actions">
-        <button class="btn btn-ghost" id="reset-defaults" data-i18n="v2_reset_defaults">↺ Reset to defaults (2000 / 1800)</button>
+        <button class="btn btn-ghost" id="reset-defaults" data-i18n="v2_reset_defaults">↺ Reset to defaults (2000 / 2000)</button>
       </div>
 
       <div class="card" id="fleet-outcome">
@@ -98,8 +98,8 @@
       </div>
 
       <div class="card note">
-        <div data-i18n="v2_note_default">Default 2027 rule: BEV &gt; 2000 kg, ICE/PHEV &gt; 1800 kg.</div>
-        <div class="muted" id="note-current">Currently: BEV 2000 kg · ICE 1800 kg.</div>
+        <div data-i18n="v2_note_default">Default 2027 rule: any car (BEV, ICE, PHEV) &gt; 2000 kg.</div>
+        <div class="muted" id="note-current">Currently: BEV 2000 kg · ICE 2000 kg.</div>
       </div>
 
       <div class="card" style="border-left:4px solid var(--amber);">
@@ -120,12 +120,12 @@
         <h3 data-i18n="v2_lookup_weight">Curb weight (kg)</h3>
         <input type="number" id="lookup-weight" min="500" max="3500" value="1800">
         <input type="range" class="slider" id="lookup-slider" min="800" max="3000" step="10" value="1800">
-        <div class="muted small" id="lookup-threshold-hint">Threshold: 1800 kg</div>
+        <div class="muted small" id="lookup-threshold-hint">Threshold: 2000 kg</div>
       </div>
       <div class="card">
         <div class="verdict">
           <span class="verdict-pill" id="lookup-status">OK</span>
-          <span class="muted" id="lookup-threshold">Threshold: 1800 kg</span>
+          <span class="muted" id="lookup-threshold">Threshold: 2000 kg</span>
         </div>
         <div class="rule" id="lookup-rule">—</div>
       </div>
@@ -176,7 +176,7 @@
       </div>
       <div class="card note">
         <h3 data-i18n="v2_about">About</h3>
-        <div class="muted small" data-i18n="v2_about_1">Curb weights from cars-data.com and katalogus.hasznaltauto.hu. The default 2027 policy is BEV &gt; 2000 kg, ICE/PHEV &gt; 1800 kg.</div>
+        <div class="muted small" data-i18n="v2_about_1">Curb weights from cars-data.com and katalogus.hasznaltauto.hu. The default 2027 policy is any car &gt; 2000 kg.</div>
         <div class="muted small" style="margin-top: 8px;" data-i18n="v2_about_2">UI mirror of the native Android app (Policy Explorer with live threshold simulation).</div>
       </div>
     </section>

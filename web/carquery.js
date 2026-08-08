@@ -6,7 +6,7 @@
   "use strict";
 
   const THRESHOLD_BEV = 2000;
-  const THRESHOLD_COMBUSTION = 1800; // ICE and PHEV
+  const THRESHOLD_COMBUSTION = 2000; // ICE and PHEV
   const PT_MAP = { electric: "BEV", bev: "BEV", phev: "PHEV", ice: "ICE" };
   const CATEGORY = { BEV: "electric", PHEV: "PHEV", ICE: "ICE" };
   const PT_LABEL = { BEV: "electric", PHEV: "PHEV", ICE: "ICE" };
@@ -65,6 +65,11 @@
     const tests = [];
     if (f.hu_only) tests.push((c) => c.source !== "cars-data");
 
+    if (f.on_sale != null) {
+      const want = f.on_sale ? 1 : 0;
+      tests.push((c) => c.on_sale_hu === want);
+    }
+
     if (f.q) {
       const like = String(f.q).toLowerCase();
       tests.push((c) =>
@@ -122,7 +127,7 @@
     });
   }
 
-  const THRESHOLDS = { BEV: 2000, ICE: 1800, PHEV: 1800 };
+  const THRESHOLDS = { BEV: 2000, ICE: 2000, PHEV: 2000 };
 
   // ── /api/cars ─────────────────────────────────────────────────────────────
   async function listCars(f) {
@@ -182,8 +187,8 @@
     if (!c) return null;
     const row = enrich(c);
     const pt = c.powertrain_type;
-    const thr = pt === "BEV" ? 2000 : 1800;
-    const rule = `${pt === "BEV" ? "BEV" : pt || "Combustion"} over ${thr} kg pays double Budapest parking fee`;
+    const thr = 2000;
+    const rule = `Any car over ${thr} kg pays double Budapest parking fee`;
     row.fee = { threshold: thr, status: row.fee_status, rule, stored_classification: row.fee_status };
     return row;
   }
@@ -192,7 +197,7 @@
   async function policy(p) {
     const rows = await load();
     const bev = clampInt(p.bev, 2000, 500, 5000);
-    const ice = clampInt(p.ice, 1800, 500, 5000);
+    const ice = clampInt(p.ice, 2000, 500, 5000);
     const limit = clampInt(p.limit, 500, 1, 2000);
     const ptSet = p.pt && p.pt.length ? new Set(p.pt) : null;
     const makeSet = p.make && p.make.length ? new Set(p.make) : null;
@@ -263,7 +268,7 @@
     const lines = [CSV_COLS.join(",")];
     for (const c of items) {
       const rec = Object.assign({}, c, {
-        threshold: c.powertrain_type === "BEV" ? 2000 : 1800,
+        threshold: 2000,
         fee_status: c._fee,
       });
       lines.push(CSV_COLS.map((k) => csvCell(rec[k])).join(","));

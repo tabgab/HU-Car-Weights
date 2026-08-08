@@ -1,7 +1,7 @@
 const state = {
   q: "", powertrain: new Set(), fee: new Set(), subtype: new Set(),
   drivetrain: new Set(), weight_min: null, weight_max: null,
-  include_unknown_weight: true, hu_only: false, sort: "make", page: 1, page_size: 50,
+  include_unknown_weight: true, hu_only: false, on_sale: true, sort: "make", page: 1, page_size: 50,
   detailId: null,
 };
 
@@ -29,6 +29,7 @@ function buildParams(forExport = false) {
   if (state.weight_max != null) p.set("weight_max", state.weight_max);
   if (!state.include_unknown_weight) p.set("include_unknown_weight", "false");
   if (state.hu_only) p.set("hu_only", "true");
+  if (state.on_sale) p.set("on_sale", "true");
   p.set("sort", state.sort);
   if (!forExport) { p.set("page", state.page); p.set("page_size", state.page_size); }
   return p;
@@ -137,7 +138,7 @@ async function openDetail(id) {
   state.detailId = id;
   const r = await apiGet("/api/cars/" + id);
   const row = (k, v) => `<div class="detail-row"><span class="k">${k}</span><span>${v}</span></div>`;
-  const thr = r.fee?.threshold ?? (r.powertrain_type === "BEV" ? 2000 : 1800);
+  const thr = r.fee?.threshold ?? 2000;
   $("#detail-body").innerHTML = `
     <h2 class="detail-h">${r.make} ${r.model}</h2>
     <div class="muted">${r.trim ?? ""}</div>
@@ -163,6 +164,7 @@ $("#wmin").onchange = (e) => { state.weight_min = e.target.value ? +e.target.val
 $("#wmax").onchange = (e) => { state.weight_max = e.target.value ? +e.target.value : null; state.page = 1; refresh(); };
 $("#incl-unknown").onchange = (e) => { state.include_unknown_weight = e.target.checked; state.page = 1; refresh(); };
 $("#hu-only").onchange = (e) => { state.hu_only = e.target.checked; state.page = 1; refresh(); };
+$("#on-sale").onchange = (e) => { state.on_sale = e.target.checked; state.page = 1; refresh(); };
 $("#sort").onchange = (e) => { state.sort = e.target.value; refresh(); };
 $("#prev").onclick = () => { if (state.page > 1) { state.page--; refresh(); } };
 $("#next").onclick = () => { state.page++; refresh(); };
@@ -172,9 +174,10 @@ $("#detail").onclick = (e) => { if (e.target.id === "detail") $("#detail").hidde
 $("#reset").onclick = () => {
   Object.assign(state, { q: "", powertrain: new Set(), fee: new Set(), subtype: new Set(),
     drivetrain: new Set(), weight_min: null, weight_max: null, include_unknown_weight: true,
-    hu_only: false, sort: "make", page: 1 });
+    hu_only: false, on_sale: true, sort: "make", page: 1 });
   $("#q").value = ""; $("#wmin").value = ""; $("#wmax").value = "";
-  $("#incl-unknown").checked = true; $("#hu-only").checked = false; $("#sort").value = "make";
+  $("#incl-unknown").checked = true; $("#hu-only").checked = false; $("#on-sale").checked = true;
+  $("#sort").value = "make";
   refresh();
 };
 

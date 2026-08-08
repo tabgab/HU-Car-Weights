@@ -1,0 +1,26 @@
+# Models no longer orderable NEW in Hungary (2026-08 market audit; importer sites +
+# HU motor press). Keys are make canonical names, values are model slugs (models.slug).
+# Applied by `carweights.cli normalize`: sets models/variants on_sale_hu=0; every model
+# NOT listed here is reset to on_sale_hu=1, so this file is the single source of truth.
+#
+# Deliberately NOT listed (still orderable / wind-down still in progress as of 2026-08):
+# Ford Focus, Peugeot 508, Renault Megane & Scenic, Toyota Mirai, Opel Zafira Life.
+discontinued:
+  Toyota: [gr86, gt86, prius-plus, highlander, supra]
+  Volkswagen: [arteon, up, beetle, golf-sportsvan, jetta]
+  "Škoda": [citigo]
+  Ford: [fiesta, mondeo, galaxy, s-max, ecosport, b-max, c-max, ka-plus, edge, f-150, grand]  # 'grand' = old Grand C-Max rows
+  Opel: [meriva, crossland, insignia]
+  Peugeot: ["4008", "301", ion]
+  Renault: [kadjar, talisman, twizy, laguna, zoe, espace, grand]  # 'grand' = old Grand Scénic/Espace rows
+  Dacia: [dokker, lodgy, logan]
+  Suzuki: [swace, ignis, jimny, sx4, grand-vitara]
+  Kia: [ceed, ceed-sw, proceed, soul, stinger, rio, optima]
+  Hyundai: [nexo, h350, ioniq, sonata]
+  Nissan: [navara, pathfinder, cube, pixo, 370z, gt-r, evalia, nv200, e-nv200, nv300]
+  Audi: [a1, q2, tt, a8]
+  BMW: [i3, i8, 6-series-gran-turismo, z4, 8-series]
+  Mercedes-Benz: [eqc, eqb, cls, m-class, slk, x-class]
+  Volvo: [c40, s40, s80, v40]
+  Cupra: [ateca]
+  BYD: [han, etp3]

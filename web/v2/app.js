@@ -25,7 +25,7 @@ const FONT_SCALES = [0.85, 1.0, 1.15, 1.3, 1.5, 1.75, 2.0];
 // ─── State ────────────────────────────────────────────────────────────────
 const state = {
   bev: loadN('bev', 2000),
-  ice: loadN('ice', 1800),
+  ice: loadN('ice', 2000),
   ptFilter: new Set(loadS('pt_filter', [])),
   makeFilter: new Set(loadS('make_filter', [])),
   huOnly: loadB('hu_only', false),
@@ -126,11 +126,11 @@ wireSlider('#bev-slider', '#bev-value', 'bev', runPolicy);
 wireSlider('#ice-slider', '#ice-value', 'ice', runPolicy);
 
 $('#reset-defaults').onclick = () => {
-  state.bev = 2000; state.ice = 1800;
-  saveN('bev', 2000); saveN('ice', 1800);
+  state.bev = 2000; state.ice = 2000;
+  saveN('bev', 2000); saveN('ice', 2000);
   $('#bev-slider').value = 2000; $('#bev-value').textContent = '2000 kg';
-  $('#ice-slider').value = 1800; $('#ice-value').textContent = '1800 kg';
-  $('#note-current').textContent = T('v2_note_current', 2000, 1800);
+  $('#ice-slider').value = 2000; $('#ice-value').textContent = '2000 kg';
+  $('#note-current').textContent = T('v2_note_current', 2000, 2000);
   runPolicy();
 };
 
@@ -272,7 +272,7 @@ $('#lookup-slider').addEventListener('input', e => {
 function runLookup() {
   const w = state.lookupWeight;
   const pt = state.lookupPt;
-  const t = pt === 'BEV' ? 2000 : 1800;
+  const t = 2000;
   $('#lookup-threshold').textContent = T('v2_threshold', t);
   $('#lookup-threshold-hint').textContent = T('v2_threshold', t);
   const status = classifyClient(pt, w, t);
@@ -411,7 +411,7 @@ async function openDetail(id) {
   const w = c.weight || c.weight_min;
   const hu = c.hu_weight_kg;
   const disagree = hu != null && c.weight != null && hu !== c.weight;
-  const thr = fee.threshold || (c.powertrain_type === 'BEV' ? 2000 : 1800);
+  const thr = fee.threshold || 2000;
   $('#detail-body').innerHTML = `
     <h2 class="detail-h">${esc(c.make)} ${esc(c.model)}${c.trim ? ' · ' + esc(c.trim) : ''}</h2>
     <div class="muted small">${esc(c.powertrain_subtype || c.powertrain_type)}</div>

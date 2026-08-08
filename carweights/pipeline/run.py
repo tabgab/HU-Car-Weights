@@ -12,7 +12,7 @@ from .derive import derive
 
 def _store(conn: sqlite3.Connection, rec: cars_data.VariantRecord) -> None:
     make = canonical_make(rec.make)
-    model = canonical_model(rec.model)
+    model = canonical_model(rec.model, make=make)
     mk = R.upsert_make(conn, make)
     md = R.upsert_model(conn, mk, model)
     fp = R.variant_fingerprint(R.slugify(make), R.slugify(model),

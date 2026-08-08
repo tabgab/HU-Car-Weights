@@ -2,8 +2,9 @@
 
 Ordered rules: structured signals first (battery + engine displacement), then keyword
 precedence PHEV > BEV > MHEV/HEV > diesel/petrol. Full/series hybrids (incl. Nissan
-e-Power) fall into the ICE bucket because, per the Budapest rule, anything with a
-combustion engine uses the 1800 kg threshold.
+e-Power) fall into the ICE bucket. The Budapest rule uses a single 2000 kg threshold
+for all powertrains, so this classification is informational (display/filtering),
+not fee-determining.
 """
 from __future__ import annotations
 

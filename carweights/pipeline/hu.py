@@ -20,6 +20,10 @@ BRAND_ALIASES = {
     "mercedes-benz": ["mercedes", "mercedes_benz"],
     "alfa-romeo": ["alfa_romeo"],
     "land-rover": ["land_rover"],
+    "ds": ["ds_automobiles", "dsautomobiles"],
+    "kgm": ["ssangyong"],       # KGM models may still list under the old brand name
+    "ineos": ["ineos_grenadier"],
+    "mini": ["mini_cooper"],
 }
 
 
@@ -121,12 +125,17 @@ def scrape_make_hu(conn: sqlite3.Connection, brand_slug: str, *, max_variants=No
 def _strip_make(display_name: str, make: str) -> str:
     """Strip the make from the front — repeatedly, since some H1s double it
     (e.g. 'OMODA Omoda 5 ...')."""
+    def sq(w: str) -> str:
+        # ascii-fold before stripping: 'Škoda' must squash to 'skoda', not 'koda',
+        # or the catalog's ASCII 'SKODA' prefix never matches and becomes a "model"
+        return _ascii(w)
+
     toks = display_name.split()
-    mwords = [w.lower().strip("-.") for w in make.split()]
+    mwords = [sq(w) for w in make.split()]
     changed = True
     while changed and len(toks) > len(mwords):
         changed = False
-        if all(toks[i].lower().strip("-.") == mwords[i] for i in range(len(mwords))):
+        if all(sq(toks[i]) == mwords[i] for i in range(len(mwords))):
             toks = toks[len(mwords):]
             changed = True
     return " ".join(toks) or display_name
@@ -143,11 +152,24 @@ def _split_model_trim(display_name: str, make: str, model_slug: str, known_model
     if not dn:
         return (model_slug.title(), None)
     rest = _strip_make(dn, make).strip()
+    # AMG cars come through the 'mercedes' catalog brand titled 'Mercedes-AMG EQE 43…';
+    # strip the sub-brand prefix so the real model matches the known-model list.
+    # ('AMG' alone is NOT stripped — 'AMG GT' is a genuine model name.)
+    if make == "Mercedes-Benz" and rest.lower().startswith("mercedes-amg "):
+        rest = rest[len("mercedes-amg "):].strip()
     low = rest.lower()
     if known_models:
         for name in sorted(known_models, key=len, reverse=True):
             n = name.lower()
             if low == n or low.startswith(n + " "):
+                return (name, rest[len(name):].strip() or None)
+        # concatenated form: 'EQV300 E' where 'eqv' is a known model and the glued
+        # remainder is numeric. Guard len>=2 and non-numeric model name so numeric
+        # models ('5') never swallow the head of unrelated numbers ('500').
+        for name in sorted(known_models, key=len, reverse=True):
+            n = name.lower()
+            if (len(n) >= 2 and not n.isdigit()
+                    and low.startswith(n) and len(low) > len(n) and low[len(n)].isdigit()):
                 return (name, rest[len(name):].strip() or None)
     toks = rest.split()
     if not toks:
@@ -156,7 +178,7 @@ def _split_model_trim(display_name: str, make: str, model_slug: str, known_model
     # Merc C/E), take two tokens. A bare number ('5','7') stays a single-token model.
     first = toks[0].strip(".-")
     take = 2 if len(toks) > 1 and len(first) == 1 and first.isalpha() else 1
-    model = canonical_model(" ".join(toks[:take]))
+    model = canonical_model(" ".join(toks[:take]), make=make)
     trim = " ".join(toks[take:]) or None
     return (model, trim)
 

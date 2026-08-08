@@ -30,7 +30,7 @@ def base_cte(hu_only: bool) -> str:
 WITH base AS (
   SELECT {_PROJECT},
          weight, weight_min, weight_max,
-         CASE WHEN powertrain_type='BEV' THEN 2000 ELSE 1800 END AS threshold
+         2000 AS threshold
   FROM v_parking_summary
 ),
 base2 AS (
@@ -61,6 +61,13 @@ def _predicates(f: Dict[str, Any], skip: str | None = None) -> Tuple[List[str], 
     # HU-only -> restrict to Hungarian sources; otherwise show ALL data (incl. HU)
     if f.get("hu_only"):
         where.append("source != 'cars-data'")
+
+    # on_sale -> restrict to variants currently on sale (or discontinued) in Hungary;
+    # None means no predicate (show everything). v_parking_summary doesn't expose
+    # on_sale_hu directly, so filter via the variants table.
+    if f.get("on_sale") is not None:
+        where.append("id IN (SELECT variant_id FROM variants WHERE on_sale_hu = ?)")
+        params.append(1 if f["on_sale"] else 0)
 
     if f.get("q"):
         like = f"%{f['q'].lower()}%"

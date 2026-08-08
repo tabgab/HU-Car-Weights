@@ -1,20 +1,18 @@
 """Budapest parking-fee classification — the single source of truth for the app.
 
 Rule (effective 2027-01-01):
-  - BEV (fully electric) over 2000 kg  -> pays double
-  - ICE or PHEV over 1800 kg           -> pays double
+  - any car (BEV, ICE, PHEV) over 2000 kg -> pays double
 "over X" is strict (>). Exactly at the threshold is OK.
 """
 from __future__ import annotations
 
 from typing import Optional
 
-THRESHOLD_BEV = 2000
-THRESHOLD_COMBUSTION = 1800  # ICE and PHEV
+THRESHOLD_KG = 2000  # all powertrains
 
 
 def threshold_for(powertrain_type: Optional[str]) -> int:
-    return THRESHOLD_BEV if powertrain_type == "BEV" else THRESHOLD_COMBUSTION
+    return THRESHOLD_KG
 
 
 def classify(

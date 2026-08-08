@@ -1,5 +1,7 @@
-# Top-20 makes in the Hungarian market (cars-data.com slugs). The `market` command
+# Makes sold new in the Hungarian market (cars-data.com slugs). The `market` command
 # auto-discovers each make's current models (newest generation, year >= min_year).
+# Verified against the 2026-08 HU-market audit; brands with no cars-data page
+# (Ineos, Maxus, DFSK) are covered via katalogus / manufacturer PDFs instead.
 makes:
   - toyota
   - suzuki
@@ -31,3 +33,24 @@ makes:
   - geely
   - changan
   - dongfeng
+  # --- added in the 2026-08 HU-market coverage audit ---
+  - fiat
+  - abarth
+  - citroen
+  - ds
+  - alfa-romeo
+  - jeep
+  - honda
+  - mazda
+  - lexus
+  - seat
+  - mini
+  - porsche
+  - subaru
+  - ssangyong   # legacy KGM models (Tivoli, Korando, Rexton, Musso) live here
+  - kgm         # new nameplates (Actyon, Torres)
+  - land-rover
+  - nio
+  - smart
+  - seres
+  - iveco

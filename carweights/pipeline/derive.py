@@ -7,11 +7,11 @@ from __future__ import annotations
 
 import sqlite3
 
-from ..settings import THRESHOLD_BEV, THRESHOLD_COMBUSTION
+from ..settings import THRESHOLD_KG
 
 
 def _threshold(powertrain_type: str) -> int:
-    return THRESHOLD_BEV if powertrain_type == "BEV" else THRESHOLD_COMBUSTION
+    return THRESHOLD_KG  # single threshold for all powertrains
 
 
 def derive(conn: sqlite3.Connection) -> dict:

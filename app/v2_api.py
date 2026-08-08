@@ -42,7 +42,7 @@ def _classify_row(pt: Optional[str], w: Optional[int], wmin: Optional[int], wmax
 @router.get("/policy")
 def policy(
     bev: int = Query(2000, ge=500, le=5000),
-    ice: int = Query(1800, ge=500, le=5000),
+    ice: int = Query(2000, ge=500, le=5000),
     pt: List[str] = Query(default_factory=list, description="Powertrain subtype filter (BEV, PHEV, HEV, MHEV, petrol, diesel)"),
     make: List[str] = Query(default_factory=list, description="Make filter (canonical name)"),
     hu_only: bool = Query(False, description="Only cars with a Hungarian-catalog weight"),

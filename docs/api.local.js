@@ -18,6 +18,7 @@
     if (sp.get("weight_cmp")) f.weight_cmp = sp.get("weight_cmp");
     f.include_unknown_weight = sp.get("include_unknown_weight") !== "false";
     f.hu_only = sp.get("hu_only") === "true";
+    if (sp.has("on_sale")) f.on_sale = sp.get("on_sale") === "true";  // tri-state like the server
     f.sort = sp.get("sort") || "make";
     if (sp.has("page")) f.page = Number(sp.get("page"));
     if (sp.has("page_size")) f.page_size = Number(sp.get("page_size"));
@@ -27,7 +28,7 @@
   function policyParams(sp) {
     return {
       bev: sp.has("bev") ? Number(sp.get("bev")) : 2000,
-      ice: sp.has("ice") ? Number(sp.get("ice")) : 1800,
+      ice: sp.has("ice") ? Number(sp.get("ice")) : 2000,
       pt: sp.getAll("pt"),
       make: sp.getAll("make"),
       hu_only: sp.get("hu_only") === "true",

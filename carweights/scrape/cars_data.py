@@ -73,12 +73,24 @@ def discover_models(make_slug: str) -> List[str]:
 
 
 def discover_generations(make_slug: str, model_slug: str) -> List[str]:
-    """Generation page URLs (e.g. /golf/2024-hatchback) from the static model page."""
+    """Generation page URLs (e.g. /golf/2024-hatchback) from the static model page.
+
+    Real generation segments always carry a model year; the model page also links
+    category pseudo-pages (/dimensions, /towing, /range, /alternatives) that match
+    the same URL shape — those are dropped. Newest generation first, so callers
+    using max_generations=1 get the current car."""
     html = http.get(model_url(make_slug, model_slug), SOURCE)
     soup = BeautifulSoup(html, "lxml")
     pat = re.compile(rf"^/en/{re.escape(make_slug)}/{re.escape(model_slug)}/[^/]+$")
     gens = [a["href"] for a in soup.find_all("a", href=True) if pat.match(a["href"])]
-    return [BASE + g for g in dict.fromkeys(gens)]
+
+    def year(g: str) -> int:
+        m = re.search(r"(19|20)\d{2}", g.rsplit("/", 1)[-1])
+        return int(m.group(0)) if m else -1
+
+    dated = [g for g in dict.fromkeys(gens) if year(g) >= 0]
+    dated.sort(key=year, reverse=True)
+    return [BASE + g for g in dated]
 
 
 def discover_variants(generation_url: str) -> List[str]:

@@ -11,7 +11,7 @@
 <header class="topbar">
   <div class="title">
     <h1 data-i18n="brand">🅿️ Hungarian Car Weights</h1>
-    <span class="subtitle" data-i18n="subtitle">Budapest weight-based parking fee (from 2027): BEV &gt; 2000 kg, ICE/PHEV &gt; 1800 kg → double</span>
+    <span class="subtitle" data-i18n="subtitle">Budapest weight-based parking fee (from 2027): any car &gt; 2000 kg → double</span>
   </div>
   <div class="topbar-right">
     <span id="count" class="count">—</span>
@@ -30,6 +30,9 @@
 
     <label class="hu-toggle"><input id="hu-only" type="checkbox"> <span data-i18n="hu_only_label">🇭🇺 HU data only</span>
       <span class="hu-hint" data-i18n="hu_only_hint">use only Hungarian-sourced weights</span>
+    </label>
+
+    <label class="hu-toggle"><input id="on-sale" type="checkbox" checked> <span data-i18n="filter_on_sale">On sale in Hungary</span>
     </label>
 
     <fieldset><legend data-i18n="f_powertrain">Powertrain</legend>

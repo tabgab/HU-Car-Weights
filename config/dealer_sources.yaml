@@ -21,3 +21,21 @@ brands:
   mg: https://mgmotor.hu/
   byd: https://www.byd.com/hu
   geely: https://www.geely.hu/
+  # --- brands added in the 2026-08 HU-market coverage audit ---
+  fiat: https://www.fiat.hu/
+  abarth: https://www.abarth.hu/
+  citroen: https://www.citroen.hu/
+  ds: https://www.dsautomobiles.hu/
+  alfa-romeo: https://www.alfaromeo.hu/
+  jeep: https://www.jeep.hu/
+  honda: https://www.honda.hu/
+  mazda: https://www.mazda.hu/
+  lexus: https://www.lexus.hu/
+  seat: https://www.seat.hu/
+  mini: https://www.mini.hu/
+  subaru: https://www.subaru.hu/
+  kgm: https://www.kgmhungary.hu/
+  land-rover: https://www.landrover.hu/
+  ineos: https://ineosgrenadier.gablini.hu/
+  maxus: https://maxus.hu/
+  nio: https://www.nio-auto.hu/

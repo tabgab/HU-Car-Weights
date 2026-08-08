@@ -4,8 +4,7 @@ A best-effort database + browser of cars on sale in the **Hungarian market**, cl
 **BEV / PHEV / ICE** with **curb weight**, surfacing the **Budapest weight-based parking
 surcharge** (effective 2027-01-01):
 
-- **BEV** (fully electric) over **2000 kg** → pays double
-- **ICE or PHEV** (anything with a combustion engine) over **1800 kg** → pays double
+- **Any car** (BEV, ICE, PHEV alike) over **2000 kg** → pays double
 
 ## Architecture
 
@@ -33,13 +32,21 @@ python3 -m venv .venv
 ```bash
 .venv/bin/python -m carweights.cli seed             # scrape config/seed_models.yaml
 .venv/bin/python -m carweights.cli scrape <make> <model> --max-variants 8   # one model
+.venv/bin/python -m carweights.cli market [--makes fiat,honda]  # all current models of the
+                                                    # makes in config/makes_hu.yaml
+.venv/bin/python -m carweights.cli hu --makes <m>   # HU catalog weights + cross-check
+.venv/bin/python -m carweights.cli normalize        # re-apply aliases.yaml names, merge
+                                                    # dupes, sync on_sale from
+                                                    # config/discontinued.yaml
 .venv/bin/python -m carweights.cli derive           # recompute parking classification
 .venv/bin/python -m carweights.cli stats            # coverage report
 .venv/bin/python -m carweights.cli export           # data/exports/cars.csv
 ```
 
-Expand coverage by adding entries to `config/seed_models.yaml` (cars-data.com slugs) and
-re-running `seed` — the pipeline is idempotent and caches raw pages under `data/raw/`.
+Expand coverage by adding entries to `config/seed_models.yaml` / `config/makes_hu.yaml`
+(cars-data.com slugs) and re-running — the pipeline is idempotent and caches raw pages
+under `data/raw/`. Models that leave the HU market go into `config/discontinued.yaml`
+(sets `on_sale_hu=0`; the UI's "on sale" filter and the policy simulator respect it).
 
 ## Run the app
 
@@ -81,7 +88,7 @@ cars that **straddle** a threshold (some trims pay double, some don't).
 ```bash
 .venv/bin/python -m pytest tests/ -q
 ```
-Covers the fee logic (BEV/PHEV/ICE thresholds, range straddle, boundaries), powertrain
+Covers the fee logic (uniform 2000 kg threshold, range straddle, boundaries), powertrain
 classification edge cases (e-Power → ICE, e-tron → BEV, 4xe/Recharge → PHEV), and weight parsing.
 
 ## Android app (`android/`, on branch `AndroidApp`)

@@ -7,7 +7,10 @@ from typing import Optional
 
 
 def slugify(text: str) -> str:
-    s = re.sub(r"[^a-z0-9]+", "-", (text or "").strip().lower())
+    # '+' is meaningful in model names (C-HR vs C-HR+, Prius vs Prius+): map it to
+    # '-plus' (cars-data's own convention) so the two never collide on UNIQUE slug.
+    s = (text or "").strip().lower().replace("+", "-plus")
+    s = re.sub(r"[^a-z0-9]+", "-", s)
     return s.strip("-")
 
 

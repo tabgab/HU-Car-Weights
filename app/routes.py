@@ -8,7 +8,7 @@ import pandas as pd
 from fastapi import APIRouter, Query
 from fastapi.responses import JSONResponse, Response
 
-from . import queries
+from . import fees, queries
 from .config import THRESHOLDS
 from .db import get_conn
 
@@ -21,7 +21,7 @@ _CATEGORY = {"BEV": "electric", "PHEV": "PHEV", "ICE": "ICE"}
 def _collect_filters(
     q, powertrain, subtype, drivetrain, weight_min, weight_max,
     weight_threshold, weight_cmp, fee, include_unknown_weight, model_year,
-    min_confidence, sort, page, page_size, hu_only=False,
+    min_confidence, sort, page, page_size, hu_only=False, on_sale=None,
 ):
     return {
         "q": q,
@@ -40,6 +40,7 @@ def _collect_filters(
         "page": page,
         "page_size": page_size,
         "hu_only": hu_only,
+        "on_sale": on_sale,
     }
 
 
@@ -66,10 +67,11 @@ def list_cars(
     page: int = 1,
     page_size: int = 50,
     hu_only: bool = False,
+    on_sale: Optional[bool] = None,
 ):
     f = _collect_filters(q, powertrain, subtype, drivetrain, weight_min, weight_max,
                          weight_threshold, weight_cmp, fee, include_unknown_weight,
-                         model_year, min_confidence, sort, page, page_size, hu_only)
+                         model_year, min_confidence, sort, page, page_size, hu_only, on_sale)
     conn = get_conn()
     try:
         res = queries.list_cars(conn, f)
@@ -95,10 +97,11 @@ def facets(
     model_year: Optional[List[int]] = Query(None),
     min_confidence: Optional[float] = None,
     hu_only: bool = False,
+    on_sale: Optional[bool] = None,
 ):
     f = _collect_filters(q, powertrain, subtype, drivetrain, weight_min, weight_max,
                          weight_threshold, weight_cmp, fee, include_unknown_weight,
-                         model_year, min_confidence, "make", 1, 50, hu_only)
+                         model_year, min_confidence, "make", 1, 50, hu_only, on_sale)
     conn = get_conn()
     try:
         return queries.facets(conn, f)
@@ -116,10 +119,8 @@ def car_detail(car_id: int, hu_only: bool = False):
     if not row:
         return JSONResponse({"error": "not found"}, status_code=404)
     row = _enrich(row)
-    pt = row.get("powertrain_type")
-    thr = 2000 if pt == "BEV" else 1800
-    rule = (f"{'BEV' if pt=='BEV' else (pt or 'Combustion')} over {thr} kg pays double "
-            f"Budapest parking fee")
+    thr = fees.THRESHOLD_KG
+    rule = f"Any car over {thr} kg pays double Budapest parking fee"
     row["fee"] = {"threshold": thr, "status": row.get("fee_status"), "rule": rule,
                   "stored_classification": row.get("db_fee_status")}
     return row
@@ -141,10 +142,11 @@ def export_csv(
     min_confidence: Optional[float] = None,
     sort: str = "make",
     hu_only: bool = False,
+    on_sale: Optional[bool] = None,
 ):
     f = _collect_filters(q, powertrain, subtype, drivetrain, weight_min, weight_max,
                          weight_threshold, weight_cmp, fee, include_unknown_weight,
-                         model_year, min_confidence, sort, 1, 10 ** 9, hu_only)
+                         model_year, min_confidence, sort, 1, 10 ** 9, hu_only, on_sale)
     sql, params = queries.list_sql_for_export(f)
     conn = get_conn()
     try:

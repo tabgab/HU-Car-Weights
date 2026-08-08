@@ -4,9 +4,31 @@
 models:
   - {make: volkswagen, model: golf,    max_variants: 6}   # petrol / MHEV / PHEV
   - {make: dacia,      model: spring,  max_variants: 4}   # light BEV (under 2000)
-  - {make: toyota,     model: rav4,    max_variants: 6}   # HEV (ICE) + PHEV, heavy
+  - {make: toyota,     model: rav4,    max_variants: 8}   # 6th gen (2026): HEV + PHEV
   - {make: skoda,      model: octavia, max_variants: 6}   # petrol / diesel
   - {make: tesla,      model: model-y, max_variants: 5}   # BEV around 2000 (straddle)
   - {make: hyundai,    model: ioniq-5, max_variants: 5}   # BEV ~2000 (straddle)
   - {make: bmw,        model: ix,      max_variants: 4}   # heavy BEV (> 2000)
   - {make: ford,       model: kuga,    max_variants: 5}   # ICE + PHEV
+
+  # --- HU-market coverage gaps found in the 2026-08 audit (existing makes) ---
+  - {make: toyota,     model: c-hr,            max_variants: 6}   # HEV + PHEV (non-Plus)
+  - {make: toyota,     model: prius,           max_variants: 4}   # PHEV, current gen
+  - {make: toyota,     model: gr-yaris,        max_variants: 2}   # ICE performance
+  - {make: toyota,     model: proace-max,      max_variants: 4}   # diesel + BEV van
+  - {make: volkswagen, model: crafter,         max_variants: 4}   # diesel van
+  - {make: volkswagen, model: amarok,          max_variants: 4}   # diesel pickup
+  - {make: volkswagen, model: id-polo,         max_variants: 4}   # BEV, new
+  - {make: skoda,      model: epiq,            max_variants: 4}   # BEV, new
+  - {make: skoda,      model: peaq,            max_variants: 4}   # BEV 7-seat, new
+  - {make: ford,       model: tourneo-connect, max_variants: 4}
+  - {make: ford,       model: tourneo-courier, max_variants: 4}
+  - {make: ford,       model: e-tourneo-courier, max_variants: 3} # BEV
+  - {make: ford,       model: e-transit-custom,  max_variants: 3} # BEV
+  - {make: ford,       model: transit-city,    max_variants: 3}   # BEV small van, new
+  - {make: opel,       model: rocks-e,         max_variants: 2}   # BEV microcar
+  - {make: kia,        model: seltos,          max_variants: 4}   # petrol + HEV, new in HU
+  - {make: hyundai,    model: ioniq-3,         max_variants: 4}   # BEV, new
+  - {make: audi,       model: q9,              max_variants: 4}   # ICE + PHEV flagship, new
+  - {make: byd,        model: sealion-5,       max_variants: 3}   # PHEV, new
+  - {make: geely,      model: e2,              max_variants: 3}   # BEV, launching 2026-08

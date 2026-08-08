@@ -17,9 +17,9 @@ SCHEMA_PATH = Path(__file__).resolve().parent / "db" / "schema.sql"
 
 USER_AGENT = "carWeights-research/0.1 (+info@omnest.com)"
 
-# Budapest parking-fee thresholds (kg). Effective 2027-01-01.
-THRESHOLD_BEV = 2000
-THRESHOLD_COMBUSTION = 1800  # ICE and PHEV
+# Budapest parking-fee threshold (kg). Effective 2027-01-01.
+# Single rule: any car (BEV, ICE, PHEV) over 2000 kg pays double.
+THRESHOLD_KG = 2000
 
 for _d in (DATA_DIR, RAW_DIR, EXPORT_DIR):
     _d.mkdir(parents=True, exist_ok=True)
