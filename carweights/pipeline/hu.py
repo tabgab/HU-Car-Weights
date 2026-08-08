@@ -190,6 +190,18 @@ def _split_model_trim(display_name: str, make: str, model_slug: str, known_model
     return (model, trim)
 
 
+def _subtype_for(stored_pt: str, display_name: str | None, variant_slug: str):
+    """Derive powertrain_subtype for a catalog row. BEV/PHEV imply themselves;
+    for ICE the fuel/hybrid flavour is sniffed from the name+slug text. Returns
+    None when nothing can be said — missing beats wrong."""
+    from ..normalize.powertrain import classify as classify_pt
+    if stored_pt in ("BEV", "PHEV"):
+        return stored_pt
+    text = f"{display_name or ''} {variant_slug.replace('_', ' ')}"
+    res = classify_pt(name=text)
+    return res.powertrain_subtype if res.powertrain_type == "ICE" else None
+
+
 def ingest_firstclass(conn: sqlite3.Connection, log=print) -> dict:
     """Promote katalogus catalog rows to first-class variants (source='katalogus.hu')
     so the app can list the full Hungarian market, not just cross-matched cars."""
@@ -214,7 +226,9 @@ def ingest_firstclass(conn: sqlite3.Connection, log=print) -> dict:
         mk = R.upsert_make(conn, make)
         md = R.upsert_model(conn, mk, model)
         fp = "katalogus|" + r["variant_slug"]
-        vid = R.upsert_variant(conn, md, fp, r["powertrain_type"] or "ICE", None, trim,
+        pt = r["powertrain_type"] or "ICE"
+        subtype = _subtype_for(pt, r["display_name"], r["variant_slug"])
+        vid = R.upsert_variant(conn, md, fp, pt, subtype, trim,
                                r["drivetrain"], r["power_kw"], None, r["model_year"],
                                source="katalogus.hu")
         R.upsert_weight(conn, vid, r["weight_kg"])
@@ -244,7 +258,8 @@ def ingest_manual(conn: sqlite3.Connection, records: list[dict], log=print) -> i
         mk_cache[make] = mk
         md = R.upsert_model(conn, mk, r["model"])
         fp = f"manual|{r['source_name']}|{r['model']}|{r['powertrain']}|{r['weight']}|{r.get('trim','')}"
-        vid = R.upsert_variant(conn, md, fp, r["powertrain"], None, r.get("trim"),
+        subtype = r.get("subtype") or _subtype_for(r["powertrain"], r.get("trim"), "")
+        vid = R.upsert_variant(conn, md, fp, r["powertrain"], subtype, r.get("trim"),
                                r.get("drivetrain"), None, None, r.get("model_year"),
                                source=r["source_name"])
         R.upsert_weight(conn, vid, r["weight"])

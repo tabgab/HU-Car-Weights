@@ -17,7 +17,9 @@ function renderDataSource() {
   if (el) el.textContent = state.totalCars != null ? T('v2_data_source_n', fmt(state.totalCars)) : T('v2_data_source_loading');
 }
 
-const POWERTRAIN_OPTIONS = ['BEV', 'PHEV', 'HEV', 'MHEV', 'petrol', 'diesel'];
+// 'ICE' matches combustion rows whose petrol/diesel/hybrid flavour is unknown
+// (the backend COALESCEs missing subtype to the base type).
+const POWERTRAIN_OPTIONS = ['BEV', 'PHEV', 'HEV', 'MHEV', 'petrol', 'diesel', 'ICE'];
 const TOP_MAKES = ['Škoda', 'Volkswagen', 'BMW', 'Audi', 'Mercedes-Benz',
                     'Toyota', 'Hyundai', 'Kia', 'Ford', 'Renault'];
 const FONT_SCALES = [0.85, 1.0, 1.15, 1.3, 1.5, 1.75, 2.0];
@@ -130,7 +132,8 @@ $('#reset-defaults').onclick = () => {
   saveN('bev', 2000); saveN('ice', 2000);
   $('#bev-slider').value = 2000; $('#bev-value').textContent = '2000 kg';
   $('#ice-slider').value = 2000; $('#ice-value').textContent = '2000 kg';
-  $('#note-current').textContent = T('v2_note_current', 2000, 2000);
+  $('#note-current').textContent = T('v2_note_current', 2000, 2000) +
+    (state.huOnly ? ' ' + T('v2_note_hu_only') : '');
   runPolicy();
 };
 
@@ -245,7 +248,8 @@ function renderOutcome() {
     row.onclick = () => openDetail(b.id);
     list.appendChild(row);
   });
-  $('#note-current').textContent = T('v2_note_current', state.bev, state.ice);
+  $('#note-current').textContent = T('v2_note_current', state.bev, state.ice) +
+    (state.huOnly ? ' ' + T('v2_note_hu_only') : '');
 }
 
 function pct(n, total) {

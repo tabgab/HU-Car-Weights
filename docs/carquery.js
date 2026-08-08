@@ -14,7 +14,7 @@
   // cars.json sits next to this script at the site root; resolve it from our own URL so
   // it works from both `/` and `/v2/`.
   const SCRIPT_SRC = (document.currentScript && document.currentScript.src) || "";
-  const DATA_URL = new URL("cars.json?v=a574976f32", SCRIPT_SRC).href;
+  const DATA_URL = new URL("cars.json?v=8d57025ad7", SCRIPT_SRC).href;
 
   let DATA = null;
   let LOADING = null;
@@ -213,7 +213,9 @@
       if ((c.is_missing || 0) !== 0) continue;
       if (c.on_sale_hu !== 1) continue;
       if (p.hu_only && c.hu_weight_kg == null) continue;
-      if (ptSet && !ptSet.has(c.powertrain_subtype)) continue;
+      // COALESCE-style: untyped rows still match their base type, so a BEV/PHEV
+      // chip never silently drops rows whose subtype is unknown.
+      if (ptSet && !ptSet.has(c.powertrain_subtype || c.powertrain_type)) continue;
       if (makeSet && !makeSet.has(c.make)) continue;
 
       const ptType = c.powertrain_type;
@@ -224,13 +226,16 @@
       else if (status === "borderline") borderline++;
       else unknown++;
 
-      if (status === "double" && c.weight != null && t > 0) {
-        const overPct = ((c.weight - t) / t) * 100;
+      // Range-only rows (weight null, min/max set) classified 'double' must show in
+      // border cases too: their lowest weight is the decisive figure.
+      const repW = c.weight != null ? c.weight : c.weight_min;
+      if (status === "double" && repW != null && t > 0) {
+        const overPct = ((repW - t) / t) * 100;
         if (overPct > 0 && overPct <= 25) {
           borders.push({
             id: c.id, make: c.make, model: c.model, trim: c.trim,
             powertrain_subtype: c.powertrain_subtype || ptType,
-            weight: c.weight, threshold: t, over_pct: overPct,
+            weight: repW, threshold: t, over_pct: overPct,
           });
         }
       }

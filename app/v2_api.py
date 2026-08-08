@@ -59,7 +59,10 @@ def policy(
         if hu_only:
             where.append("w.hu_weight_kg IS NOT NULL")
         if pt:
-            where.append(f"v.powertrain_subtype IN ({','.join('?' * len(pt))})")
+            # COALESCE: rows whose subtype is unknown still match their base type,
+            # so a BEV/PHEV chip never silently drops untyped rows.
+            where.append(
+                f"COALESCE(v.powertrain_subtype, v.powertrain_type) IN ({','.join('?' * len(pt))})")
             params.extend(pt)
         if make:
             where.append(f"mk.canonical_name IN ({','.join('?' * len(make))})")
@@ -105,8 +108,11 @@ def policy(
                 borderline += 1
             else:
                 unknown += 1
-            if status == "double" and r["weight"] is not None and t > 0:
-                over_pct = (r["weight"] - t) / t * 100.0
+            # Range-only rows (weight NULL, min/max set) classified 'double' must show
+            # in border cases too: their lowest weight is the decisive figure.
+            rep_w = r["weight"] if r["weight"] is not None else r["weight_min"]
+            if status == "double" and rep_w is not None and t > 0:
+                over_pct = (rep_w - t) / t * 100.0
                 if 0 < over_pct <= 25.0:
                     borders.append({
                         "id": r["id"],
@@ -114,7 +120,7 @@ def policy(
                         "model": r["model"],
                         "trim": r["trim"],
                         "powertrain_subtype": r["powertrain_subtype"] or pt_type,
-                        "weight": r["weight"],
+                        "weight": rep_w,
                         "threshold": t,
                         "over_pct": over_pct,
                     })
