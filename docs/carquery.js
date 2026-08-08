@@ -14,7 +14,7 @@
   // cars.json sits next to this script at the site root; resolve it from our own URL so
   // it works from both `/` and `/v2/`.
   const SCRIPT_SRC = (document.currentScript && document.currentScript.src) || "";
-  const DATA_URL = new URL("cars.json?v=8d57025ad7", SCRIPT_SRC).href;
+  const DATA_URL = new URL("cars.json?v=4a518343aa", SCRIPT_SRC).href;
 
   let DATA = null;
   let LOADING = null;

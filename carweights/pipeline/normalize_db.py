@@ -114,6 +114,7 @@ def normalize_names(conn: sqlite3.Connection) -> dict:
         "DELETE FROM makes WHERE make_id NOT IN (SELECT make_id FROM models)").rowcount
     conn.commit()
     st.update(apply_on_sale(conn))
+    st.update(apply_weight_overrides(conn))
     return st
 
 
@@ -143,3 +144,34 @@ def apply_on_sale(conn: sqlite3.Connection) -> dict:
                     (SELECT make_id FROM models WHERE on_sale_hu=1) THEN 1 ELSE 0 END""")
     conn.commit()
     return {"models_marked_off_sale": marked}
+
+
+def apply_weight_overrides(conn: sqlite3.Connection) -> dict:
+    """Apply curated weight corrections (config/weight_overrides.yaml) on top of
+    scraped values. Runs after every rebuild, so corrections survive re-ingests."""
+    import yaml
+
+    from ..settings import CONFIG_DIR
+
+    path = CONFIG_DIR / "weight_overrides.yaml"
+    entries = (yaml.safe_load(path.read_text(encoding="utf-8")) or {}).get("overrides", []) \
+        if path.exists() else []
+    n = 0
+    for o in entries:
+        rows = conn.execute(
+            """SELECT v.variant_id FROM variants v
+               JOIN models md ON md.model_id = v.model_id
+               JOIN makes mk ON mk.make_id = md.make_id
+               WHERE mk.canonical_name=? AND md.canonical_name=?
+                 AND INSTR(LOWER(COALESCE(v.trim_name,'')), LOWER(?)) > 0""",
+            (o["make"], o["model"], o["trim_contains"])).fetchall()
+        for r in rows:
+            cur = conn.execute(
+                "UPDATE weights SET curb_weight_kg=?, hu_weight_kg=?, hu_weight_url=?, "
+                "primary_source='curated-override', updated_at=datetime('now') "
+                "WHERE variant_id=? AND curb_weight_kg IS NOT ?",
+                (o["weight_kg"], o["weight_kg"], o.get("source_url"),
+                 r["variant_id"], o["weight_kg"]))
+            n += cur.rowcount
+    conn.commit()
+    return {"weights_overridden": n}

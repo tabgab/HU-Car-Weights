@@ -1,0 +1,16 @@
+# Curated weight corrections applied on top of scraped data by `cli normalize`
+# (idempotent; re-applied after every firstclass rebuild). Use when a source value
+# is demonstrably wrong and a better-homologated figure exists. Matching: make +
+# model (canonical names) + case-insensitive substring of the trim. Weights are the
+# Hungarian "saját tömeg" convention (EU unladen mass, no driver).
+overrides:
+  - make: XPeng
+    model: "P7+"
+    trim_contains: standard
+    weight_kg: 2075
+    reason: >
+      Scraped 1999 kg is uncorroborated (carspecsdb only) and sits below every
+      verified EU figure. RDW type-approval data (massa_ledig_voertuig, ~35
+      registered cars) shows 2075 kg for the RWD Standard Range (61.7 kWh),
+      corroborated by ev-database (2074 kg). 2026-08 verification.
+    source_url: https://opendata.rdw.nl/resource/m9d7-ebf2.json?merk=XPENG
