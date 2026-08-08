@@ -5,13 +5,12 @@ package com.tabigabor.carweights.domain
  * Mirrors app/fees.py byte-for-byte (mirrored in tests).
  *
  * Rule (effective 2027-01-01):
- *   - BEV (fully electric) over 2000 kg  -> pays double
- *   - ICE or PHEV over 1800 kg           -> pays double
+ *   - any car (BEV, ICE, PHEV) over 2000 kg -> pays double
  * "over X" is strict (>). Exactly at the threshold is OK.
  */
 object FeeClassifier {
     const val THRESHOLD_BEV: Int = 2000
-    const val THRESHOLD_COMBUSTION: Int = 1800  // ICE and PHEV
+    const val THRESHOLD_COMBUSTION: Int = 2000  // unified: same rule for ICE and PHEV
 
     fun thresholdFor(powertrainType: String?): Int =
         if (powertrainType == "BEV") THRESHOLD_BEV else THRESHOLD_COMBUSTION

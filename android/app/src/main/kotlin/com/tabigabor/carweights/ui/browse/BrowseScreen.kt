@@ -57,10 +57,13 @@ fun BrowseScreen(state: AppState, modifier: Modifier = Modifier) {
 
     val visible = remember(all, q, huOnly) {
         val base = if (huOnly) all.filter { it.huWeightKg != null } else all
-        if (q.isBlank()) base
+        // Tokenized search: every token must match somewhere in "make model trim"
+        // combined, so "Toyota RAV4" spans fields and a trailing space still matches.
+        val tokens = q.trim().lowercase().split(Regex("\\s+")).filter { it.isNotEmpty() }
+        if (tokens.isEmpty()) base
         else base.filter { c ->
-            c.make.contains(q, true) || c.model.contains(q, true) ||
-                (c.trim?.contains(q, true) == true)
+            val hay = "${c.make} ${c.model} ${c.trim ?: ""}".lowercase()
+            tokens.all { hay.contains(it) }
         }
     }
     val shown = visible.take(VISIBLE_LIMIT)

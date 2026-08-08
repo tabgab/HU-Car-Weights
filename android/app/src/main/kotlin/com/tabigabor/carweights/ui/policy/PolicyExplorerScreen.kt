@@ -157,7 +157,7 @@ fun PolicyExplorerScreen(
             ) {
                 Icon(Icons.Filled.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(6.dp))
-                Text("Reset to defaults (2000 / 1800)")
+                Text("Reset to defaults (2000 / 2000)")
             }
         }
         when {

@@ -128,7 +128,7 @@ fun SettingsScreen(state: AppState, modifier: Modifier = Modifier) {
                 Spacer(Modifier.height(4.dp))
                 Text(
                     "Curb weights from cars-data.com and katalogus.hasznaltauto.hu. " +
-                        "The default 2027 policy is BEV > 2000 kg, ICE/PHEV > 1800 kg.",
+                        "The default 2027 policy is any car > 2000 kg.",
                     color = Muted, fontSize = 12.sp,
                 )
             }

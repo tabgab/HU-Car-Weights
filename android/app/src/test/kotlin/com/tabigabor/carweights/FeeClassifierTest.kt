@@ -11,31 +11,36 @@ import org.junit.Test
  */
 class FeeClassifierTest {
 
-    @Test fun thresholdSelection() {
+    @Test fun thresholdIsUniform() {
+        // Single 2000 kg rule for every powertrain (and unknown ones).
         assertEquals(2000, FeeClassifier.thresholdFor("BEV"))
-        assertEquals(1800, FeeClassifier.thresholdFor("PHEV"))
-        assertEquals(1800, FeeClassifier.thresholdFor("ICE"))
+        assertEquals(2000, FeeClassifier.thresholdFor("PHEV"))
+        assertEquals(2000, FeeClassifier.thresholdFor("ICE"))
+        assertEquals(2000, FeeClassifier.thresholdFor(null))
     }
 
     @Test fun representativeValueCases() {
-        assertEquals(FeeStatus.DOUBLE, FeeClassifier.classify("BEV", 2100))   // BEV over 2000
+        assertEquals(FeeStatus.DOUBLE, FeeClassifier.classify("BEV", 2100))
         assertEquals(FeeStatus.OK,     FeeClassifier.classify("BEV", 1950))
-        assertEquals(FeeStatus.DOUBLE, FeeClassifier.classify("PHEV", 1900))  // PHEV uses 1800
-        assertEquals(FeeStatus.OK,     FeeClassifier.classify("PHEV", 1700))
-        assertEquals(FeeStatus.OK,     FeeClassifier.classify("ICE",  1700))
-        assertEquals(FeeStatus.DOUBLE, FeeClassifier.classify("ICE",  1850))
+        assertEquals(FeeStatus.DOUBLE, FeeClassifier.classify("PHEV", 2050))
+        assertEquals(FeeStatus.OK,     FeeClassifier.classify("PHEV", 1900))  // was double under the old 1800 rule
+        assertEquals(FeeStatus.OK,     FeeClassifier.classify("ICE",  1850))  // was double under the old 1800 rule
+        assertEquals(FeeStatus.DOUBLE, FeeClassifier.classify("ICE",  2001))
     }
 
     @Test fun boundaryIsOk() {
-        assertEquals(FeeStatus.OK, FeeClassifier.classify("BEV", 2000))  // exactly at threshold = ok (strict >)
-        assertEquals(FeeStatus.OK, FeeClassifier.classify("ICE",  1800))
+        // exactly at threshold = ok (strict >)
+        assertEquals(FeeStatus.OK, FeeClassifier.classify("BEV",  2000))
+        assertEquals(FeeStatus.OK, FeeClassifier.classify("ICE",  2000))
+        assertEquals(FeeStatus.OK, FeeClassifier.classify("PHEV", 2000))
     }
 
     @Test fun rangeCases() {
-        assertEquals(FeeStatus.BORDERLINE, FeeClassifier.classify("ICE", null, 1750, 1850))  // straddles 1800
-        assertEquals(FeeStatus.BORDERLINE, FeeClassifier.classify("BEV", null, 1950, 2050))  // straddles 2000
-        assertEquals(FeeStatus.DOUBLE,     FeeClassifier.classify("ICE", null, 1850, 1900))  // entirely above
+        assertEquals(FeeStatus.BORDERLINE, FeeClassifier.classify("ICE", null, 1950, 2050))  // straddles 2000
+        assertEquals(FeeStatus.BORDERLINE, FeeClassifier.classify("BEV", null, 1950, 2050))
+        assertEquals(FeeStatus.DOUBLE,     FeeClassifier.classify("ICE", null, 2050, 2100))  // entirely above
         assertEquals(FeeStatus.OK,         FeeClassifier.classify("ICE", null, 1600, 1750))  // entirely below
+        assertEquals(FeeStatus.OK,         FeeClassifier.classify("ICE", null, 1750, 1850))  // below 2000 now
     }
 
     @Test fun unknown() {
