@@ -50,6 +50,8 @@ VERBATIM = [
 # {v} in the replacement is filled with the content-hash version at build time.
 HTML = [
     ("index.html", "index.html", [
+        ('<span class="subtitle" id="build-info" style="opacity:.55">dev</span>',
+         '<span class="subtitle" id="build-info" style="opacity:.55">build {date} · {v}</span>'),
         ('href="/styles.css', 'href="styles.css'),
         ('href="/v2/"', 'href="v2/"'),
         ('<script src="/i18n.js"></script>', '<script src="i18n.js?v={v}"></script>'),
@@ -58,6 +60,8 @@ HTML = [
         ('src="/app.js', 'src="app.js?v={v}'),
     ]),
     ("v2/index.html", "v2/index.html", [
+        ('<span class="subtitle" id="build-info" style="opacity:.55">dev</span>',
+         '<span class="subtitle" id="build-info" style="opacity:.55">build {date} · {v}</span>'),
         ('href="/v2/styles.css', 'href="styles.css'),
         ('href="/"', 'href="../"'),
         ('<script src="/i18n.js"></script>', '<script src="../i18n.js?v={v}"></script>'),
@@ -91,10 +95,12 @@ def transform_html():
     for src_rel, dst_rel, reps in HTML:
         with open(os.path.join(WEB, src_rel), encoding="utf-8") as f:
             html = f.read()
+        import datetime
+        stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
         for old, new in reps:
             if old not in html:
                 sys.exit(f"ERROR: expected snippet not found in {src_rel}:\n  {old!r}")
-            html = html.replace(old, new.format(v=version()))
+            html = html.replace(old, new.format(v=version(), date=stamp))
         dst = os.path.join(DOCS, dst_rel)
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         with open(dst, "w", encoding="utf-8") as f:
