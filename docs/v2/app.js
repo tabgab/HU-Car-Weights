@@ -24,6 +24,17 @@ const TOP_MAKES = ['Škoda', 'Volkswagen', 'BMW', 'Audi', 'Mercedes-Benz',
                     'Toyota', 'Hyundai', 'Kia', 'Ford', 'Renault'];
 const FONT_SCALES = [0.85, 1.0, 1.15, 1.3, 1.5, 1.75, 2.0];
 
+// ─── Persisted-state schema version ───────────────────────────────────────
+// Saved filters from older app versions can hold names/values that no longer
+// match anything (e.g. renamed makes) and silently empty the fleet with no
+// visual cue. On version bump, policy-related keys are reset once; language
+// and font-size choices are kept.
+const STATE_VERSION = '2';
+if (localStorage.getItem('cw_state_version') !== STATE_VERSION) {
+  ['bev', 'ice', 'pt_filter', 'make_filter', 'hu_only'].forEach(k => localStorage.removeItem(k));
+  localStorage.setItem('cw_state_version', STATE_VERSION);
+}
+
 // ─── State ────────────────────────────────────────────────────────────────
 const state = {
   bev: loadN('bev', 2000),
@@ -107,7 +118,10 @@ function renderMakeQuickChips() {
 }
 
 function updateClearMakesButton() {
-  $('#clear-makes').classList.toggle('hidden', state.makeFilter.size === 0);
+  const btn = $('#clear-makes');
+  btn.classList.toggle('hidden', state.makeFilter.size === 0);
+  // show how many makes the active filter holds — a filter you can't see is a trap
+  if (state.makeFilter.size > 0) btn.textContent = `${T('v2_clear_makes')} (${state.makeFilter.size})`;
 }
 
 // ─── Sliders ──────────────────────────────────────────────────────────────
@@ -463,6 +477,14 @@ function esc(s) {
     state.allMakes = await apiGet('/api/v2/makes');
   } catch (e) {
     state.allMakes = TOP_MAKES;
+  }
+  // Drop selected makes that no longer exist in the data (renames, removals) —
+  // a stale name matches nothing and would silently empty the fleet.
+  const validMakes = new Set(state.allMakes);
+  const pruned = new Set([...state.makeFilter].filter(m => validMakes.has(m)));
+  if (pruned.size !== state.makeFilter.size) {
+    state.makeFilter = pruned;
+    saveS('make_filter', state.makeFilter);
   }
   renderPowertrainChips();
   renderMakeQuickChips();
