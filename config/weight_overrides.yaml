@@ -7,10 +7,11 @@ overrides:
   - make: XPeng
     model: "P7+"
     trim_contains: standard
-    weight_kg: 2075
+    weight_kg: 1999
     reason: >
-      Scraped 1999 kg is uncorroborated (carspecsdb only) and sits below every
-      verified EU figure. RDW type-approval data (massa_ledig_voertuig, ~35
-      registered cars) shows 2075 kg for the RWD Standard Range (61.7 kWh),
-      corroborated by ev-database (2074 kg). 2026-08 verification.
-    source_url: https://opendata.rdw.nl/resource/m9d7-ebf2.json?merk=XPENG
+      Pinned to the OFFICIAL Hungarian importer price list (P7+ árlista, Tömeg
+      table): saját tömeg 1999 kg for Standard range (with tow bar: 2024 kg;
+      Long range 2100, Performance 2200 — matching our other rows). A 2026-08
+      "correction" to 2075 kg based on NL RDW massa_ledig was wrong for the
+      Hungarian saját tömeg convention; this entry prevents that regression.
+    source_url: https://cmsimages.carusseldwt.com/cms/downloads/PROD/HU/Xpeng/XP_0000/95d55044-93ff-46e2-b695-3b83f12da439/P7+%20árlista.pdf
