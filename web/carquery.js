@@ -241,14 +241,20 @@
       }
     }
     borders.sort((a, b) => a.over_pct - b.over_pct);
-    const b5 = borders.filter((b) => b.over_pct <= 5).slice(0, limit);
-    const b10 = borders.filter((b) => b.over_pct <= 10).slice(0, limit);
+    const all5 = borders.filter((b) => b.over_pct <= 5);
+    const all10 = borders.filter((b) => b.over_pct <= 10);
+    // true counts reported separately — the lists are capped at `limit`, and
+    // showing list length would silently understate the buckets
+    const counts = { "5pct": all5.length, "10pct": all10.length, "25pct": borders.length };
+    const b5 = all5.slice(0, limit);
+    const b10 = all10.slice(0, limit);
     const b25 = borders.slice(0, limit);
     return {
       total: ok + dbl + borderline + unknown,
       ok, double: dbl, borderline, unknown,
       bev_threshold: bev, ice_threshold: ice,
       border_cases: { "5pct": b5, "10pct": b10, "25pct": b25 },
+      border_counts: counts,
       thresholds: { BEV: bev, ICE: ice, PHEV: ice, HEV: ice, MHEV: ice, petrol: ice, diesel: ice },
     };
   }

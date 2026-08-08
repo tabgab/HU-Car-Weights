@@ -222,13 +222,15 @@ function renderOutcome() {
       bar.appendChild(seg);
     }
   }
-  // border buckets
+  // border buckets — counts come from border_counts (the lists are capped server-side,
+  // so their length would understate large buckets)
   const b5 = o.border_cases['5pct'] || [];
   const b10 = o.border_cases['10pct'] || [];
   const b25 = o.border_cases['25pct'] || [];
-  $('#b-5').textContent = fmt(b5.length);
-  $('#b-10').textContent = fmt(b10.length);
-  $('#b-25').textContent = fmt(b25.length);
+  const bc = o.border_counts || {};
+  $('#b-5').textContent = fmt(bc['5pct'] != null ? bc['5pct'] : b5.length);
+  $('#b-10').textContent = fmt(bc['10pct'] != null ? bc['10pct'] : b10.length);
+  $('#b-25').textContent = fmt(bc['25pct'] != null ? bc['25pct'] : b25.length);
   $('#b-hint').textContent = b25.length
     ? T('v2_border_hint_top', Math.min(b25.length, 10))
     : T('v2_border_hint_none');

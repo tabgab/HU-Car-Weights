@@ -126,9 +126,12 @@ def policy(
                     })
 
         borders.sort(key=lambda b: b["over_pct"])
-        b5 = [b for b in borders if b["over_pct"] <= 5.0][:limit]
-        b10 = [b for b in borders if b["over_pct"] <= 10.0][:limit]
-        b25 = borders[:limit]
+        all5 = [b for b in borders if b["over_pct"] <= 5.0]
+        all10 = [b for b in borders if b["over_pct"] <= 10.0]
+        # true counts are reported separately — the lists are capped at `limit`,
+        # and showing len(list) would silently understate the buckets
+        counts = {"5pct": len(all5), "10pct": len(all10), "25pct": len(borders)}
+        b5, b10, b25 = all5[:limit], all10[:limit], borders[:limit]
 
         return {
             "total": len(rows),
@@ -143,6 +146,7 @@ def policy(
                 "10pct": b10,
                 "25pct": b25,
             },
+            "border_counts": counts,
             "thresholds": {"BEV": bev, "ICE": ice, "PHEV": ice, "HEV": ice, "MHEV": ice,
                            "petrol": ice, "diesel": ice},
         }
