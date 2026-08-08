@@ -14,7 +14,7 @@
   // cars.json sits next to this script at the site root; resolve it from our own URL so
   // it works from both `/` and `/v2/`.
   const SCRIPT_SRC = (document.currentScript && document.currentScript.src) || "";
-  const DATA_URL = new URL("cars.json", SCRIPT_SRC).href;
+  const DATA_URL = new URL("cars.json?v=a574976f32", SCRIPT_SRC).href;
 
   let DATA = null;
   let LOADING = null;
@@ -71,11 +71,16 @@
     }
 
     if (f.q) {
-      const like = String(f.q).toLowerCase();
-      tests.push((c) =>
-        (c.make || "").toLowerCase().includes(like) ||
-        (c.model || "").toLowerCase().includes(like) ||
-        (c.trim || "").toLowerCase().includes(like));
+      // Tokenized: every token must match somewhere in "make model trim" combined,
+      // so "Toyota RAV4" works and a trailing space doesn't blank the results.
+      const toks = String(f.q).toLowerCase().split(/\s+/).filter(Boolean);
+      if (toks.length) {
+        tests.push((c) => {
+          const hay =
+            ((c.make || "") + " " + (c.model || "") + " " + (c.trim || "")).toLowerCase();
+          return toks.every((t) => hay.includes(t));
+        });
+      }
     }
     if (skip !== "powertrain" && f.powertrain && f.powertrain.length) {
       const vals = new Set(f.powertrain.map((v) => PT_MAP[String(v).toLowerCase()]).filter(Boolean));

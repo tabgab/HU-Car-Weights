@@ -70,9 +70,14 @@ def _predicates(f: Dict[str, Any], skip: str | None = None) -> Tuple[List[str], 
         params.append(1 if f["on_sale"] else 0)
 
     if f.get("q"):
-        like = f"%{f['q'].lower()}%"
-        where.append("(LOWER(make) LIKE ? OR LOWER(model) LIKE ? OR LOWER(COALESCE(trim,'')) LIKE ?)")
-        params += [like, like, like]
+        # Tokenized search: every whitespace-separated token must match somewhere in
+        # "make model trim" combined, so "Toyota RAV4" spans fields and a trailing
+        # space ("Toyota ") doesn't blank the results. INSTR avoids LIKE-wildcard
+        # surprises from user input.
+        for tok in str(f["q"]).lower().split():
+            where.append(
+                "INSTR(LOWER(make || ' ' || model || ' ' || COALESCE(trim,'')), ?) > 0")
+            params.append(tok)
 
     if skip != "powertrain" and f.get("powertrain"):
         vals = [_PT_MAP.get(str(v).lower()) for v in f["powertrain"] if _PT_MAP.get(str(v).lower())]
